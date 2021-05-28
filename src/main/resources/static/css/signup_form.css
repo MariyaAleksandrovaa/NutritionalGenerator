@@ -1,0 +1,10 @@
+@charset "ISO-8859-1";
+
+.wrapper {
+    text-align: center;
+}
+
+.button {
+    position: absolute;
+    top: 50%;
+}

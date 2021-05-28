@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="ISO-8859-1">
+	<title>Nuevo Registro</title>
+	<style type="text/css">
+		div
+		{
+			margin: 10px;
+		}
+	</style>
+	<link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+</head>
+
+<body style="background-color:#008F39;">
+	<div class="container">
+	
+		<div>
+			<h1 style="text-align:center">Nuevo registro de usuario</h1>
+		</div>
+		
+		<form th:action="@{/process_register}" method="post" style="max-width: 600px; margin: 0 auto;" th:object="${user}">
+		<div class="m-3">
+		
+			<div class="form-group row">
+				<label class="col-form-label col-4">Nombre:</label>
+				<div class="col-8">
+					<input type="text" class="form-control" th:field="*{firstName}" required minlength="2" maxlength="20"/>
+				</div>
+			</div>
+			
+			<div class="form-group row">
+				<label class="col-form-label col-4">Apellidos:</label>
+				<div class="col-8">
+					<input type="text" class="form-control" th:field="*{lastName}" required/>
+				</div>
+			</div>
+			
+			<div class="form-group row">
+				<label class="col-form-label col-4">Correo electronico:</label>
+				<div class="col-8">
+					<input type="email" class="form-control" th:field="*{email}" required/>
+				</div>
+			</div>
+			
+			<div class="form-group row">
+				<label class="col-form-label col-4">Contrasena:</label>
+				<div class="col-8">
+					<input type="password" class="form-control" th:field="*{password}" required/>
+				</div>
+			</div>
+			
+			<div class="wrapper">
+				<button type="submit" class="btn btn-primary" style="background-color:#74B72E">Aceptar</button>
+			</div>
+
+		</div>	
+		</form>
+		
+	</div>
+</body>
+
+</html>
