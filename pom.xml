@@ -75,6 +75,12 @@
 			<artifactId>webjars-locator-core</artifactId>
 			<version>0.47</version><!--$NO-MVN-MAN-VER$ -->
 		</dependency>
+		<dependency>
+		    <groupId>org.thymeleaf.extras</groupId>
+		    <artifactId>thymeleaf-extras-springsecurity4</artifactId>
+		    <version>3.0.4.RELEASE</version>
+		</dependency>
+				
 		<!-- <dependency> -->
 		<!-- <groupId>org.hibernate</groupId> -->
 		<!-- <artifactId>hibernate-c3p0</artifactId> -->

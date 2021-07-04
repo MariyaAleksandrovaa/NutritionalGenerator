@@ -15,12 +15,24 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class ControllerMVC {
 
 	@Autowired
-	private UserRepository repo;
+	private UserRepository userRepo;
+
+	@Autowired
+	private FoodRepository foodRepo;
 
 	@GetMapping("")
 	public String viewHomePage() {
 		return "index";
 	}
+
+//	@GetMapping("/login")
+//	public String login() {
+//		return "login";
+//	}
+//	@GetMapping("/logout")
+//	public String logout() {
+//		return "index";
+//	}
 
 	@GetMapping("/register")
 	public String viewRegisterPage(Model model) {
@@ -34,7 +46,7 @@ public class ControllerMVC {
 		String encodedPassword = encoder.encode(user.getPassword());
 
 		user.setPassword(encodedPassword);
-		repo.save(user);
+		userRepo.save(user);
 
 		return "register_success";
 	}
@@ -43,10 +55,19 @@ public class ControllerMVC {
 	@RequestMapping(value = "/list_users", method = RequestMethod.GET)
 	public String viewUsersList(Model model) {
 
-		List<User> listUsers = repo.findAll();
+		List<User> listUsers = userRepo.findAll();
 		model.addAttribute("listUsers", listUsers);
 
 		return "users";
+	}
+
+	@RequestMapping(value = "/list_food", method = RequestMethod.GET)
+	public String viewFoodList(Model model) {
+
+		List<Food> listFood = foodRepo.findAll();
+		model.addAttribute("listFood", listFood);
+
+		return "food";
 	}
 
 }
