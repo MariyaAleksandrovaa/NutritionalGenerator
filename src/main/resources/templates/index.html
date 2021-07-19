@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
 <meta charset="ISO-8859-1">
 <title>Home - Code Java</title>
@@ -7,6 +8,17 @@
 	href="/webjars/bootstrap/css/bootstrap.min.css" />
 </head>
 <body>
+
+	<div sec:authorize="isAuthenticated()">
+		Welcome	<b><span sec:authentication="name">Username</span></b>
+		&nbsp;
+		<span sec:authentication="principal.authorities">Roles</span>
+		
+		<form th:action="@{/logout}" method="post">
+			<input type="submit" value="Logout" />
+		</form>
+	</div>
+	
 	<div class="container text-center">
 		<div>
 			<h1>Welcome to CodeJava.net</h1>
