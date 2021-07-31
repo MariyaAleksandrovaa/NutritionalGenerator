@@ -8,7 +8,6 @@ import java.util.Set;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-//import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import app.model.Role;
@@ -30,12 +29,17 @@ public class CustomUserDetails implements UserDetails {
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 
 		Set<Role> roles = user.getRoles();
+
 		List<SimpleGrantedAuthority> authorities = new ArrayList<>();
 
 		for (Role role : roles) {
 			authorities.add(new SimpleGrantedAuthority(role.getName()));
 		}
 		return authorities;
+	}
+
+	public boolean hasRole(String roleName) {
+		return user.hasRole(roleName);
 	}
 
 	@Override
@@ -46,9 +50,6 @@ public class CustomUserDetails implements UserDetails {
 	@Override
 	public String getUsername() {
 		return user.getUsername();
-	}
-	public boolean hasRole(String roleName) {
-		return user.hasRole(roleName);
 	}
 
 	@Override
@@ -68,11 +69,7 @@ public class CustomUserDetails implements UserDetails {
 
 	@Override
 	public boolean isEnabled() {
-		return user.isEnabled();
+		return true;
 	}
-
-//	public String getFullName() {
-//		return user.getNombre() + " " + user.getApellidos();
-//	}
 
 }

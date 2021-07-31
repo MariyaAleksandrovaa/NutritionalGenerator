@@ -8,37 +8,37 @@
 </head>
 <body>
 	<div class="container text-center">
-		<div>
-			<form th:action="@{/logout}" method="post">
-				<p>
-					Bienvenida <b>[[${#request.userPrincipal.principal.fullName}]]</b> !
-				</p>
-				<input type="submit" value="Salir de esta cuenta" />
-			</form>
-		</div>
+<!-- 		<div> -->
+<!-- 			<form th:action="@{/logout}" method="post"> -->
+<!-- 				<p> -->
+<!-- 					Bienvenida <b>[[${#request.userPrincipal.principal.fullName}]]</b> ! -->
+<!-- 				</p> -->
+<!-- 				<input type="submit" value="Salir de esta cuenta" /> -->
+<!-- 			</form> -->
+<!-- 		</div> -->
 		<div>
 			<h1>Lista de todos los usuarios</h1>
 		</div>
-		<div>
-			<table class="table table-striped table-bordered">
-				<thead class="thead-dark">
-					<tr>
-						<th>Id
-						<th>E-mail</th>
-						<th>First name</th>
-						<th>Last Name</th>
-					</tr>
-				</thead>
-<!-- 				<tbody> -->
-<!-- 					<tr th:each="user: ${listUsers}"> -->
-<!-- 						<td th:text="${user.id}">User ID</td> -->
-<!-- 						<td th:text="${user.email}">Correo electrónico</td> -->
-<!-- 						<td th:text="${user.firstName}">Nombre</td> -->
-<!-- 						<td th:text="${user.lastName}">Apellidos</td> -->
+<!-- 		<div> -->
+<!-- 			<table class="table table-striped table-bordered"> -->
+<!-- 				<thead class="thead-dark"> -->
+<!-- 					<tr> -->
+<!-- 						<th>Id -->
+<!-- 						<th>E-mail</th> -->
+<!-- 						<th>First name</th> -->
+<!-- 						<th>Last Name</th> -->
 <!-- 					</tr> -->
-<!-- 				</tbody> -->
-			</table>
-		</div>
+<!-- 				</thead> -->
+<!-- <!-- 				<tbody> --> -->
+<!-- <!-- 					<tr th:each="user: ${listUsers}"> --> -->
+<!-- <!-- 						<td th:text="${user.id}">User ID</td> --> -->
+<!-- <!-- 						<td th:text="${user.email}">Correo electrónico</td> --> -->
+<!-- <!-- 						<td th:text="${user.firstName}">Nombre</td> --> -->
+<!-- <!-- 						<td th:text="${user.lastName}">Apellidos</td> --> -->
+<!-- <!-- 					</tr> --> -->
+<!-- <!-- 				</tbody> --> -->
+<!-- 			</table> -->
+<!-- 		</div> -->
 	</div>
 
 </body>

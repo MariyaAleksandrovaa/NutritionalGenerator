@@ -27,6 +27,13 @@ public class Role {
 
 	@Column(length = 45, nullable = false)
 	private String name;
+	
+	
+	
+	
+	public Role() {
+		
+	}
 
 	public Integer getId() {
 		return id;
