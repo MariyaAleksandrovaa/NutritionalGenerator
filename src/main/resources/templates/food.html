@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Todos los alimentos</title>
+<link rel="stylesheet" type="text/css"
+	href="/webjars/bootstrap/css/bootstrap.min.css" />
+</head>
+<body>
+	<div class="container text-center">
+		<!-- 		<div> -->
+		<!-- 			<form th:action="@{/logout}" method="post"> -->
+		<!-- 				<input type="submit" value="Salir de esta cuenta" /> -->
+		<!-- 			</form> -->
+		<!-- 		</div> -->
+		<div>
+			<h1>Lista de todos los alimentos</h1>
+		</div>
+		<div>
+			<table class="table table-striped table-bordered">
+				<thead class="thead-dark">
+					<tr>
+						<th>Id Alimentos</th>
+						<th>Id Grupo</th>
+						<th>Id ALimento</th>
+						<th>Nombre</th>
+						<th>Langual</th>
+						<th>Ingles</th>
+						<th>Origen</th>
+						<th>Porcion</th>
+						<th>Activo</th>
+						<th>Nombre origen</th>
+						<th>Glos</th>
+						<th>Descripcion</th>
+						<th>Unidad</th>
+						<th>Descripcion</th>
+						<th>Referencia</th>
+						<th>Descripcion 1</th>
+						<th>Descripcion 2</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="food: ${listFood}">
+
+						<td th:text="${food.idAlimentos}">Id Alimentos</td>
+						<td th:text="${food.idGrupo}">Id Grupo</td>
+						<td th:text="${food.idAlimento}">Id ALimento</td>
+						<td th:text="${food.nombre}">Nombre</td>
+						<td th:text="${food.langual}">Langual</td>
+						<td th:text="${food.ingles}">Ingles</td>
+						<td th:text="${food.origen}">Origen</td>
+						<td th:text="${food.edible_portion}">Porcion</td>
+						<td th:text="${food.activo}">Activo</td>
+						<td th:text="${food.c_ori_name}">Nombre origen</td>
+						<td th:text="${food.glos_esp}">Glos</td>
+						<td th:text="${food.cg_descripcion}">Descripcion</td>
+						<td th:text="${food.v_unit}">Unidad</td>
+						<td th:text="${food.mu_descripcion}">Descripcion</td>
+						<td th:text="${food.ref_id}">Referencia</td>
+						<td th:text="${food.at_descripcion}">Descripcion 1</td>
+						<td th:text="${food.pt_descripcion}">Descripcion 2</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+</body>
+</html>
