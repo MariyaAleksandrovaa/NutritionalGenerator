@@ -27,6 +27,8 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 <!-- //Custom Theme files --> 
 <!-- js -->
 <script src="js/jquery-2.2.3.min.js"></script>  
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 <!-- //js -->
 <!-- web-fonts -->   
 <link href="//fonts.googleapis.com/css?family=Roboto+Condensed:300,300i,400,400i,700" rel="stylesheet">
@@ -148,6 +150,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 							</div>
 						</div>
 						<div class ="row">
+							<input class="form-control" id="myInput" type="text" placeholder="Busca alimento">
 							<table class="table">
 							  <thead>
 							    <tr >
@@ -157,7 +160,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 							      <th scope="col">Porción comestible</th>
 							    </tr>
 							  </thead>
-							  <tbody>
+							  <tbody id="myTable">
 							    <tr th:each="food: ${listFood}">
 				                    <td th:text="${food.grupo}">Grupo</td>
 				                    <td th:text="${food.nombre}">Nombre</td>
@@ -286,11 +289,21 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 				scrollSpeed: 1200,
 				easingType: 'linear' 
 			};
-			*/
+			*/s
 			
 			$().UItoTop({ easingType: 'easeOutQuart' });
 			
 		});
+	</script>
+	<script>
+	$(document).ready(function(){
+	  $("#myInput").on("keyup", function() {
+	    var value = $(this).val().toLowerCase();
+	    $("#myTable tr").filter(function() {
+	      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+	    });
+	  });
+	});
 	</script>
 	<!-- //smooth-scrolling-of-move-up -->  		
 	<!-- Bootstrap core JavaScript
