@@ -6,9 +6,12 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 --*/
 body{
 	margin:0px auto;
-	font-family: 'Roboto Condensed', sans-serif; 
+	font-family: 'Playfair Display', serif;
 	background: #fff;  
 	min-height: 100vh;
+}
+drop{
+	padding-left: 40px;
 }
 body a{
 	transition: 0.5s all;
@@ -33,6 +36,7 @@ ul,label{
 body a:hover,body a:focus{
 	text-decoration:none;
 	outline: none;
+	font-family: 'Playfair Display', serif;
 } 
 /*-- banner --*/  
 .banner{ 
@@ -47,14 +51,14 @@ body a:hover,body a:focus{
 	  padding: 25px;
 	  background:url(../images/1.jpg);
 	  background-repeat: no-repeat;
-	  background-size: auto;
+	  background-size: cover;
 } 
 .header {
     padding-top:2.5em;
 }
 .header .container { 
     position: relative;
-	margin-bottom: 25px;
+	margin-bottom: 10px;
 }
 .menu, .social-w3licon {
     margin-top: 1em;
@@ -732,6 +736,7 @@ p.about-w3text {
 /*-- footer --*/
 .footer{
 	background:#212121;
+	min-height: calc(100vh - 291px - 159px);
 }
 .agileinfo_footer_grid h3.agileits-title {
 	font-size: 2em;
