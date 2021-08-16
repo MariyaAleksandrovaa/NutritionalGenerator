@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import app.model.Dish;
+import app.repository.DishRepository;
 import app.repository.view.DishViewRepository;
 import app.repository.view.FoodViewRepository;
 import app.repository.view.MenuViewRepository;
@@ -23,13 +25,16 @@ import app.views.MenuView;
 public class ControllerMVC {
 	
 	@Autowired
-	private MenuViewRepository menuRepo;
+	private MenuViewRepository menuViewRepo;
 	
 	@Autowired
-	private FoodViewRepository foodRepoView;
+	private FoodViewRepository foodViewRepo;
 	
 	@Autowired
-	private DishViewRepository dishRepo;
+	private DishViewRepository dishViewRepo;
+	
+	@Autowired
+	private DishRepository dishRepo;
 
 	@RequestMapping(value = {"/prueba", "/"}, method = RequestMethod.GET)
 	public ModelAndView viewHomePage2() {
@@ -42,29 +47,69 @@ public class ControllerMVC {
 	
 	@GetMapping("/admin")
 	public String viewAdminPage(Model model) {
-		List<MenuView> listMenus = menuRepo.findAll();
-		List<FoodView> listFood = foodRepoView.findAll();
-		List<DishView> listDish = dishRepo.findAll();
+		
+		List<MenuView> listMenus = menuViewRepo.findAll();
+		List<FoodView> listFood = foodViewRepo.findAll();
+		List<DishView> listDish = dishViewRepo.findAll();
+		
+		List<Dish> dishes = dishRepo.findAll();
 
 		model.addAttribute("listMenus", listMenus);		
 		model.addAttribute("listFood", listFood);		
-		model.addAttribute("listDish", listDish);		
+		model.addAttribute("listDish", listDish);	
+		model.addAttribute("dishes", dishes);
 		
 		return "admin";
 	}	
 	
 	@GetMapping("/editor")
-	public String viewEditorPage() {
-
+	public String viewEditorPage(Model model) {
+		
+		List<FoodView> listFood = foodViewRepo.findAll();
+			
+		model.addAttribute("listFood", listFood);	
+		
 		return "editor";
 	}	
 	
-	@RequestMapping(value = {"/user"}, method = RequestMethod.GET)
-	public ModelAndView viewUserPage() {
+	@GetMapping("/user")
+	public String viewUserPage(Model model) {
 		
-		ModelAndView model = new ModelAndView();
-		model.setViewName("user");
-		return model;
+		List<MenuView> listMenus = menuViewRepo.findAll();
+//		List<FoodView> listFood = foodViewRepo.findAll();
+//		List<DishView> listDish = dishViewRepo.findAll();
+//		
+//		List<Dish> dishes = dishRepo.findAll();
+
+		model.addAttribute("listMenus", listMenus);		
+//		model.addAttribute("listFood", listFood);		
+//		model.addAttribute("listDish", listDish);	
+//		model.addAttribute("dishes", dishes);
+		
+		return "user";
+	}	
+	
+	
+//	@RequestMapping(value = {"/user"}, method = RequestMethod.GET)
+//	public ModelAndView viewUserPage() {
+//		
+//		ModelAndView model = new ModelAndView();
+//		model.setViewName("user");
+//		return model;
+//	}	
+	
+	
+	
+	@GetMapping("/componentes")
+	public String viewComponentsPage(Model model) {
+		
+		return "componentes";
+	}	
+	
+	@GetMapping("/alergenos")
+	public String viewAlergenosPage(Model model) {
+		
+		return "alergenos";
 	}	
 
 
