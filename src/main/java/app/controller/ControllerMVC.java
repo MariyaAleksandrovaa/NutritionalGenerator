@@ -165,10 +165,10 @@ public class ControllerMVC {
 //		Empresa empresa;
 		try {
 			Empresa emp = companyService.get(id);
-			
+
 //			empresa = companyService.get(id);
 			model.addObject("empresa", companyService.get(id));
-			
+
 		} catch (CompanyNotfound e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -182,7 +182,7 @@ public class ControllerMVC {
 	}
 
 	@PostMapping("/editor/guardar/{id_empresa}")
-	public String guardarEmpresa(@PathVariable("id_empresa") int id,Empresa empresa) {
+	public String guardarEmpresa(@PathVariable("id_empresa") int id, Empresa empresa) {
 
 		empresa.setId_empresa(id);
 		companyService.saveCompany(empresa);
@@ -190,17 +190,24 @@ public class ControllerMVC {
 		return "redirect:/editor";
 	}
 
-	@RequestMapping("/editor/delete/{nombre}")
-	public ModelAndView eliminarEmpresa() {
+	@RequestMapping("/editor/delete/{id_empresa}")
+	public String eliminarEmpresa(@PathVariable("id_empresa") int id) {
 
-		ModelAndView model = new ModelAndView("editar_empresa");
+		try {
+			companyRepo.delete(companyService.get(id));
+
+		} catch (CompanyNotfound e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+//		ModelAndView model = new ModelAndView("editar_empresa");
 
 //		companyService.delete(cif);
 //		Empresa empresa = companyService.get(cif);
 
 //		model.addObject("empresa", empresa);
 
-		return model;
+		return "redirect:/editor";
 	}
 
 //	@PostMapping("/editor/registrar_nueva_empresa/registrar_empresa_exito")
