@@ -12,11 +12,13 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements WebMvcConfigurer  {
 
 //	@Autowired
 //	private DataSource dataSource;
@@ -57,20 +59,25 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //		auth.authenticationProvider(authenticationProvider());
 		auth.userDetailsService(userDetailsServiceFunt()).passwordEncoder(passwordEncoder());
 	}
+    private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {
+            "classpath:/META-INF/resources/", "classpath:/resources/",
+            "classpath:/static/", "classpath:/public/" };
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/**")
+            .addResourceLocations(CLASSPATH_RESOURCE_LOCATIONS);
+    }
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 
 		http.authorizeRequests()
 		.antMatchers("/admin/**").hasAnyAuthority("ADMIN")
-//		.hasRole("ADMIN")
 		
 		.antMatchers("/editor/**").hasAnyAuthority("EDITOR")
-//		.hasRole("EDITOR")
 		
-		.antMatchers("/user/**")
-// 		.hasRole("USER")
- 		.hasAnyAuthority("USER")
+		.antMatchers("/user/**").hasAnyAuthority("USER")
 		
 		.antMatchers("/fonts/**",
                 "/css/**",
