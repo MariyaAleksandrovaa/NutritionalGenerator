@@ -2,7 +2,6 @@ package app.controller;
 
 import java.util.List;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,6 +22,7 @@ import app.repository.DishRepository;
 import app.repository.view.DishViewRepository;
 import app.repository.view.FoodViewRepository;
 import app.repository.view.MenuViewRepository;
+import app.service.company.CompanyNotfound;
 import app.service.company.CompanyService;
 import app.views.DishView;
 import app.views.FoodView;
@@ -30,7 +30,7 @@ import app.views.MenuView;
 
 @Controller
 public class ControllerMVC {
-	
+
 	// View repositories
 
 	@Autowired
@@ -41,21 +41,18 @@ public class ControllerMVC {
 
 	@Autowired
 	private DishViewRepository dishViewRepo;
-	
-	
+
 	// Table repositories
 
 	@Autowired
 	private DishRepository dishRepo;
-	
+
 	@Autowired
 	public CompanyService companyService;
-	
+
 	@Autowired
 	public CompanyRepository companyRepo;
-	
-	
-	
+
 	@RequestMapping(value = { "/prueba", "/" }, method = RequestMethod.GET)
 	public ModelAndView viewHomePage2() {
 
@@ -124,79 +121,88 @@ public class ControllerMVC {
 		return "alergenos";
 	}
 
-	@RequestMapping(value="/editor/registrar_nueva_empresa", method = RequestMethod.GET)
+	@RequestMapping(value = "/editor/registrar_nueva_empresa", method = RequestMethod.GET)
 	public ModelAndView viewRegistrarNuevaEmpresaPage() {
-		
+
 		ModelAndView model = new ModelAndView();
-		Empresa empresa= new Empresa();
-		
+		Empresa empresa = new Empresa();
+
 		model.addObject("empresa", empresa);
 		model.setViewName("registrar_nueva_empresa");
-		
+
 		return model;
 	}
-	@RequestMapping(value="/editor/registrar_nueva_empresa/registrar_empresa_exito", method = RequestMethod.POST)
-	public ModelAndView viewRegistrarNuevaEmpresa2Page(@Valid Empresa empresa, BindingResult bindingResult, ModelMap modelMap) {
-		
+
+	@RequestMapping(value = "/editor/registrar_nueva_empresa/registrar_empresa_exito", method = RequestMethod.POST)
+	public ModelAndView viewRegistrarNuevaEmpresa2Page(@Valid Empresa empresa, BindingResult bindingResult,
+			ModelMap modelMap) {
+
 		ModelAndView model = new ModelAndView();
-		
-		if(bindingResult.hasErrors()) {
+
+		if (bindingResult.hasErrors()) {
 			model.addObject("sucessMessage", "Por favor, corrige los errores");
 			model.addObject("bindingResult", bindingResult);
-			
-		}else if(companyService.isCompanyAlreadyPresent(empresa)){
+
+		} else if (companyService.isCompanyAlreadyPresent(empresa)) {
 			model.addObject("sucessMessage", "Empresa ya existe!");
-			
-		}else {
+
+		} else {
 			companyService.saveCompany(empresa);
 			model.addObject("sucessMessage", "Empresa registrada con éxito!");
 		}
 		model.addObject("empresa", empresa);
-		
+
 		model.setViewName("registrar_empresa_exito");
-		
+
 		return model;
 	}
-	
-	@RequestMapping("/editor/edit/{nombre}")
-	public ModelAndView editarEmpresa(@PathVariable("nombre") String cif) {
-		
+
+	@RequestMapping("/editor/edit/{id_empresa}")
+	public ModelAndView editarEmpresa(@PathVariable("id_empresa") int id) {
+
 		ModelAndView model = new ModelAndView("editar_empresa");
-		
-		Empresa empresa = companyService.get(cif);
-		
-		System.out.println("EMPRESA: " + empresa);
-		model.addObject("empresa", empresa);
-//		
+
+//		Empresa empresa;
+		try {
+			Empresa emp = companyService.get(id);
+			
+//			empresa = companyService.get(id);
+			model.addObject("empresa", companyService.get(id));
+			
+		} catch (CompanyNotfound e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+//		System.out.println("EMPRESA: " + empresa);
 //		model.addObject("empresa", empresa);
-		
+//		
+
 		return model;
 	}
-	
-	@PostMapping("editor/guardar")
-	public ModelAndView guardarEmpresa(Empresa empresa) {
-		
-		ModelAndView model = new ModelAndView("editor");
-		System.out.println("2222222222222");
+
+	@PostMapping("/editor/guardar/{id_empresa}")
+	public String guardarEmpresa(@PathVariable("id_empresa") int id,Empresa empresa) {
+
+		empresa.setId_empresa(id);
 		companyService.saveCompany(empresa);
-		
-		return model;
+
+		return "redirect:/editor";
 	}
-	
+
 	@RequestMapping("/editor/delete/{nombre}")
 	public ModelAndView eliminarEmpresa() {
-		
+
 		ModelAndView model = new ModelAndView("editar_empresa");
-		
+
 //		companyService.delete(cif);
 //		Empresa empresa = companyService.get(cif);
-		
-		
+
 //		model.addObject("empresa", empresa);
-		
+
 		return model;
 	}
-	
+
 //	@PostMapping("/editor/registrar_nueva_empresa/registrar_empresa_exito")
 //	public String viewRegistrarNuevaEmpresaExitoPage(Empresa empresa) {
 //		
@@ -204,7 +210,6 @@ public class ControllerMVC {
 //
 //		return "registrar_empresa_exito";
 //	}
-
 
 	@GetMapping("/editor/registrar_nuevo_usuario")
 	public String viewRegistrarNuevoUsuarioPage() {

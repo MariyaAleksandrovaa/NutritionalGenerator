@@ -79,7 +79,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 					<div role="tabpanel" class="tab-pane active" id="seccion1" style="width: 50%;margin: 0 auto;">
 					</div>
 
-						<form th:action="@{/editor/guardar}" th:object="${empresa}" method="post">
+						<form th:action="@{'/editor/guardar/' + ${empresa.id_empresa}}" th:object="${empresa}" method="post">
 						  <div class="form-group" style="margin-top:25px;">
 						    <label for="exampleInputEmail1" >CIF *</label>
 						    <input type="text" class="form-control" id="id_cif" th:field="*{cif}"  style="margin-top:8px;width:40%;" aria-describedby="emailHelp" placeholder="Introduce CIF">

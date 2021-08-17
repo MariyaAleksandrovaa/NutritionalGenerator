@@ -1,5 +1,6 @@
 package app.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -10,10 +11,11 @@ import javax.persistence.Table;
 @Table(name = "empresas")
 public class Empresa {
 	
-//	@Id
-//	@GeneratedValue(strategy = GenerationType.IDENTITY)
-//	public int id_empresa;
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	public int id_empresa;
+	
+	@Column(unique = true)
 	public String cif;
 	public String nombre;
 
@@ -23,12 +25,12 @@ public class Empresa {
 
 	
 	
-//	public int getId_empresa() {
-//		return id_empresa;
-//	}
-//	public void setId_empresa(int id_empresa) {
-//		this.id_empresa = id_empresa;
-//	}
+	public int getId_empresa() {
+		return id_empresa;
+	}
+	public void setId_empresa(int id_empresa) {
+		this.id_empresa = id_empresa;
+	}
 	public String getCif() {
 		return cif;
 	}

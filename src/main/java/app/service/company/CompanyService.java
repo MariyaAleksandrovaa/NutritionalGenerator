@@ -8,7 +8,7 @@ public interface CompanyService {
 	
 	public boolean isCompanyAlreadyPresent(Empresa empresa);
 	
-	public Empresa get(String cif);
+	public Empresa get(Integer id) throws CompanyNotfound;
 	
 	
 	

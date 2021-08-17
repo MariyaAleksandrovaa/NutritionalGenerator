@@ -16,8 +16,14 @@ public class CompanyServiceImpl implements CompanyService {
 
 	@Override
 	public void saveCompany(Empresa empresa) {
-
+//		if(get(empresa.id_empresa) != null) {
+//			Empresa empresaVieja = get(empresa.id_empresa);
+//			repoCompany.delete(empresaVieja);
+//		}
 		repoCompany.save(empresa);
+
+		System.out.println("Nuevo id: " + empresa.id_empresa);
+		
 	}
 
 	@Override
@@ -26,13 +32,13 @@ public class CompanyServiceImpl implements CompanyService {
 		return false;
 	}
 
-	public Empresa get(String cif) {
-		Optional<Empresa> result = Optional.ofNullable(repoCompany.findByCif(cif));
+	public Empresa get(Integer id) throws CompanyNotfound {
+		Optional<Empresa> result = repoCompany.findById(id);
 
 		if (result.isPresent()) {
 			return result.get();
 		}
-		return null;
+		throw new CompanyNotfound("No se pudieron encontrar empresas con identificador: " + id);
 	}
 
 	public void delete(Integer id) {
