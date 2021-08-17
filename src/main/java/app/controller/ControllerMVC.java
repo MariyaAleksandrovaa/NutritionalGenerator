@@ -9,9 +9,11 @@ import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import app.model.Dish;
@@ -146,13 +148,51 @@ public class ControllerMVC {
 			model.addObject("sucessMessage", "Empresa ya existe!");
 			
 		}else {
-			System.out.println("111111111111111");
 			companyService.saveCompany(empresa);
 			model.addObject("sucessMessage", "Empresa registrada con éxito!");
 		}
 		model.addObject("empresa", empresa);
 		
 		model.setViewName("registrar_empresa_exito");
+		
+		return model;
+	}
+	
+	@RequestMapping("/editor/edit/{nombre}")
+	public ModelAndView editarEmpresa(@PathVariable("nombre") String cif) {
+		
+		ModelAndView model = new ModelAndView("editar_empresa");
+		
+		Empresa empresa = companyService.get(cif);
+		
+		System.out.println("EMPRESA: " + empresa);
+		model.addObject("empresa", empresa);
+//		
+//		model.addObject("empresa", empresa);
+		
+		return model;
+	}
+	
+	@PostMapping("editor/guardar")
+	public ModelAndView guardarEmpresa(Empresa empresa) {
+		
+		ModelAndView model = new ModelAndView("editor");
+		System.out.println("2222222222222");
+		companyService.saveCompany(empresa);
+		
+		return model;
+	}
+	
+	@RequestMapping("/editor/delete/{nombre}")
+	public ModelAndView eliminarEmpresa() {
+		
+		ModelAndView model = new ModelAndView("editar_empresa");
+		
+//		companyService.delete(cif);
+//		Empresa empresa = companyService.get(cif);
+		
+		
+//		model.addObject("empresa", empresa);
 		
 		return model;
 	}

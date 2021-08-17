@@ -114,8 +114,8 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 					                    <td th:text="${company.codigo_postal}">Código postal</td>
 					                    <td >
 											 <div class="botonesEdicion" style="margin-right:-90px">
-											 	<a href="edit?id=${company.nombre}" class="btn btn-info btn-lg" style="background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;">Editar</a>
-									        	<a href="edit?id=${company.nombre}" class="btn btn-info btn-lg" style="margin-left:20px;background-color:#FF3333;border-color:#FF3333;;color:#ffffff " >Eliminar</a>
+											 	<a th:href="@{'/editor/edit/' + ${company.cif}}" class="btn btn-info btn-lg" style="background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;">Editar</a>
+									        	<a th:href="@{'/editor/delete/' + ${company.cif}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color:#FF3333;border-color:#FF3333;;color:#ffffff " >Eliminar</a>
 											 </div>     
 
 									        
