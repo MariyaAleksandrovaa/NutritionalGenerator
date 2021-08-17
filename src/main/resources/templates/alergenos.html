@@ -63,144 +63,72 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	<!-- gallery -->
 	<div class="about gallery">
 		<div class="container">  
-			<nav aria-label="breadcrumb">
-			  <ol class="breadcrumb" style="background-color: #FFFFFF;margin-bottom:30px;font-size: 150%;">
-			    <li class="breadcrumb-item active"  aria-current="page"><a href="#">Inicio</a></li>
-			  </ol>
-			</nav>
 			<div role="tabpanel">
 				<ul class="nav nav-tabs" role="tablist">
 				  <li role ="presentation" class="active" >
-				    <a href="#seccion1" data-toggle="tab" role="tab">Gestión de empresas</a>
+				    <a href="#seccion1" data-toggle="tab" role="tab">Alérgenos de ...</a>
 				  </li>
-				  	<li role ="presentation">
-				  	<a href="#seccion4" data-toggle="tab" role="tab">Gestión de usuarios</a>
-				  </li>
-				  	<li role ="presentation">
-				  	<a href="#seccion5" data-toggle="tab" role="tab">Gestión de locales</a>
-				  </li>
-				  <li role ="presentation">
-				  	<a href="#seccion3" data-toggle="tab" role="tab">Alimentos</a>
-				  </li>
-				  <li role ="presentation">
-				  	<a href="#seccion2" data-toggle="tab" role="tab">Exportación/Importación de base de datos</a>
-				  </li>
-
 				</ul>
-
 				<div class="tab-content">
-					<div role="tabpanel" class="tab-pane active" id="seccion1" >
-							<button type="button" class="btn btn-secondary" style="margin-top:25px;width:200px;margin-left:43%;" onclick="window.location.href='/editor/registrar_nueva_empresa'">Registrar nueva empresa</button>
-							
-							<div class ="row">
-								<table class="table" style = "margin-top:30px">
-									
-								  <thead>
-								    <tr >
-									  <th scope="col" data-field="id">CIF</th>
-								      <th scope="col">Nombre de empresa</th>
-								      <th scope="col">Correo electrónico</th>
-								      <th scope="col">Teléfono</th>
-								      <th scope="col">Código postal</th>
-								      <th scope="col" data-field="action" data-formatter="actionFormatter">Operacion</th>
-								    </tr>
-								  </thead>
-								  <tbody id="myTable">
-								    <tr th:each="company: ${listCompanies}">
-					                    <td th:text="${company.cif}">CIF</td>
-					                    <td th:text="${company.nombre}">Nombre de empresa</td>
-					                    <td th:text="${company.email}">Correo electrónico</td>
-					                    <td th:text="${company.telefono}">Teléfono</td>
-					                    <td th:text="${company.codigo_postal}">Código postal</td>
-					                    <td>
-											      
-<!-- 									        <a href="#" class="btn btn-info btn-lg"> -->
-<!-- 									          <span class="glyphicon glyphicon-pencil"></span> Editar  -->
-<!-- 									        </a> -->
-<!-- 									        <a href="#" class="btn btn-info btn-lg"> -->
-<!-- 									          <span class="glyphicon glyphicon-pencil"></span> Eliminar -->
-<!-- 									        </a> -->
-						                     					                    	
-					                    </td>
-								    </tr>
-								  </tbody>
-								</table>
-							</div>
-
-					</div>
-					<div role="tabpanel" class="tab-pane" id="seccion2" style="width: 50%;margin: 0 auto;">
-						<button type="button" class="btn btn-secondary" style="margin-top:25px;width:200px;margin-left:35%;">Importar base de datos</button>
-						<button type="button" class="btn btn-secondary" style="margin-top:10px;width:200px;margin-left:35%;">Exportar base de datos</button>		
-					</div>
-					<div role="tabpanel" class="tab-pane" id="seccion4" style="width: 50%;margin: 0 auto;">
-						<button type="button" class="btn btn-secondary" style="margin-top:25px;width:200px;margin-left:35%;" onclick="window.location.href='/editor/registrar_nuevo_usuario'">Registrar nuevo usuario</button>						
-					</div>
-					<div role="tabpanel" class="tab-pane" id="seccion5" style="width: 50%;margin: 0 auto;">
-						<button type="button" class="btn btn-secondary" style="margin-top:25px;width:200px;margin-left:35%;" onclick="window.location.href='/editor/registrar_nuevo_local'">Registrar nuevo local</button>							
-					</div>
-					<div role="tabpanel" class="tab-pane" id="seccion3">
-						<div class="row justify-content-start">
-							<div class="col-10">
-								<input class="form-control" id="myInput" type="text" placeholder="Busca alimento">
-							</div>
-						</div>
-						<div class="modal" tabindex="-1" id="orderModal">
-							  <div class="modal-dialog">
-								    <div class="modal-content">
-								      <div class="modal-header">
-								        <h5 class="modal-title">  </h5>
-								        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
-								      </div>
-								      <div class="modal-body" style="width:50%;height:225px;">
-									      <div class="content-left" style="margin-left:100px;width:300px;">
-									      		<a href="componentes"class="btn-green-flat">Mostrar componentes</a>
-									      </div>
-									      <div class="content-right" style="margin-left:100px;width:300px;">
-									      		<a href="alergenos"class="btn-green-flat">Mostrar alérgenos</a>
-									   	  </div>
-								    </div>
-								  </div>
-							</div>
-						</div>
-
-
-						<div class ="row">
-							<table class="table" id="table">
-							  <thead>
-							    <tr >
-								  <th scope="col">Grupo</th>
-							      <th scope="col">Nombre</th>
-							      <th scope="col">Nombre en inglés</th>
-							      <th scope="col">Porción comestible</th>
-							    </tr>
-							  </thead>
-							  <tbody id="myTable">
-							    <tr th:each="food: ${listFood}" style="cursor: pointer;" data-toggle="modal" data-target="#orderModal">
-				                    <td th:text="${food.grupo}">Grupo</td>
-				                    <td th:text="${food.nombre}">Nombre</td>
-				                    <td th:text="${food.ingles}">Nombre en inglés</td>
-				                    <td th:text="${food.edible_portion}">Porción comestible</td>
-							    </tr>
-							  </tbody>
-							</table>
-							
-						</div>
-					</div>
+					<div role="tabpanel" class="tab-pane active" id="seccion1" style="width: 50%;margin: 0 auto;">
 				</div>
-			</div>		
+			</div>
+			</div>	
 		</div>
 	</div>
 	<!-- //gallery -->  
 	<!-- footer -->
 	<div class="footer">
 		<div class="container">
+
+			<!-- <div class="col-md-5 col-sm-5 agileinfo_footer_grid"> -->
+				<!-- <h3 class="agileits-title">About Us</h3> -->
+				<!-- <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu  -->
+					<!-- fugiat nulla pariatur. <span>Excepteur sint occaecat cupidatat non proident  -->
+					<!-- sunt in culpa qui officia deserunt mollit anim id est laborum.</span></p> -->
+			<!-- </div> -->
+			<!-- <div class="col-md-3 col-sm-3 agileinfo_footer_grid mid-w3l nav2"> -->
+				<!-- <h3 class="agileits-title">Popular</h3> -->
+				<!-- <ul> -->
+					<!-- <li><a href="#myModal" data-toggle="modal"><i class="fa fa-arrow-right"></i> Proin placerat</a></li> -->
+					<!-- <li><a href="#myModal" data-toggle="modal"><i class="fa fa-arrow-right"></i> Ipsum et rutrum</a></li> -->
+					<!-- <li><a href="#myModal" data-toggle="modal"><i class="fa fa-arrow-right"></i> Proin semper utr</a></li> -->
+					<!-- <li><a href="#myModal" data-toggle="modal"><i class="fa fa-arrow-right"></i> Ligula sit amet</a></li> -->
+				<!-- </ul> -->
+			<!-- </div> -->
+			<!-- <div class="col-md-4 col-sm-4 agileinfo_footer_grid"> -->
+				<!-- <h3 class="agileits-title">Address</h3> -->
+				<!-- <ul> -->
+					<!-- <li><span class="glyphicon glyphicon-home" aria-hidden="true"></span> 738 Diamond Road, New York City</li> -->
+					<!-- <li><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span><a href="mailto:info@example.com">info@example.com</a></li> -->
+					<!-- <li><span class="glyphicon glyphicon-earphone" aria-hidden="true"></span> (0123) 0111 111 222</li> -->
+				<!-- </ul> -->
+			<!-- </div>  -->
 			<div class="clearfix"> </div>
 			<div class="w3agile_footer_copy">
 				<p>© 2017 Dine. All rights reserved | Design by <a href="http://w3layouts.com/" target="_blank">W3layouts.</a></p>
 			</div>
 		</div>
 	</div>
-	<!-- //footer --> 
+	<!-- //footer -->
+	<!-- modal-about -->
+<!-- 	<div class="modal bnr-modal fade" id="myModal" tabindex="-1" role="dialog"> -->
+<!-- 		<div class="modal-dialog" role="document"> -->
+<!-- 			<div class="modal-content"> -->
+<!-- 				<div class="modal-header"> -->
+<!-- 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>						 -->
+<!-- 				</div>  -->
+<!-- 				<div class="modal-body modal-spa"> -->
+<!-- 					<img src="images/g2.jpg" class="img-responsive" alt=""/> -->
+<!-- 					<div class="modal-w3lstext"> -->
+<!-- 						<h4>Blanditiis deleniti</h4> -->
+<!-- 						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras rutrum iaculis enim, non convallis felis mattis at. Donec fringilla lacus eu pretium rutrum. Cras aliquet congue ullamcorper. Etiam mattis eros eu ullamcorper volutpat. Proin ut dui a urna efficitur varius. uisque molestie cursus mi et congue consectetur adipiscing elit cras rutrum iaculis enim, Lorem ipsum dolor sit amet, non convallis felis mattis at. Maecenas sodales tortor ac ligula ultrices dictum et quis urna. Etiam pulvinar metus neque, eget porttitor massa vulputate in. Fusce lacus purus, pulvinar ut lacinia id, sagittis eumi.</p> -->
+<!-- 					</div>  -->
+<!-- 				</div>  -->
+<!-- 			</div> -->
+<!-- 		</div> -->
+<!-- 	</div> -->
+	<!-- //modal-about -->    
 	<!-- menu-js -->
 	<script>
 		$('.navicon').on('click', function (e) {
@@ -269,11 +197,6 @@ License URL: http://creativecommons.org/licenses/by/3.0/
         $(".btn").click(function(){
             $("#modal1").modal('hide');
         });
-    	$("#myTable").on("click","tr",function(e){
-    		var headerPopUp= $(e.currentTarget).children(":nth-child(2)").text();
-    		$("#orderModal .modal-title").text(headerPopUp);
-    	});
-    	
     });
 	</script>
 	<script>
@@ -320,19 +243,6 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	        alert(address.join('\n'));
 	    }
 	});
-	</script>
-	
-	<script>
-	function actionFormatter(index, row){
-		var html = []
-		$.each(row, function(key, value){
-			if(key == 'id'){
-				html.push('<a class="edit" href="?edit='+ value + '" title="edit"><i class="fa fa-edit"></i></a>')
-				html.push('<a class="remove" href="?remove='+ value + '" title="Remove"><i class="fa fa-edit"></i></a>')
-			}
-		})
-		return html.join('')
-	}
 	</script>
 
 	<!-- //smooth-scrolling-of-move-up -->  		

@@ -310,7 +310,7 @@ body a:hover,body a:focus{
 	padding:0;
 }
 p { 
-    color: #999; 
+    color: #aaaaaa; 
     font-size: 1em;
     letter-spacing: 0.5px; 
 	line-height: 1.8em;
@@ -736,7 +736,8 @@ p.about-w3text {
 /*-- footer --*/
 .footer{
 	background:#212121;
-	min-height: calc(100vh - 291px - 159px);
+	position:sticky;
+	top:100%;
 }
 .agileinfo_footer_grid h3.agileits-title {
 	font-size: 2em;
@@ -1186,6 +1187,9 @@ section#tables  p {
 	font-size: 0.9em;
 	color: #999;
 	border-top: none !important;
+}
+.table tr:hover{
+	background-color: #eeeeee;
 }
 .tab-content > .active {
 	display: block;

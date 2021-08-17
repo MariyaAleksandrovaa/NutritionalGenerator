@@ -6,12 +6,13 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 -->
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<title>Dine a Hotels and Restaurants Category Bootstrap Responsive website Template | Gallery :: w3layouts</title>
+<title>AdminNutriApp</title>
+
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="keywords" content="Dine Responsive web template, Bootstrap Web Templates, Flat Web Templates, Android Compatible web template, 
-	SmartPhone Compatible web template, free WebDesigns for Nokia, Samsung, LG, Sony Ericsson, Motorola web design" />
+	
 <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
 <!-- Custom Theme files -->
 <link href="css/bootstrap.css" type="text/css" rel="stylesheet" media="all">
@@ -25,14 +26,19 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 <link href="css/font-awesome.css" rel="stylesheet"> <!-- font-awesome icons --> 
 <link rel="stylesheet" href="css/smoothbox.css" type='text/css' media="all" /> 
 <!-- //Custom Theme files --> 
+
 <!-- js -->
 <script src="js/jquery-2.2.3.min.js"></script>  
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> -->
 <!-- //js -->
+
 <!-- web-fonts -->   
 <link href="//fonts.googleapis.com/css?family=Roboto+Condensed:300,300i,400,400i,700" rel="stylesheet">
 <link href="//fonts.googleapis.com/css?family=Playfair+Display:400,400i,700,700i,900,900i" rel="stylesheet">
 <!-- //web-fonts -->
 </head>
+
 <body> 
 	<!-- banner -->
 	<div class="banner">
@@ -71,18 +77,47 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 				</ul>
 				<div class="tab-content">
 					<div role="tabpanel" class="tab-pane active" id="seccion1">
-						<div class="drop">
-							<div class="dropdown">
-							  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							    Operaciones
-							  </button>
-							  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-							    <a class="dropdown-item" href="#">Generar menú grupal</a>
-							    <a class="dropdown-item" href="#">Generar menú individual</a>
-							    <a class="dropdown-item" href="#">Something else here</a>
-							  </div>
-							</div>
+						<div class="modal" tabindex="-1" id="modal1">
+						  <div class="modal-dialog">
+						    <div class="modal-content">
+						      <div class="modal-header">
+						        <h5 class="modal-title">Generar menú individual</h5>
+						        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+						      </div>
+						      <div class="modal-body">
+								<div class="container py-4" style="margin-left:80px" >
+									<select class="form-select" aria-label="Default select example" style="margin-top:10px;width:70%">
+										<option selected>Escoge primer plato</option>
+										<option th:each="dish:${dishes}"
+											th:value="${dish.id_plato}"
+											th:text="${dish.nombre_plato}"
+										/>
+									</select>
+
+									<select class="form-select" aria-label="Default select example" style="margin-top:10px;width:70%">
+									  <option selected>Escoge segundo plato</option>
+										<option th:each="dish:${dishes}"
+											th:value="${dish.id_plato}"
+											th:text="${dish.nombre_plato}"
+										/>
+									</select>
+									<select class="form-select" aria-label="Default select example" style="margin-top:10px;width:70%">
+									  <option selected>Escoge postre (Opcional)</option>
+										<option th:each="dish:${dishes}"
+											th:value="${dish.id_plato}"
+											th:text="${dish.nombre_plato}"
+										/>
+									</select>
+								</div>
+
+						      </div>
+						      <div class="modal-footer">
+						        <button type="button" class="btn btn-primary"  style="background-color:#28B463;border-color:#28B463" >Guardar cambios</button>
+						      </div>
+						    </div>
+						  </div>
 						</div>
+						<button class="btn btn-primary" type="button" data-toggle='modal' data-target='#modal1' style="background-color:#E00000;border-color:#E00000" >Generar nuevo menú</button>
 						<div class ="row">
 							<table class="table">
 							  <thead>
@@ -102,7 +137,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 							</table>
 						</div>
 					</div>
-					<div role="tabpanel" class="tab-pane active" id="seccion2">
+					<div role="tabpanel" class="tab-pane" id="seccion2">
 						<div class="drop">
 							<div class="dropdown">
 							  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -134,30 +169,23 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 							</table>
 						</div>
 					</div>
-					<div role="tabpanel" class="tab-pane active" id="seccion3">
-						<div class="drop">
-							<div class="dropdown">
-							  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							    Operaciones
-							  </button>
-							  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-							    <a class="dropdown-item" href="#">Generar menú grupal</a>
-							    <a class="dropdown-item" href="#">Generar menú individual</a>
-							    <a class="dropdown-item" href="#">Something else here</a>
-							  </div>
+					<div role="tabpanel" class="tab-pane" id="seccion3">
+						<div class="row justify-content-start">
+							<div class="col-10">
+								<input class="form-control" id="myInput" type="text" placeholder="Busca alimento">
 							</div>
 						</div>
 						<div class ="row">
 							<table class="table">
 							  <thead>
 							    <tr >
-							      <th scope="col">Grupo</th>
+								  <th scope="col">Grupo</th>
 							      <th scope="col">Nombre</th>
 							      <th scope="col">Nombre en inglés</th>
 							      <th scope="col">Porción comestible</th>
 							    </tr>
 							  </thead>
-							  <tbody>
+							  <tbody id="myTable">
 							    <tr th:each="food: ${listFood}">
 				                    <td th:text="${food.grupo}">Grupo</td>
 				                    <td th:text="${food.nombre}">Nombre</td>
@@ -170,53 +198,12 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 					</div>
 				</div>
 			</div>		
-
-
-			
-			
-			
-	
-		
-			<!-- <div class="w3ls-title">  -->
-				<!-- <h3 class="agileits-title">Gallery</h3> -->
-			<!-- </div> -->
-			<!-- <div class="w3ls_gallery_grids">	 -->
-				<!-- <div class="col-xs-4 agileits_w3layouts_gallery_grid">	 -->
-
-				<!-- </div> -->
-				<!-- <div class="clearfix"> </div> -->
-				<!-- <script type="text/javascript" src="js/smoothbox.jquery2.js"></script> -->
-			<!-- </div> -->
 		</div>
 	</div>
 	<!-- //gallery -->  
 	<!-- footer -->
 	<div class="footer">
 		<div class="container">
-
-			<!-- <div class="col-md-5 col-sm-5 agileinfo_footer_grid"> -->
-				<!-- <h3 class="agileits-title">About Us</h3> -->
-				<!-- <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu  -->
-					<!-- fugiat nulla pariatur. <span>Excepteur sint occaecat cupidatat non proident  -->
-					<!-- sunt in culpa qui officia deserunt mollit anim id est laborum.</span></p> -->
-			<!-- </div> -->
-			<!-- <div class="col-md-3 col-sm-3 agileinfo_footer_grid mid-w3l nav2"> -->
-				<!-- <h3 class="agileits-title">Popular</h3> -->
-				<!-- <ul> -->
-					<!-- <li><a href="#myModal" data-toggle="modal"><i class="fa fa-arrow-right"></i> Proin placerat</a></li> -->
-					<!-- <li><a href="#myModal" data-toggle="modal"><i class="fa fa-arrow-right"></i> Ipsum et rutrum</a></li> -->
-					<!-- <li><a href="#myModal" data-toggle="modal"><i class="fa fa-arrow-right"></i> Proin semper utr</a></li> -->
-					<!-- <li><a href="#myModal" data-toggle="modal"><i class="fa fa-arrow-right"></i> Ligula sit amet</a></li> -->
-				<!-- </ul> -->
-			<!-- </div> -->
-			<!-- <div class="col-md-4 col-sm-4 agileinfo_footer_grid"> -->
-				<!-- <h3 class="agileits-title">Address</h3> -->
-				<!-- <ul> -->
-					<!-- <li><span class="glyphicon glyphicon-home" aria-hidden="true"></span> 738 Diamond Road, New York City</li> -->
-					<!-- <li><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span><a href="mailto:info@example.com">info@example.com</a></li> -->
-					<!-- <li><span class="glyphicon glyphicon-earphone" aria-hidden="true"></span> (0123) 0111 111 222</li> -->
-				<!-- </ul> -->
-			<!-- </div>  -->
 			<div class="clearfix"> </div>
 			<div class="w3agile_footer_copy">
 				<p>© 2017 Dine. All rights reserved | Design by <a href="http://w3layouts.com/" target="_blank">W3layouts.</a></p>
@@ -224,25 +211,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 		</div>
 	</div>
 	<!-- //footer -->
-	<!-- modal-about -->
-<!-- 	<div class="modal bnr-modal fade" id="myModal" tabindex="-1" role="dialog"> -->
-<!-- 		<div class="modal-dialog" role="document"> -->
-<!-- 			<div class="modal-content"> -->
-<!-- 				<div class="modal-header"> -->
-<!-- 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>						 -->
-<!-- 				</div>  -->
-<!-- 				<div class="modal-body modal-spa"> -->
-<!-- 					<img src="images/g2.jpg" class="img-responsive" alt=""/> -->
-<!-- 					<div class="modal-w3lstext"> -->
-<!-- 						<h4>Blanditiis deleniti</h4> -->
-<!-- 						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras rutrum iaculis enim, non convallis felis mattis at. Donec fringilla lacus eu pretium rutrum. Cras aliquet congue ullamcorper. Etiam mattis eros eu ullamcorper volutpat. Proin ut dui a urna efficitur varius. uisque molestie cursus mi et congue consectetur adipiscing elit cras rutrum iaculis enim, Lorem ipsum dolor sit amet, non convallis felis mattis at. Maecenas sodales tortor ac ligula ultrices dictum et quis urna. Etiam pulvinar metus neque, eget porttitor massa vulputate in. Fusce lacus purus, pulvinar ut lacinia id, sagittis eumi.</p> -->
-<!-- 					</div>  -->
-<!-- 				</div>  -->
-<!-- 			</div> -->
-<!-- 		</div> -->
-<!-- 	</div> -->
-	<!-- //modal-about -->    
-	<!-- menu-js -->
+
 	<script>
 		$('.navicon').on('click', function (e) {
 		  e.preventDefault();
@@ -292,6 +261,43 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 			
 		});
 	</script>
+	<script>
+	$(document).ready(function(){
+	  $("#myInput").on("keyup", function() {
+	    var value = $(this).val().toLowerCase();
+	    $("#myTable tr").filter(function() {
+	      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+	    });
+	  });
+	});
+	</script>
+	<script>
+    $(document).ready(function(){
+        // Open modal on page load
+        $("#myModal").modal('show');
+        // Close modal on button click
+        $(".btn").click(function(){
+            $("#modal1").modal('hide');
+        });
+    	$("#myTable").on("click","tr",function(e){
+    		console.log(e.currentTarget);
+    	})
+    });
+	</script>
+	<script>
+	// Fires when user click a row
+// 	$('#myTable').bootstrapTable({
+// 	    onClickRow: function (row, $element) {
+// 	        // row: the record corresponding to the clicked row, 
+// 	        // $element: the tr element.
+// 	        console.log('22222222');
+// 	    }
+// 	});
+	$("#myTable").on("click","tr",function(e){
+		console.log(e.currentTarget);
+	})
+	</script>
+
 	<!-- //smooth-scrolling-of-move-up -->  		
 	<!-- Bootstrap core JavaScript
     ================================================== -->

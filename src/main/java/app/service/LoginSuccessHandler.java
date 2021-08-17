@@ -35,7 +35,6 @@ public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessH
 			response.sendRedirect(redirectURL + "/admin");
 			
 		}else if(userDetails.hasRole("EDITOR")) {
-			System.out.println("EDITOOOOOOOOOOOOOOOR");
 			response.sendRedirect(redirectURL + "/editor");
 			
 		}else if(userDetails.hasRole("USER")) {
