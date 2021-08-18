@@ -7,7 +7,7 @@ import app.model.GroupFood;
 
 public interface GroupFoodRepository extends JpaRepository<GroupFood, Integer> {
 
-	@Query("select g from GroupFood g where g.id_grupos_alimentos = ?1")
-	public GroupFood findGroupById(int id);
+	@Query("select g from GroupFood g where g.grupo = ?1")
+	public GroupFood findGroupByName(String nombre);
 	
 }

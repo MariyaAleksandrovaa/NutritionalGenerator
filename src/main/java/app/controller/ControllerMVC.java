@@ -1,11 +1,15 @@
 package app.controller;
 
+import java.sql.Connection;
+
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
-import javax.sql.DataSource;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -17,10 +21,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import app.Application;
 import app.model.Dish;
 import app.model.Empresa;
 import app.model.Food;
 import app.model.GroupFood;
+import app.parametrizedObjects.AlergensFood;
 import app.repository.CompanyRepository;
 import app.repository.DishRepository;
 import app.repository.FoodRepository;
@@ -36,6 +42,8 @@ import app.views.MenuView;
 
 @Controller
 public class ControllerMVC {
+
+
 
 	// View repositories
 
@@ -61,11 +69,9 @@ public class ControllerMVC {
 
 	@Autowired
 	public FoodRepository foodRepo;
-	
+
 	@Autowired
-	public GroupFoodRepository groupFoodRepo;	
-	
-	
+	public GroupFoodRepository groupFoodRepo;
 
 	@RequestMapping(value = { "/prueba", "/" }, method = RequestMethod.GET)
 	public ModelAndView viewHomePage2() {
@@ -80,6 +86,8 @@ public class ControllerMVC {
 
 	@GetMapping("/admin")
 	public String viewAdminPage(Model model) {
+
+
 
 		List<MenuView> listMenus = menuViewRepo.findAll();
 		List<FoodView> listFood = foodViewRepo.findAll();
@@ -99,12 +107,12 @@ public class ControllerMVC {
 
 	@GetMapping("/editor")
 	public String viewEditorPage(Model model) {
+	
+			List<FoodView> listFood = foodViewRepo.findAll();
+			List<Empresa> listCompanies = companyRepo.findAll();
 
-		List<FoodView> listFood = foodViewRepo.findAll();
-		List<Empresa> listCompanies = companyRepo.findAll();
-
-		model.addAttribute("listFood", listFood);
-		model.addAttribute("listCompanies", listCompanies);
+			model.addAttribute("listFood", listFood);
+			model.addAttribute("listCompanies", listCompanies);
 
 		return "editor";
 	}
@@ -196,7 +204,6 @@ public class ControllerMVC {
 		return "redirect:/editor";
 	}
 
-
 	@RequestMapping("/editor/delete/{id_empresa}")
 	public String eliminarEmpresa(@PathVariable("id_empresa") int id) {
 
@@ -234,29 +241,29 @@ public class ControllerMVC {
 
 		FoodView foodView = foodViewRepo.findByNameAlimento(nombre);
 		List<GroupFood> listGroupFood = groupFoodRepo.findAll();
-		
+
 		ModelAndView model = new ModelAndView("editar_alimento");
-		
 
 		model.addObject("listGroupFood", listGroupFood);
 		model.addObject("foodView", foodView);
 
 		return model;
 	}
+
 	@PostMapping("/editor/guardarFood/{nombre}")
 	public String guardarAlimento(@PathVariable("nombre") String nombre, FoodView foodView) {
 
 		Food foodOld = foodRepo.findByNameAlimento(nombre);
-		GroupFood groupfood = groupFoodRepo.findGroupById(Integer.parseInt(foodView.getGrupo()));
-		
+		GroupFood groupfood = groupFoodRepo.findGroupByName(foodView.getGrupo());
+
 		foodOld.setIdGrupo(groupfood.getId_grupos_alimentos());
 		foodOld.setNombre(foodView.getNombre());
 		foodOld.setIngles(foodView.getIngles());
 		foodOld.setEdible_portion(foodView.getEdible_portion());
-		
+
 		foodRepo.save(foodOld);
 
-		return "redirect:/editor";
+		return "redirect:/editor#3";
 	}
 
 	@RequestMapping("/editor/deleteFood/{nombre}")
@@ -267,6 +274,52 @@ public class ControllerMVC {
 		foodRepo.delete(food);
 
 		return "redirect:/editor";
+	}
+	
+
+	@RequestMapping("/editor/AlergenosFood/{nombre}")
+	public ModelAndView mostrarAlergenos(@PathVariable("nombre") String nombre) {
+
+		ModelAndView model = new ModelAndView("alergenos");
+		
+		Food food = foodRepo.findByNameAlimento(nombre);
+
+		List<AlergensFood> listaAlergenos  =obtenerBDalergenosAlimento(food.getIdAlimento());
+		
+		model.addObject("listaAlergenos", listaAlergenos);
+		
+		return model;
+	}
+	
+	public List<AlergensFood> obtenerBDalergenosAlimento(int idAlimento){
+		
+		List<AlergensFood> listaAlergenos = new ArrayList<AlergensFood>();
+		
+		try {
+			
+			Statement st = Application.con.createStatement();
+			ResultSet rs = st.executeQuery("SELECT t.alergeno, t.descripcion, a.tieneAlergeno\r\n"
+					+ "FROM tiposalergenos as t right join alimentos_tiposalergenos as a on t.idTiposAlergenos = a.idTiposAlergenos\r\n"
+					+ "WHERE idAlimentos=" + idAlimento + " and\r\n"
+					+ "tieneAlergeno='si';\r\n"
+					+ "");
+			
+			
+			while(rs.next()) {
+				String nombreAlergeno  = rs.getString(1);
+				String descripcionAlergeno  = rs.getString(2);
+				
+				AlergensFood alergeno = new AlergensFood(nombreAlergeno, descripcionAlergeno);
+				listaAlergenos.add(alergeno);
+			}
+			
+			
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return listaAlergenos;
 	}
 
 }

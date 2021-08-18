@@ -90,7 +90,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 											th:text="*{grupo}"
 										/>
 										<option th:each="groupFood:${listGroupFood}"
-											th:value="${groupFood.id_grupos_alimentos}"
+											th:value="${groupFood.grupo}"
 											th:text="${groupFood.grupo}"
 										/>
 									</select>
