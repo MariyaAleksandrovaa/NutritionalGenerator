@@ -20,9 +20,11 @@ import org.springframework.web.servlet.ModelAndView;
 import app.model.Dish;
 import app.model.Empresa;
 import app.model.Food;
+import app.model.GroupFood;
 import app.repository.CompanyRepository;
 import app.repository.DishRepository;
 import app.repository.FoodRepository;
+import app.repository.GroupFoodRepository;
 import app.repository.view.DishViewRepository;
 import app.repository.view.FoodViewRepository;
 import app.repository.view.MenuViewRepository;
@@ -59,6 +61,11 @@ public class ControllerMVC {
 
 	@Autowired
 	public FoodRepository foodRepo;
+	
+	@Autowired
+	public GroupFoodRepository groupFoodRepo;	
+	
+	
 
 	@RequestMapping(value = { "/prueba", "/" }, method = RequestMethod.GET)
 	public ModelAndView viewHomePage2() {
@@ -225,22 +232,29 @@ public class ControllerMVC {
 	@RequestMapping("/editor/editFood/{nombre}")
 	public ModelAndView editarAlimento(@PathVariable("nombre") String nombre) {
 
-		Food food = foodRepo.findByNameAlimento(nombre);
+		FoodView foodView = foodViewRepo.findByNameAlimento(nombre);
+		List<GroupFood> listGroupFood = groupFoodRepo.findAll();
+		
 		ModelAndView model = new ModelAndView("editar_alimento");
 		
 
-		model.addObject("food", food);
+		model.addObject("listGroupFood", listGroupFood);
+		model.addObject("foodView", foodView);
 
 		return model;
 	}
 	@PostMapping("/editor/guardarFood/{nombre}")
-	public String guardarAlimento(@PathVariable("nombre") String nombre, Food food) {
+	public String guardarAlimento(@PathVariable("nombre") String nombre, FoodView foodView) {
 
 		Food foodOld = foodRepo.findByNameAlimento(nombre);
+		GroupFood groupfood = groupFoodRepo.findGroupById(Integer.parseInt(foodView.getGrupo()));
 		
-		food.setIdAlimento(foodOld.getIdAlimento());
+		foodOld.setIdGrupo(groupfood.getId_grupos_alimentos());
+		foodOld.setNombre(foodView.getNombre());
+		foodOld.setIngles(foodView.getIngles());
+		foodOld.setEdible_portion(foodView.getEdible_portion());
 		
-		foodRepo.save(food);
+		foodRepo.save(foodOld);
 
 		return "redirect:/editor";
 	}
