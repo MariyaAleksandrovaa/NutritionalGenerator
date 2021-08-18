@@ -27,6 +27,7 @@ import app.model.Empresa;
 import app.model.Food;
 import app.model.GroupFood;
 import app.parametrizedObjects.AlergensFood;
+import app.parametrizedObjects.ComponentsFood;
 import app.repository.CompanyRepository;
 import app.repository.DishRepository;
 import app.repository.FoodRepository;
@@ -42,8 +43,6 @@ import app.views.MenuView;
 
 @Controller
 public class ControllerMVC {
-
-
 
 	// View repositories
 
@@ -87,8 +86,6 @@ public class ControllerMVC {
 	@GetMapping("/admin")
 	public String viewAdminPage(Model model) {
 
-
-
 		List<MenuView> listMenus = menuViewRepo.findAll();
 		List<FoodView> listFood = foodViewRepo.findAll();
 		List<DishView> listDish = dishViewRepo.findAll();
@@ -107,12 +104,12 @@ public class ControllerMVC {
 
 	@GetMapping("/editor")
 	public String viewEditorPage(Model model) {
-	
-			List<FoodView> listFood = foodViewRepo.findAll();
-			List<Empresa> listCompanies = companyRepo.findAll();
 
-			model.addAttribute("listFood", listFood);
-			model.addAttribute("listCompanies", listCompanies);
+		List<FoodView> listFood = foodViewRepo.findAll();
+		List<Empresa> listCompanies = companyRepo.findAll();
+
+		model.addAttribute("listFood", listFood);
+		model.addAttribute("listCompanies", listCompanies);
 
 		return "editor";
 	}
@@ -275,51 +272,87 @@ public class ControllerMVC {
 
 		return "redirect:/editor";
 	}
-	
 
 	@RequestMapping("/editor/AlergenosFood/{nombre}")
 	public ModelAndView mostrarAlergenos(@PathVariable("nombre") String nombre) {
 
 		ModelAndView model = new ModelAndView("alergenos");
-		
+
 		Food food = foodRepo.findByNameAlimento(nombre);
 
-		List<AlergensFood> listaAlergenos  =obtenerBDalergenosAlimento(food.getIdAlimento());
-		
+		List<AlergensFood> listaAlergenos = obtenerBDalergenosAlimento(food.getIdAlimento());
+
 		model.addObject("listaAlergenos", listaAlergenos);
-		
+
 		return model;
 	}
-	
-	public List<AlergensFood> obtenerBDalergenosAlimento(int idAlimento){
-		
+
+	public List<AlergensFood> obtenerBDalergenosAlimento(int idAlimento) {
+
 		List<AlergensFood> listaAlergenos = new ArrayList<AlergensFood>();
-		
+
 		try {
-			
+
 			Statement st = Application.con.createStatement();
 			ResultSet rs = st.executeQuery("SELECT t.alergeno, t.descripcion, a.tieneAlergeno\r\n"
 					+ "FROM tiposalergenos as t right join alimentos_tiposalergenos as a on t.idTiposAlergenos = a.idTiposAlergenos\r\n"
-					+ "WHERE idAlimentos=" + idAlimento + " and\r\n"
-					+ "tieneAlergeno='si';\r\n"
-					+ "");
-			
-			
-			while(rs.next()) {
-				String nombreAlergeno  = rs.getString(1);
-				String descripcionAlergeno  = rs.getString(2);
-				
+					+ "WHERE idAlimentos=" + idAlimento + " and\r\n" + "tieneAlergeno='si';\r\n" + "");
+
+			while (rs.next()) {
+				String nombreAlergeno = rs.getString(1);
+				String descripcionAlergeno = rs.getString(2);
+
 				AlergensFood alergeno = new AlergensFood(nombreAlergeno, descripcionAlergeno);
 				listaAlergenos.add(alergeno);
 			}
-			
-			
-			
+
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return listaAlergenos;
+	}
+
+	@RequestMapping("/editor/ComponentesFood/{nombre}")
+	public ModelAndView mostrarComponentes(@PathVariable("nombre") String nombre) {
+
+		ModelAndView model = new ModelAndView("componentes");
+
+		Food food = foodRepo.findByNameAlimento(nombre);
+
+		List<ComponentsFood> listaComponentes = obtenerBDcomponentesAlimento(food.getIdAlimento()) ;
+
+		model.addObject("listaComponentes", listaComponentes);
+
+		return model;
+	}
+
+	public List<ComponentsFood> obtenerBDcomponentesAlimento(int idAlimento) {
+
+		List<ComponentsFood> listaComponentes = new ArrayList<ComponentsFood>();
+
+		try {
+
+			Statement st = Application.con.createStatement();
+			ResultSet rs = st.executeQuery("SELECT g.nombre, ac.c_ori_name, ac.best_location, ac.v_unit  \r\n"
+					+ "FROM nutri_db.alimentos_componentesquimicos as ac left join componentesquimicos as c on ac.c_ori_name = c.c_ori_name \r\n"
+					+ "left join gruposcomponentes as g on c.componentgroup_id = g.idGruposComponentes\r\n"
+					+ "where idAlimento = " + idAlimento + "\r\n" + "and ac.best_location > 0\r\n"
+					+ "order by best_location desc;");
+
+			while (rs.next()) {
+				String nombreComponente = rs.getString(1);
+				String descripcionComponente = rs.getString(2);
+				Float valor = rs.getFloat(3);
+				String unidad = rs.getString(4);
+
+				ComponentsFood componente = new ComponentsFood(nombreComponente, descripcionComponente, valor, unidad);
+				listaComponentes.add(componente);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return listaComponentes;
 	}
 
 }
