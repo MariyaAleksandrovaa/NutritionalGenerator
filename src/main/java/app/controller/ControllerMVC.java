@@ -2,7 +2,10 @@ package app.controller;
 
 import java.util.List;
 
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -12,13 +15,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import app.model.Dish;
 import app.model.Empresa;
+import app.model.Food;
 import app.repository.CompanyRepository;
 import app.repository.DishRepository;
+import app.repository.FoodRepository;
 import app.repository.view.DishViewRepository;
 import app.repository.view.FoodViewRepository;
 import app.repository.view.MenuViewRepository;
@@ -53,14 +57,19 @@ public class ControllerMVC {
 	@Autowired
 	public CompanyRepository companyRepo;
 
+	@Autowired
+	public FoodRepository foodRepo;
+
 	@RequestMapping(value = { "/prueba", "/" }, method = RequestMethod.GET)
 	public ModelAndView viewHomePage2() {
 
 		ModelAndView model = new ModelAndView();
-		model.setViewName("prueba");
+		model.setViewName("inicio_sesion");
 		return model;
 
 	}
+
+	// NutriApp para administrador
 
 	@GetMapping("/admin")
 	public String viewAdminPage(Model model) {
@@ -79,6 +88,8 @@ public class ControllerMVC {
 		return "admin";
 	}
 
+	// NutriApp para editor
+
 	@GetMapping("/editor")
 	public String viewEditorPage(Model model) {
 
@@ -91,6 +102,8 @@ public class ControllerMVC {
 		return "editor";
 	}
 
+	// NutriApp para usuario normal
+
 	@GetMapping("/user")
 	public String viewUserPage(Model model) {
 
@@ -100,14 +113,6 @@ public class ControllerMVC {
 
 		return "user";
 	}
-
-//	@RequestMapping(value = {"/user"}, method = RequestMethod.GET)
-//	public ModelAndView viewUserPage() {
-//		
-//		ModelAndView model = new ModelAndView();
-//		model.setViewName("user");
-//		return model;
-//	}	
 
 	@GetMapping("/componentes")
 	public String viewComponentsPage(Model model) {
@@ -120,6 +125,8 @@ public class ControllerMVC {
 
 		return "alergenos";
 	}
+
+	// Funciones para ventana empresa (EDITOR)
 
 	@RequestMapping(value = "/editor/registrar_nueva_empresa", method = RequestMethod.GET)
 	public ModelAndView viewRegistrarNuevaEmpresaPage() {
@@ -162,21 +169,13 @@ public class ControllerMVC {
 
 		ModelAndView model = new ModelAndView("editar_empresa");
 
-//		Empresa empresa;
 		try {
-			Empresa emp = companyService.get(id);
 
-//			empresa = companyService.get(id);
 			model.addObject("empresa", companyService.get(id));
 
 		} catch (CompanyNotfound e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-//		System.out.println("EMPRESA: " + empresa);
-//		model.addObject("empresa", empresa);
-//		
 
 		return model;
 	}
@@ -190,6 +189,7 @@ public class ControllerMVC {
 		return "redirect:/editor";
 	}
 
+
 	@RequestMapping("/editor/delete/{id_empresa}")
 	public String eliminarEmpresa(@PathVariable("id_empresa") int id) {
 
@@ -200,23 +200,11 @@ public class ControllerMVC {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-//		ModelAndView model = new ModelAndView("editar_empresa");
-
-//		companyService.delete(cif);
-//		Empresa empresa = companyService.get(cif);
-
-//		model.addObject("empresa", empresa);
 
 		return "redirect:/editor";
 	}
 
-//	@PostMapping("/editor/registrar_nueva_empresa/registrar_empresa_exito")
-//	public String viewRegistrarNuevaEmpresaExitoPage(Empresa empresa) {
-//		
-////		companyService.save(empresa);
-//
-//		return "registrar_empresa_exito";
-//	}
+	// Funciones para ventana usuario (EDITOR)
 
 	@GetMapping("/editor/registrar_nuevo_usuario")
 	public String viewRegistrarNuevoUsuarioPage() {
@@ -224,9 +212,47 @@ public class ControllerMVC {
 		return "registrar_nuevo_usuario";
 	}
 
+	// Funciones para ventana local (EDITOR)
+
 	@GetMapping("/editor/registrar_nuevo_local")
 	public String viewRegistrarNuevoLocalPage() {
 
 		return "registrar_nuevo_local";
 	}
+
+	// Funciones para ventana alimento (EDITOR)
+
+	@RequestMapping("/editor/editFood/{nombre}")
+	public ModelAndView editarAlimento(@PathVariable("nombre") String nombre) {
+
+		Food food = foodRepo.findByNameAlimento(nombre);
+		ModelAndView model = new ModelAndView("editar_alimento");
+		
+
+		model.addObject("food", food);
+
+		return model;
+	}
+	@PostMapping("/editor/guardarFood/{nombre}")
+	public String guardarAlimento(@PathVariable("nombre") String nombre, Food food) {
+
+		Food foodOld = foodRepo.findByNameAlimento(nombre);
+		
+		food.setIdAlimento(foodOld.getIdAlimento());
+		
+		foodRepo.save(food);
+
+		return "redirect:/editor";
+	}
+
+	@RequestMapping("/editor/deleteFood/{nombre}")
+	public String eliminarAlimento(@PathVariable("nombre") String nombre) {
+
+		Food food = foodRepo.findByNameAlimento(nombre);
+
+		foodRepo.delete(food);
+
+		return "redirect:/editor";
+	}
+
 }

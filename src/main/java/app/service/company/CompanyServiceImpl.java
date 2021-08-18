@@ -16,10 +16,7 @@ public class CompanyServiceImpl implements CompanyService {
 
 	@Override
 	public void saveCompany(Empresa empresa) {
-//		if(get(empresa.id_empresa) != null) {
-//			Empresa empresaVieja = get(empresa.id_empresa);
-//			repoCompany.delete(empresaVieja);
-//		}
+
 		repoCompany.save(empresa);
 
 		System.out.println("Nuevo id: " + empresa.id_empresa);

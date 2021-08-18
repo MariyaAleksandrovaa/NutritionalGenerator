@@ -1,0 +1,167 @@
+<!-- <!doctype html> -->
+<!-- <html xmlns:th="http://www.thymeleaf.org" -->
+<!-- 	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"> -->
+<!-- <head> -->
+
+
+<!--
+Author: W3layouts
+Author URL: http://w3layouts.com
+License: Creative Commons Attribution 3.0 Unported
+License URL: http://creativecommons.org/licenses/by/3.0/
+-->
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" >
+<head>
+<title>InicioSesion</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="keywords" content="Dine Responsive web template, Bootstrap Web Templates, Flat Web Templates, Android Compatible web template, 
+	SmartPhone Compatible web template, free WebDesigns for Nokia, Samsung, LG, Sony Ericsson, Motorola web design" />
+<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+<!-- Custom Theme files -->
+
+<!-- <link href="css/bootstrap.css" type="text/css" rel="stylesheet" media="all"> -->
+<!-- <link href="css/style.css" type="text/css" rel="stylesheet" media="all">    -->
+<!-- <link href="css/font-awesome.css" rel="stylesheet"> font-awesome icons -->
+<!-- <link rel="stylesheet" href="css/owl.carousel.css" type="text/css" media="all"/> Owl-Carousel-CSS -->
+<!-- <link href="css/wickedpicker.css" rel="stylesheet" type='text/css' media="all" />  time-picker-CSS -->
+
+<!-- //Custom Theme files --> 
+<!-- js -->
+<script src="js/jquery-2.2.3.min.js"></script>  
+<!-- //js -->
+<!-- web-fonts -->   
+<link href="//fonts.googleapis.com/css?family=Roboto+Condensed:300,300i,400,400i,700" rel="stylesheet">
+<link href="//fonts.googleapis.com/css?family=Playfair+Display:400,400i,700,700i,900,900i" rel="stylesheet">
+<!-- //web-fonts -->
+
+
+
+<link  th:href="@{/css/bootstrap.css}" rel="stylesheet">
+<link  th:href="@{/css/style.css}" rel="stylesheet">
+<link  th:href="@{/css/font-awesome.css}" rel="stylesheet">
+<link  th:href="@{/css/owl.carousel.css}" rel="stylesheet">
+<link  th:href="@{/css/wickedpicker.css}" rel="stylesheet">
+
+<script type="text/javascript" th:src="@{/js/jquery-2.2.3.min.js}"></script>
+
+
+</head>
+<body> 
+	<!-- banner -->
+	<div class="banner jarallax">
+		<!-- header -->
+		<div class="header">
+			<div class="container">
+				<div class="logo">
+					<h1><a href="index.html">NutriApp</a></h1>
+				</div> 
+			</div>
+		</div>
+		<!-- //header --> 
+		<!-- banner-text -->
+		<!-- <div class="banner-text">  -->
+			<div class="container"> 
+				<div class="banner-w3lstext"> 
+					<div class="logo">
+						<h1>Inicio Sesión</h1>
+					</div> 
+					<!-- <h2>Inicio Sesión</h2> -->
+					<form th:action="@{/prueba}" class ="inputBoxes" method="post">
+					
+						<div th:if="${param.error}">
+				            <p class="text-danger">[[${session.SPRING_SECURITY_LAST_EXCEPTION.message}]]</p>
+				        </div>
+						  <div class="mb-3">
+							<!-- <label for="exampleInputEmail1" class="form-label">Usuario</label> -->
+							<input type="text" placeholder="Usuario" class="form-control" name="username">
+							<!-- <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div> -->
+						  </div>
+						  <div class="mb-3">
+							<!-- <label for="exampleInputPassword1" class="form-label">Contraseña</label> -->
+							<input type="password" placeholder="Contraseña" class="form-control" name="password" >
+						  </div>
+						  <button type="submit" class="btn btn-primary">Acceder</button>
+					</form>
+				</div> 
+			</div>
+		<!-- </div> -->
+		<!-- //banner-text -->
+	</div>
+
+	<script src="js/owl.carousel.js"></script>
+	<script>
+		$(document).ready(function() {
+			$("#owl-demo").owlCarousel ({
+				items : 3,
+				lazyLoad : true,
+				autoPlay : true,
+				pagination : false,
+			});
+		});
+	</script>
+	<!-- //Owl-Carousel-JavaScript --> 
+	<!-- menu-js -->
+	<script>
+		$('.navicon').on('click', function (e) {
+		  e.preventDefault();
+		  $(this).toggleClass('navicon--active');
+		  $('.toggle').toggleClass('toggle--active');
+		});
+	</script> 
+	<!-- //menu-js -->
+	<!-- Progressive-Effects-Animation-JavaScript -->  
+	<!-- <script type="text/javascript" src="js/numscroller-1.0.js"></script> -->
+	<!-- //Progressive-Effects-Animation-JavaScript --> 
+	<!-- jarallax -->  
+	<script src="js/SmoothScroll.min.js"></script> 
+	<script src="js/jarallax.js"></script> 
+	<script type="text/javascript">
+		/* init Jarallax */
+		$('.jarallax').jarallax({
+			speed: 0.5,
+			imgWidth: 1366,
+			imgHeight: 768
+		})
+	</script>  
+	<!-- //jarallax --> 
+	<!-- start-smooth-scrolling --> 
+	<script type="text/javascript" src="js/move-top.js"></script>
+	<script type="text/javascript" src="js/easing.js"></script>	
+	<script type="text/javascript">
+			jQuery(document).ready(function($) {
+				$(".scroll").click(function(event){		
+					event.preventDefault();
+			
+			$('html,body').animate({scrollTop:$(this.hash).offset().top},1000);
+				});
+			});
+	</script>
+	<!-- //end-smooth-scrolling -->	 
+	<!-- smooth-scrolling-of-move-up -->
+	<script type="text/javascript">
+		$(document).ready(function() {
+			/*
+			var defaults = {
+				containerID: 'toTop', // fading element id
+				containerHoverID: 'toTopHover', // fading element hover id
+				scrollSpeed: 1200,
+				easingType: 'linear' 
+			};
+			*/
+			
+			$().UItoTop({ easingType: 'easeOutQuart' });
+			
+		});
+	</script>
+	<!-- //smooth-scrolling-of-move-up -->  
+	<!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="js/bootstrap.js"></script>
+
+</body>
+
+</html>

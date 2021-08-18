@@ -136,7 +136,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 					</div>
 					<div role="tabpanel" class="tab-pane" id="seccion3">
 					
-						<button type="button" class="btn btn-secondary" style="margin-top:25px;width:200px;margin-left:43%;" onclick="window.location.href='/editor/registrar_nueva_empresa'">Registrar nueva empresa</button>
+						<button type="button" class="btn btn-secondary" style="margin-top:25px;width:200px;margin-left:43%;" onclick="window.location.href='/editor/registrar_nueva_empresa'">Registrar nuevo alimento</button>
 							
 							<div class ="row">
 								<table class="table" style = "margin-top:30px">
@@ -157,9 +157,12 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 				                    <td th:text="${food.nombre}">Nombre</td>
 				                    <td th:text="${food.ingles}">Nombre en inglés</td>
 				                    <td th:text="${food.edible_portion}">Porción comestible</td>
-					                    <td >
-					                    <button type="button" class="btn btn-primary" style="background-color: #4CBB17;border-color:#4CBB17;color:#ffffff">Editar</button>
-					                    <button type="button" class="btn btn-primary" style="background-color: #FF3333;border-color:#FF3333;color:#ffffff">Eliminar</button>
+				                    <td >
+				                    	<a th:href="@{'/editor/editFood/' + ${food.nombre}}" class="btn btn-info btn-lg" style="background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;">Editar</a>
+<!-- 				                    	<button type="button" class="btn btn-primary" style="background-color: #4CBB17;border-color:#4CBB17;color:#ffffff">Editar</button> -->
+				                    	<a th:href="@{'/editor/deleteFood/' + ${food.nombre}}" class="btn btn-info btn-lg" style="background-color: #FF3333;border-color:#FF3333;color:#ffffff">Eliminar</a>
+				                    
+<!-- 				                    <button th:href="@{'/editor/delete/' + ${food.nombre}}" type="button" class="btn btn-primary" style="background-color: #FF3333;border-color:#FF3333;color:#ffffff">Eliminar</button> -->
 <!-- 					                    		<a th:href="#" class="btn btn-info btn-lg" >Editar</a> -->
 <!-- 									        	<a th:href="@{'/editor/delete/' + ${company.id_empresa}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color:#FF3333;border-color:#FF3333;;color:#ffffff " >Eliminar</a> -->
 <!-- 											 	<a th:href="@{'/editor/edit/' + ${company.id_empresa}}" class="btn btn-info btn-lg" style="background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;">Editar</a> -->
@@ -174,12 +177,15 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 <!-- 											 	<a th:href="#" class="btn btn-info btn-lg" style="background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;">Editar</a> -->
 <!-- 									        	<a th:href="@{'/editor/delete/' + ${company.id_empresa}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color:#FF3333;border-color:#FF3333;;color:#ffffff " >Eliminar</a> -->
 <!-- 											 </div>     	                    	 -->
-					                    </td>
-					                    <td>
-					                    
-						                    <button type="button" class="btn btn-primary" style="background-color: #3c89d0;border-color:#3c89d0;color:#ffffff">Componentes</button>
-						                    <button type="button" class="btn btn-primary" style="background-color: #c38452;border-color:#c38452;color:#ffffff">Alérgenos</button>
-					                    </td>
+				                    </td>
+				                    <td>
+				                    	<a th:href="@{'/editor/ComponentesFood/' + ${food.nombre}}" class="btn btn-info btn-lg" style="background-color: #3c89d0;border-color:#3c89d0;color:#ffffff;font-size:1.15rem;">Componentes</a>
+				                    	<a th:href="@{'/editor/AlergenosFood/' + ${food.nombre}}" class="btn btn-info btn-lg" style="background-color: #c38452;border-color:#c38452;color:#ffffff;font-size:1.15rem;">Alérgenos</a>
+				                    
+				                    
+<!-- 					                    <button type="button" class="btn btn-primary" style="background-color: #3c89d0;border-color:#3c89d0;color:#ffffff">Componentes</button> -->
+<!-- 					                    <button type="button" class="btn btn-primary" style="background-color: #c38452;border-color:#c38452;color:#ffffff">Alérgenos</button> -->
+				                    </td>
 								    </tr>
 								  </tbody>
 								</table>
