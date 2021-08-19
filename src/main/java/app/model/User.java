@@ -21,7 +21,7 @@ public class User {
 
 	@Id
 	@Column(name = "user_id")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 
 	@Column(length = 45, nullable = false)
@@ -30,17 +30,15 @@ public class User {
 	@Column(length = 200, nullable = false)
 	private String password;
 
-	@Column(length = 45, nullable = true)
-	private String enable;
+	public String name;
 
-	@Column(length = 1, nullable = false)
-	private boolean enabled;
+	public String surname;
+	public String email;
+
+	public int id_empresa;
 
 	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(
-			name = "users_roles", 
-			joinColumns = @JoinColumn(name = "user_id"), 
-			inverseJoinColumns = @JoinColumn(name = "role_id"))
+	@JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private Set<Role> roles = new HashSet<>();
 
 	public Integer getId() {
@@ -67,22 +65,6 @@ public class User {
 		this.password = password;
 	}
 
-	public boolean isEnabled() {
-		return enabled;
-	}
-
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
-	}
-
-	public String getEnable() {
-		return enable;
-	}
-
-	public void setEnable(String enable) {
-		this.enable = enable;
-	}
-
 	public Set<Role> getRoles() {
 		return roles;
 	}
@@ -103,125 +85,37 @@ public class User {
 		return false;
 	}
 
-//	@Id
-//	@GeneratedValue(strategy = GenerationType.AUTO)
-//	private int idUsuario; 
-//
-//	@Column(length = 20)
-//	private String rol;
-//
-//	@Column(length = 50)
-//	private String nombre;
-//
-//	@Column(length = 50)
-//	private String apellidos;
-//
-//	@Column(length = 300)
-//	private String email;
-//
-//	@Column(length = 300)
-//	private String contraseña;
-//
-//	private int idEmpresa;
+	public String getName() {
+		return name;
+	}
 
-//	public int getIdUsuario() {
-//		return idUsuario;
-//	}
-//
-//	public void setIdUsuario(int idUsuario) {
-//		this.idUsuario = idUsuario;
-//	}
-//
-//	public String getRol() {
-//		return rol;
-//	}
-//
-//	public void setRol(String rol) {
-//		this.rol = rol;
-//	}
-//
-//	public String getNombre() {
-//		return nombre;
-//	}
-//
-//	public void setNombre(String nombre) {
-//		this.nombre = nombre;
-//	}
-//
-//	public String getApellidos() {
-//		return apellidos;
-//	}
-//
-//	public void setApellidos(String apellidos) {
-//		this.apellidos = apellidos;
-//	}
-//
-//	public String getEmail() {
-//		return email;
-//	}
-//
-//	public void setEmail(String email) {
-//		this.email = email;
-//	}
-//
-//	public String getContraseña() {
-//		return contraseña;
-//	}
-//
-//	public void setContraseña(String contraseña) {
-//		this.contraseña = contraseña;
-//	}
-//
-//	public int getIdEmpresa() {
-//		return idEmpresa;
-//	}
-//
-//	public void setIdEmpresa(int idEmpresa) {
-//		this.idEmpresa = idEmpresa;
-//	}
+	public void setName(String name) {
+		this.name = name;
+	}
 
-//	@Column(nullable=false, unique = true, length = 45)
-//	private String email;
-//	
-//	@Column(nullable=false, unique = true, length = 45)
-//	private String password;
-//
-//	@Column(nullable=true, unique = true, length = 25)
-//	private String firstName;
-//	
-//	@Column(nullable=true, unique = true, length = 25)
-//	private String lastName;
+	public String getSurname() {
+		return surname;
+	}
 
-//	public Long getId() {
-//		return id;
-//	}
-//	public void setId(Long id) {
-//		this.id = id;
-//	}
-//	public String getEmail() {
-//		return email;
-//	}
-//	public void setEmail(String email) {
-//		this.email = email;
-//	}
-//	public String getFirstName() {
-//		return firstName;
-//	}
-//	public void setFirstName(String firstName) {
-//		this.firstName = firstName;
-//	}
-//	public String getLastName() {
-//		return lastName;
-//	}
-//	public void setLastName(String lastName) {
-//		this.lastName = lastName;
-//	}
-//	
-//	public String getPassword() {
-//		return password;
-//	}
-//	public void setPassword(String password) {
-//		this.password = password;
-//	}
+	public void setSurname(String surname) {
+		this.surname = surname;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public int getIdEmpresa() {
+		return id_empresa;
+	}
+
+	public void setIdEmpresa(int id_empresa) {
+		this.id_empresa = id_empresa;
+	}
+
 
 }

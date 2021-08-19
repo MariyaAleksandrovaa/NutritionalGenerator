@@ -19,7 +19,7 @@ public class CompanyServiceImpl implements CompanyService {
 
 		repoCompany.save(empresa);
 
-		System.out.println("Nuevo id: " + empresa.id_empresa);
+		System.out.println("Nuevo id: " + empresa.getId_empresa());
 		
 	}
 

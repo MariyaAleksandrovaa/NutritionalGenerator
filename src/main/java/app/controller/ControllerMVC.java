@@ -8,8 +8,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -26,12 +28,16 @@ import app.model.Dish;
 import app.model.Empresa;
 import app.model.Food;
 import app.model.GroupFood;
+import app.model.Role;
+import app.model.User;
 import app.parametrizedObjects.AlergensFood;
 import app.parametrizedObjects.ComponentsFood;
 import app.repository.CompanyRepository;
 import app.repository.DishRepository;
 import app.repository.FoodRepository;
 import app.repository.GroupFoodRepository;
+import app.repository.RoleRepository;
+import app.repository.UserRepository;
 import app.repository.view.DishViewRepository;
 import app.repository.view.FoodViewRepository;
 import app.repository.view.MenuViewRepository;
@@ -71,6 +77,12 @@ public class ControllerMVC {
 
 	@Autowired
 	public GroupFoodRepository groupFoodRepo;
+
+	@Autowired
+	public UserRepository userRepo;
+
+	@Autowired
+	public RoleRepository roleRepo;
 
 	@RequestMapping(value = { "/prueba", "/" }, method = RequestMethod.GET)
 	public ModelAndView viewHomePage2() {
@@ -215,14 +227,6 @@ public class ControllerMVC {
 		return "redirect:/editor";
 	}
 
-	// Funciones para ventana usuario (EDITOR)
-
-	@GetMapping("/editor/registrar_nuevo_usuario")
-	public String viewRegistrarNuevoUsuarioPage() {
-
-		return "registrar_nuevo_usuario";
-	}
-
 	// Funciones para ventana local (EDITOR)
 
 	@GetMapping("/editor/registrar_nuevo_local")
@@ -319,7 +323,7 @@ public class ControllerMVC {
 
 		Food food = foodRepo.findByNameAlimento(nombre);
 
-		List<ComponentsFood> listaComponentes = obtenerBDcomponentesAlimento(food.getIdAlimento()) ;
+		List<ComponentsFood> listaComponentes = obtenerBDcomponentesAlimento(food.getIdAlimento());
 
 		model.addObject("listaComponentes", listaComponentes);
 
@@ -353,6 +357,46 @@ public class ControllerMVC {
 			e.printStackTrace();
 		}
 		return listaComponentes;
+	}
+
+	// Funciones para ventana usuario (EDITOR)
+
+	@RequestMapping("/editor/registrar_nuevo_usuario/exito")
+	public ModelAndView viewRegistrarNuevoUsuario(User user, BindingResult bindingResult, ModelMap modelMap) {
+
+		ModelAndView model = new ModelAndView("registrar_usuario_exito");
+
+		String encodedPassword = new BCryptPasswordEncoder().encode(user.getPassword());
+		user.setPassword(encodedPassword);
+
+		userRepo.save(user);
+
+		return model;
+	}
+
+	@GetMapping("/editor/registrar_nuevo_usuario")
+	public ModelAndView viewRegistrarNuevoUsuarioPage() {
+
+		ModelAndView model = new ModelAndView("registrar_nuevo_usuario");
+
+		List<Empresa> listCompanies = companyRepo.findAll();
+		List<Role> listRoles = roleRepo.findAll();
+		String companyMsg = "Escoge una empresa";
+		int select = -1;
+
+		User usuario = new User();
+//		usuario.setIdEmpresa(9);
+
+		Role role = new Role();
+
+		model.addObject("usuario", usuario);
+		model.addObject("listCompanies", listCompanies);
+		model.addObject("listRoles", listRoles);
+		model.addObject("companyMsg", companyMsg);
+		model.addObject("select", select);
+		model.addObject("role", role);
+
+		return model;
 	}
 
 }
