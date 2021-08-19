@@ -128,8 +128,42 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 						<button type="button" class="btn btn-secondary" style="margin-top:25px;width:200px;margin-left:35%;">Importar base de datos</button>
 						<button type="button" class="btn btn-secondary" style="margin-top:10px;width:200px;margin-left:35%;">Exportar base de datos</button>		
 					</div>
-					<div role="tabpanel" class="tab-pane" id="seccion4" style="width: 50%;margin: 0 auto;">
-						<button type="button" class="btn btn-secondary" style="margin-top:25px;width:200px;margin-left:35%;" onclick="window.location.href='/editor/registrar_nuevo_usuario'">Registrar nuevo usuario</button>						
+					<div role="tabpanel" class="tab-pane" id="seccion4" style="width: 100%;margin: 0 auto;">
+						<button type="button" class="btn btn-secondary" style="margin-top:25px;width:200px;margin-left:43%;" onclick="window.location.href='/editor/registrar_nuevo_usuario'">Registrar nuevo usuario</button>									
+							<div class ="row">
+								<table class="table" style = "margin-top:30px">
+								  <thead>
+								    <tr >
+									  <th scope="col">Id</th>
+								      <th scope="col">Nombre usuario</th>
+								      <th scope="col">Contraseña</th>
+								      <th scope="col">Nombre personal</th>
+								      <th scope="col">Apellido</th>
+								      <th scope="col">Correo electrónico</th>
+								      <th scope="col">Empresa</th>
+								      <th scope="col">Rol</th>
+								      <th scope="col">Operaciones</th>
+								    </tr>
+								  </thead>
+								  <tbody id="table">
+							    <tr th:each="user: ${listUsers}" style="cursor: pointer;" data-toggle="modal" data-target="#orderModal">
+				                    <td th:text="${user.user_id}">Id</td>
+				                    <td th:text="${user.username}">Nombre usuario</td>
+				                    <td th:text="${user.password}">Contraseña</td>
+				                    <td th:text="${user.name}">Nombre personal</td>
+				                    <td th:text="${user.surname}">Apellido</td>
+				                    <td th:text="${user.email}">Correo electrónico</td>
+				                    <td th:text="${user.nombre}">Empresa</td>
+				                    <td th:text="${user.rol}">Rol</td>	
+				                    			                    
+				                    <td >
+					                    	<a th:href="@{'/editor/editUser/' + ${user.user_id}}" class="btn btn-info btn-lg" style="background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;font-size:0.9rem;">Editar</a>
+					                    	<a th:href="@{'/editor/deleteUser/' + ${user.user_id}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color: #FF3333;border-color:#FF3333;color:#ffffff;font-size:0.9rem;">Eliminar</a>
+				                    </td>
+								    </tr>
+								  </tbody>
+								</table>
+							</div>
 					</div>
 					<div role="tabpanel" class="tab-pane" id="seccion5" style="width: 50%;margin: 0 auto;">
 						<button type="button" class="btn btn-secondary" style="margin-top:25px;width:200px;margin-left:35%;" onclick="window.location.href='/editor/registrar_nuevo_local'">Registrar nuevo local</button>							
@@ -164,28 +198,11 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 				                    <td >
 					                    	<a th:href="@{'/editor/editFood/' + ${food.nombre}}" class="btn btn-info btn-lg" style="background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;font-size:0.9rem;">Editar</a>
 	<!-- 				                    	<button type="button" class="btn btn-primary" style="background-color: #4CBB17;border-color:#4CBB17;color:#ffffff">Editar</button> -->
-					                    	<a th:href="@{'/editor/deleteFood/' + ${food.nombre}}" class="btn btn-info btn-lg" style="background-color: #FF3333;border-color:#FF3333;color:#ffffff;font-size:0.9rem;">Eliminar</a>
-					                    
-
-<!-- 				                    <button th:href="@{'/editor/delete/' + ${food.nombre}}" type="button" class="btn btn-primary" style="background-color: #FF3333;border-color:#FF3333;color:#ffffff">Eliminar</button> -->
-<!-- 					                    		<a th:href="#" class="btn btn-info btn-lg" >Editar</a> -->
-<!-- 									        	<a th:href="@{'/editor/delete/' + ${company.id_empresa}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color:#FF3333;border-color:#FF3333;;color:#ffffff " >Eliminar</a> -->
-<!-- 											 	<a th:href="@{'/editor/edit/' + ${company.id_empresa}}" class="btn btn-info btn-lg" style="background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;">Editar</a> -->
-<!-- 									        	<a th:href="@{'/editor/delete/' + ${company.id_empresa}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color:#FF3333;border-color:#FF3333;;color:#ffffff " >Eliminar</a> -->
-
-
-
-<!-- 											 
-
-
-												<div style="margin-right:-140px"> -->
-<!-- 											 	<a th:href="#" class="btn btn-info btn-lg" style="background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;">Editar</a> -->
-<!-- 									        	<a th:href="@{'/editor/delete/' + ${company.id_empresa}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color:#FF3333;border-color:#FF3333;;color:#ffffff " >Eliminar</a> -->
-<!-- 											 </div>     	                    	 -->
+					                    	<a th:href="@{'/editor/deleteFood/' + ${food.nombre}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color: #FF3333;border-color:#FF3333;color:#ffffff;font-size:0.9rem;">Eliminar</a>
 				                    </td>
 				                    <td>
 				                    	<a th:href="@{'/editor/ComponentesFood/' + ${food.nombre}}" class="btn btn-info btn-lg" style="background-color: #3c89d0;border-color:#3c89d0;color:#ffffff;font-size:0.9rem;">Componentes</a>
-				                    	<a th:href="@{'/editor/AlergenosFood/' + ${food.nombre}}" class="btn btn-info btn-lg" style="background-color: #c38452;border-color:#c38452;color:#ffffff;font-size:0.9rem;">Alérgenos</a>
+				                    	<a th:href="@{'/editor/AlergenosFood/' + ${food.nombre}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color: #c38452;border-color:#c38452;color:#ffffff;font-size:0.9rem;">Alérgenos</a>
 				                   
 				                    </td>
 								    </tr>

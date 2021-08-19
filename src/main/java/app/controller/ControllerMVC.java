@@ -1,14 +1,10 @@
 package app.controller;
 
-import java.sql.Connection;
-
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -41,11 +37,13 @@ import app.repository.UserRepository;
 import app.repository.view.DishViewRepository;
 import app.repository.view.FoodViewRepository;
 import app.repository.view.MenuViewRepository;
+import app.repository.view.UserViewRepository;
 import app.service.company.CompanyNotfound;
 import app.service.company.CompanyService;
 import app.views.DishView;
 import app.views.FoodView;
 import app.views.MenuView;
+import app.views.UserView;
 
 @Controller
 public class ControllerMVC {
@@ -60,6 +58,9 @@ public class ControllerMVC {
 
 	@Autowired
 	private DishViewRepository dishViewRepo;
+
+	@Autowired
+	private UserViewRepository userViewRepo;
 
 	// Table repositories
 
@@ -119,12 +120,53 @@ public class ControllerMVC {
 
 		List<FoodView> listFood = foodViewRepo.findAll();
 		List<Empresa> listCompanies = companyRepo.findAll();
+		List<UserView> listUsers = userViewRepo.findAll();
 
 		model.addAttribute("listFood", listFood);
 		model.addAttribute("listCompanies", listCompanies);
+		model.addAttribute("listUsers", listUsers);
 
 		return "editor";
 	}
+
+//	public String getCompanyUser(Statement st, int idUser) {
+//		String company = "";
+//		try {
+//			ResultSet resultCompany = st.executeQuery(
+//					"select e.nombre\r\n" + "from users as u left join empresas as e on u.id_empresa=e.id_empresa\r\n"
+//							+ "where user_id= " + idUser + ";");
+//			while (resultCompany.next()) {
+//				if (resultCompany.getString(1) != null) {
+//					company = resultCompany.getString(1);
+//					int a = 0;
+//				}
+//			}
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+//		return company;
+//	}
+//
+//	public String getRoleUser(Statement st, int idUser) {
+//		String role = "";
+//		ResultSet resultRole;
+//		try {
+//			resultRole = st.executeQuery("select r.name\r\n"
+//					+ "from users as u right join users_roles as ur on u.user_id=ur.user_id\r\n"
+//					+ "left join roles as r on ur.role_id = r.role_id \r\n" + "where u.user_id = " + idUser + ";");
+//
+//			while (resultRole.next()) {
+//
+//				return resultRole.getString(1);
+//			}
+//
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//
+//		return role;
+//	}
 
 	// NutriApp para usuario normal
 
@@ -368,6 +410,11 @@ public class ControllerMVC {
 
 		String encodedPassword = new BCryptPasswordEncoder().encode(user.getPassword());
 		user.setPassword(encodedPassword);
+		
+		if(user.getIdEmpresa() == -1) {
+			user.setIdEmpresa(null);
+		}
+		
 
 		userRepo.save(user);
 

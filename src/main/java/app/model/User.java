@@ -35,11 +35,26 @@ public class User {
 	public String surname;
 	public String email;
 
-	public int id_empresa;
+	public Integer id_empresa;
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private Set<Role> roles = new HashSet<>();
+
+	public User(int idUser, String username, String password, String name, String surname, String email,
+			int idEmpresa) {
+
+		this.id = idUser;
+		this.username = username;
+		this.password = password;
+		this.name = name;
+		this.surname = surname;
+		this.email = email;
+		this.id_empresa = idEmpresa;
+	}
+
+	public User() {
+	}
 
 	public Integer getId() {
 		return id;
@@ -109,13 +124,12 @@ public class User {
 		this.email = email;
 	}
 
-	public int getIdEmpresa() {
+	public Integer getIdEmpresa() {
 		return id_empresa;
 	}
 
-	public void setIdEmpresa(int id_empresa) {
+	public void setIdEmpresa(Integer id_empresa) {
 		this.id_empresa = id_empresa;
 	}
-
 
 }
