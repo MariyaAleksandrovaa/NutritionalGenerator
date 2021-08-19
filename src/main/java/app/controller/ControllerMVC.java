@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -444,6 +445,18 @@ public class ControllerMVC {
 		model.addObject("role", role);
 
 		return model;
+	}
+	
+//	"@{'/editor/deleteUser/' + ${user.user_id}}"
+	
+	@RequestMapping("/editor/deleteUser/{user_id}")
+	public String eliminarUsuario(@PathVariable("user_id") int user_id) {
+
+		Optional<User> user = userRepo.findById(user_id);
+		userRepo.delete(user.get());
+
+
+		return "redirect:/editor";
 	}
 
 }
