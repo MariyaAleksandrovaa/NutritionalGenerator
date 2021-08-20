@@ -552,51 +552,69 @@ public class ControllerMVC {
 		return model;
 	}
 
-	@RequestMapping("/editor/editLocal/{local}")
-	public ModelAndView editarLocal(@PathVariable("local") String local) {
+	@RequestMapping("/editor/editLocal/{id_local}")
+	public ModelAndView editarLocal(@PathVariable("id_local") int id_local) {
 
 		ModelAndView model = new ModelAndView("editar_local");
-		LocalView localObj = localViewRepo.findByNameLocal(local);
+		try {
+
+			Statement st = Application.con.createStatement();
+			ResultSet rs = st.executeQuery("SELECT * from view_gestionlocales where id_local=" + id_local + ";");
+
+			while (rs.next()) {
+
+				String local;
+
+				int id_localDB = rs.getInt(1);
+				local = rs.getString(2);
+				String direccion = rs.getString(3);
+				String empresa = rs.getString(4);
+
+				LocalView localView = new LocalView(id_localDB, local, direccion, empresa);
+				model.addObject("localView", localView);
+			}
+
+			rs.close();
+			st.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 
 		List<Empresa> listCompanies = companyRepo.findAll();
+		int select = -1;
 
-		model.addObject("localObj", localObj);
 		model.addObject("listCompanies", listCompanies);
+		model.addObject("select", select);
 
 		return model;
 	}
 
-//	/editor/editar_nuevo_local/exito
-
-//	'/editor/editar_local_exito/' + ${local}
-
-	@RequestMapping("/editor/editar_local_exito")
-	public String guardarLocal(LocalView localObj) {
-
-
+	@RequestMapping("/editor/editar_local_exito/{id_local}")
+	public String guardarLocal(LocalView localObj, @PathVariable("id_local") int id_local) {
 
 		try {
 			Statement st = Application.con.createStatement();
-			ResultSet rs = st.executeQuery("SELECT * from locales where nombre='" + localObj.getLocal() + "';");
-			
+			ResultSet rs = st.executeQuery("SELECT * from locales where id_local=" + id_local+ ";");
+
 			while (rs.next()) {
 				String nombre = rs.getString(1);
 				String direccion = rs.getString(2);
-				int id_local = rs.getInt(3);
+				int id_localObj = rs.getInt(3);
 				int id_empresa = rs.getInt(4);
 
-				Local local = new Local(nombre, direccion, id_local, id_empresa);
+				Local local = new Local(nombre, direccion, id_localObj, id_empresa);
 				Empresa empresa = companyRepo.findByNameCompany(localObj.getEmpresa());
-				
+
 				local.setDireccion(localObj.getDireccion());
 				local.setNombre(localObj.getLocal());
 				local.setIdEmpresa(empresa.getId_empresa());
-				
+
 				localRepo.save(local);
-				
+
 				rs.close();
 				st.close();
-				
+
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

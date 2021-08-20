@@ -44,8 +44,8 @@ public class Local {
 		return id_empresa;
 	}
 
-	public void setIdEmpresa(int idEmpresa) {
-		this.id_empresa = idEmpresa;
+	public void setIdEmpresa(int id_empresa) {
+		this.id_empresa = id_empresa;
 	}
 
 	public String getNombre() {

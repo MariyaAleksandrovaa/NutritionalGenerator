@@ -174,17 +174,17 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 									  <th scope="col">Local</th>
 									  <th scope="col">Dirección</th>
 								      <th scope="col">Empresa a la que pertenece</th>
-								      <th scope="col">Operaciones</th>
+								      <th scope="col" style = "width:33%;">Operaciones</th>
 								    </tr>
 								  </thead>
 								  <tbody id="table">
 							    <tr th:each="local: ${listLocals}" style="cursor: pointer;" data-toggle="modal" data-target="#orderModal">
 				                    <td th:text="${local.local}">Local</td>
-				                    <td th:text="${local.direccion}">Local</td>
+				                    <td th:text="${local.direccion}">Dirección</td>
 				                    <td th:text="${local.empresa}">Empresa a la que pertenece</td>				                    			                    
-				                    <td >
-				                    	<a th:href="@{'/editor/editLocal/' + ${local.local}}" class="btn btn-info btn-lg" style="background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;font-size:0.9rem;">Editar</a>
-				                    	<a th:href="@{'/editor/deleteLocal/' + ${local.local}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color: #FF3333;border-color:#FF3333;color:#ffffff;font-size:0.9rem;">Eliminar</a>
+				                    <td style = "width:33%;">
+				                    	<a th:href="@{'/editor/editLocal/' + ${local.id_local}}" class="btn btn-info btn-lg" style="background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;font-size:0.9rem;">Editar</a>
+				                    	<a th:href="@{'/editor/deleteLocal/' + ${local.id_local}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color: #FF3333;border-color:#FF3333;color:#ffffff;font-size:0.9rem;">Eliminar</a>
 			                    	</td>
 								    </tr>
 								  </tbody>
