@@ -287,9 +287,19 @@ public class ControllerMVC {
 	// Funciones para ventana local (EDITOR)
 
 	@GetMapping("/editor/registrar_nuevo_local")
-	public String viewRegistrarNuevoLocalPage() {
+	public ModelAndView viewRegistrarNuevoLocalPage() {
 
-		return "registrar_nuevo_local";
+		ModelAndView model = new ModelAndView("registrar_nuevo_local");
+
+		List<Empresa> listCompanies = companyRepo.findAll();
+		Local local = new Local();
+		int select = -1;
+
+		model.addObject("listCompanies", listCompanies);
+		model.addObject("local", local);
+		model.addObject("select", select);
+
+		return model;
 	}
 
 	// Funciones para ventana alimento (EDITOR)
@@ -524,6 +534,16 @@ public class ControllerMVC {
 			e.printStackTrace();
 		}
 		return "redirect:/editor";
+	}
+	
+	@RequestMapping("/editor/registrar_nuevo_local/exito")
+	public ModelAndView viewRegistrarNuevoLocal(Local local, BindingResult bindingResult, ModelMap modelMap) {
+
+		ModelAndView model = new ModelAndView("registrar_local_exito");
+		
+		localRepo.save(local);
+
+		return model;
 	}
 
 }

@@ -13,29 +13,27 @@ public class Local {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "idLocal")
-	public int idLocal;
+	public int id_local;
 	
-	@Column(name = "idEmpresa")
-	public int idEmpresa;
+	public int id_empresa;
 	
 	public String nombre;
 	public String direccion;
 
 	public int getIdLocal() {
-		return idLocal;
+		return id_local;
 	}
 
 	public void setIdLocal(int idLocal) {
-		this.idLocal = idLocal;
+		this.id_local = idLocal;
 	}
 
 	public int getIdEmpresa() {
-		return idEmpresa;
+		return id_empresa;
 	}
 
 	public void setIdEmpresa(int idEmpresa) {
-		this.idEmpresa = idEmpresa;
+		this.id_empresa = idEmpresa;
 	}
 
 	public String getNombre() {
