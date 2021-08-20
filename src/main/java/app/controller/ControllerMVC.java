@@ -1,6 +1,7 @@
 package app.controller;
 
 import java.sql.ResultSet;
+
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ import app.model.Dish;
 import app.model.Empresa;
 import app.model.Food;
 import app.model.GroupFood;
+import app.model.Local;
 import app.model.Role;
 import app.model.User;
 import app.parametrizedObjects.AlergensFood;
@@ -33,6 +35,8 @@ import app.repository.CompanyRepository;
 import app.repository.DishRepository;
 import app.repository.FoodRepository;
 import app.repository.GroupFoodRepository;
+import app.repository.LocalRepository;
+//import app.repository.LocalRepository;
 import app.repository.RoleRepository;
 import app.repository.UserRepository;
 import app.repository.view.DishViewRepository;
@@ -64,7 +68,7 @@ public class ControllerMVC {
 
 	@Autowired
 	private UserViewRepository userViewRepo;
-	
+
 	@Autowired
 	private LocalViewRepository localViewRepo;
 
@@ -90,6 +94,9 @@ public class ControllerMVC {
 
 	@Autowired
 	public RoleRepository roleRepo;
+
+	@Autowired
+	private LocalRepository localRepo;
 
 	@RequestMapping(value = { "/prueba", "/" }, method = RequestMethod.GET)
 	public ModelAndView viewHomePage2() {
@@ -504,16 +511,18 @@ public class ControllerMVC {
 
 		return "redirect:/editor";
 	}
-	
-//	/editor/deleteLocal/' + ${local.local}
-	
-	
+
 	@RequestMapping("/editor/deleteLocal/{local}")
 	public String eliminarLocal(@PathVariable("local") String local) {
 
-		Optional<User> user = userRepo.findById(user_id);
-		userRepo.delete(user.get());
+		try {
 
+			Statement st = Application.con.createStatement();
+			st.execute("delete from locales where nombre='" + local + "';");
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return "redirect:/editor";
 	}
 

@@ -1,5 +1,6 @@
 package app.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,8 +13,12 @@ public class Local {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "idLocal")
 	public int idLocal;
+	
+	@Column(name = "idEmpresa")
 	public int idEmpresa;
+	
 	public String nombre;
 	public String direccion;
 
