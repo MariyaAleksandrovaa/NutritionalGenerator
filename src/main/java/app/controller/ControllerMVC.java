@@ -37,12 +37,14 @@ import app.repository.RoleRepository;
 import app.repository.UserRepository;
 import app.repository.view.DishViewRepository;
 import app.repository.view.FoodViewRepository;
+import app.repository.view.LocalViewRepository;
 import app.repository.view.MenuViewRepository;
 import app.repository.view.UserViewRepository;
 import app.service.company.CompanyNotfound;
 import app.service.company.CompanyService;
 import app.views.DishView;
 import app.views.FoodView;
+import app.views.LocalView;
 import app.views.MenuView;
 import app.views.UserView;
 
@@ -62,6 +64,9 @@ public class ControllerMVC {
 
 	@Autowired
 	private UserViewRepository userViewRepo;
+	
+	@Autowired
+	private LocalViewRepository localViewRepo;
 
 	// Table repositories
 
@@ -122,10 +127,12 @@ public class ControllerMVC {
 		List<FoodView> listFood = foodViewRepo.findAll();
 		List<Empresa> listCompanies = companyRepo.findAll();
 		List<UserView> listUsers = userViewRepo.findAll();
+		List<LocalView> listLocals = localViewRepo.findAll();
 
 		model.addAttribute("listFood", listFood);
 		model.addAttribute("listCompanies", listCompanies);
 		model.addAttribute("listUsers", listUsers);
+		model.addAttribute("listLocals", listLocals);
 
 		return "editor";
 	}
@@ -307,7 +314,7 @@ public class ControllerMVC {
 
 		foodRepo.save(foodOld);
 
-		return "redirect:/editor#3";
+		return "redirect:/editor";
 	}
 
 	@RequestMapping("/editor/deleteFood/{nombre}")
@@ -411,11 +418,10 @@ public class ControllerMVC {
 
 		String encodedPassword = new BCryptPasswordEncoder().encode(user.getPassword());
 		user.setPassword(encodedPassword);
-		
-		if(user.getIdEmpresa() == -1) {
+
+		if (user.getIdEmpresa() == -1) {
 			user.setIdEmpresa(null);
 		}
-		
 
 		userRepo.save(user);
 
@@ -446,15 +452,67 @@ public class ControllerMVC {
 
 		return model;
 	}
-	
-//	"@{'/editor/deleteUser/' + ${user.user_id}}"
-	
+
 	@RequestMapping("/editor/deleteUser/{user_id}")
 	public String eliminarUsuario(@PathVariable("user_id") int user_id) {
 
 		Optional<User> user = userRepo.findById(user_id);
 		userRepo.delete(user.get());
 
+		return "redirect:/editor";
+	}
+
+	@RequestMapping("/editor/editUser/{user_id}")
+	public ModelAndView editarUsuario(@PathVariable("user_id") int user_id) {
+
+		ModelAndView model = new ModelAndView("editar_usuario");
+
+		Optional<UserView> user = userViewRepo.findById(user_id);
+		List<Role> listRoles = roleRepo.findAll();
+		List<Empresa> listCompanies = companyRepo.findAll();
+
+		model.addObject("listRoles", listRoles);
+		model.addObject("listCompanies", listCompanies);
+		model.addObject("user", user.get());
+		model.addObject("empresa", user.get().getNombre());
+		model.addObject("select", -1);
+
+		return model;
+	}
+
+	@PostMapping("/editor/guardarUser/{user_id}")
+	public String guardarUsuario(@PathVariable("user_id") int user_id, UserView userView) {
+
+		Optional<User> userOld = userRepo.findById(user_id);
+
+		User user = userOld.get();
+
+		user.setEmail(userView.getEmail());
+		user.setName(userView.getName());
+		user.setPassword(userView.getPassword());
+		user.setUsername(userView.getUsername());
+		user.setSurname(userView.getSurname());
+
+		Empresa empresa = companyRepo.findByNameCompany(userView.getNombre());
+
+		user.setIdEmpresa(empresa.getId_empresa());
+
+		Role rol = roleRepo.findByNameRole(userView.getRol());
+		user.getRoles().add(rol);
+
+		userRepo.save(user);
+
+		return "redirect:/editor";
+	}
+	
+//	/editor/deleteLocal/' + ${local.local}
+	
+	
+	@RequestMapping("/editor/deleteLocal/{local}")
+	public String eliminarLocal(@PathVariable("local") String local) {
+
+		Optional<User> user = userRepo.findById(user_id);
+		userRepo.delete(user.get());
 
 		return "redirect:/editor";
 	}

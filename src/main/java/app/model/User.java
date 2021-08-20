@@ -42,7 +42,7 @@ public class User {
 	private Set<Role> roles = new HashSet<>();
 
 	public User(int idUser, String username, String password, String name, String surname, String email,
-			int idEmpresa) {
+			Integer id_empresa) {
 
 		this.id = idUser;
 		this.username = username;
@@ -50,7 +50,7 @@ public class User {
 		this.name = name;
 		this.surname = surname;
 		this.email = email;
-		this.id_empresa = idEmpresa;
+		this.id_empresa = id_empresa;
 	}
 
 	public User() {
