@@ -11,6 +11,15 @@ public class LocalView {
 	@Id
 	public String local;
 	public String empresa;
+	public String direccion;
+
+	public String getDireccion() {
+		return direccion;
+	}
+
+	public void setDireccion(String direccion) {
+		this.direccion = direccion;
+	}
 
 	public String getLocal() {
 		return local;

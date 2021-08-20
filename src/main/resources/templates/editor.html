@@ -172,6 +172,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 								  <thead>
 								    <tr >
 									  <th scope="col">Local</th>
+									  <th scope="col">Dirección</th>
 								      <th scope="col">Empresa a la que pertenece</th>
 								      <th scope="col">Operaciones</th>
 								    </tr>
@@ -179,6 +180,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 								  <tbody id="table">
 							    <tr th:each="local: ${listLocals}" style="cursor: pointer;" data-toggle="modal" data-target="#orderModal">
 				                    <td th:text="${local.local}">Local</td>
+				                    <td th:text="${local.direccion}">Local</td>
 				                    <td th:text="${local.empresa}">Empresa a la que pertenece</td>				                    			                    
 				                    <td >
 				                    	<a th:href="@{'/editor/editLocal/' + ${local.local}}" class="btn btn-info btn-lg" style="background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;font-size:0.9rem;">Editar</a>

@@ -1,5 +1,6 @@
 package app;
 
+import java.io.EOFException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
