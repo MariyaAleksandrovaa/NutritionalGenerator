@@ -104,7 +104,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 					<div role="tabpanel" class="tab-pane active" id="seccion1"
 						style="width: 50%; margin: 0 auto;"></div>
 
-					<form th:action="@{'/editor/guardarUser/' + ${user_id}}"
+					<form th:action="@{'/editor/guardarUser/' + ${user_id} + '/' + ${rol}}"
 						th:object="${user}" method="post">
 						<div class="form-group" style="margin-top: 25px;">
 							<label for="exampleInputEmail1">Nombre de usuario</label> <input
@@ -145,7 +145,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 							class="form-select" th:field="*{nombre}"
 							aria-label="Default select example"
 							style="margin-top: 10px; width: 40%">
-							<option selected th:text="${nombre}" th:value="${select}"></option>
+							<option selected th:text="${nombre}" th:value="${nombre}"></option>
 							<option th:each="company:${listCompanies}"
 								th:value="${company.nombre}" th:text="${company.nombre}" />
 						</select>

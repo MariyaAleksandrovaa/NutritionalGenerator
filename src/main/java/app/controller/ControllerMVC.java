@@ -98,6 +98,8 @@ public class ControllerMVC {
 	@Autowired
 	private LocalRepository localRepo;
 
+	public String password;
+
 	@RequestMapping(value = { "/prueba", "/" }, method = RequestMethod.GET)
 	public ModelAndView viewHomePage2() {
 
@@ -492,6 +494,8 @@ public class ControllerMVC {
 		List<Role> listRoles = roleRepo.findAll();
 		List<Empresa> listCompanies = companyRepo.findAll();
 
+		password = user.get().getPassword();
+
 		model.addObject("listRoles", listRoles);
 		model.addObject("listCompanies", listCompanies);
 		model.addObject("user", user.get());
@@ -501,27 +505,57 @@ public class ControllerMVC {
 		return model;
 	}
 
-	@PostMapping("/editor/guardarUser/{user_id}")
-	public String guardarUsuario(@PathVariable("user_id") int user_id, UserView userView) {
+	@PostMapping("/editor/guardarUser/{user_id}/{rol}")
+	public String guardarUsuario(@PathVariable("user_id") int user_id, @PathVariable("rol") String role,
+			UserView userView) {
 
-		Optional<User> userOld = userRepo.findById(user_id);
+		Optional<User> user = userRepo.findById(userView.getUser_id());
+		User usr = user.get();
 
-		User user = userOld.get();
+		if (!password.equals(userView.getPassword())) {
 
-		user.setEmail(userView.getEmail());
-		user.setName(userView.getName());
-		user.setPassword(userView.getPassword());
-		user.setUsername(userView.getUsername());
-		user.setSurname(userView.getSurname());
+			BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+			String encodedPassword = encoder.encode(userView.getPassword());
 
+			usr.setPassword(encodedPassword);
+
+		}
 		Empresa empresa = companyRepo.findByNameCompany(userView.getNombre());
+		if (empresa != null) {
+			usr.setIdEmpresa(empresa.getId_empresa());
+		}
 
-		user.setIdEmpresa(empresa.getId_empresa());
+		usr.setEmail(userView.getEmail());
 
-		Role rol = roleRepo.findByNameRole(userView.getRol());
-		user.getRoles().add(rol);
+		usr.setName(userView.getName());
+		usr.setUsername(userView.getUsername());
+		usr.setSurname(userView.getSurname());
 
-		userRepo.save(user);
+		try {
+
+			Statement st = Application.con.createStatement();
+
+			int rol = 0;
+
+			if (userView.getRol().equals("USER")) {
+				rol = 1;
+
+			} else if (userView.getRol().equals("ADMIN")) {
+				rol = 2;
+
+			} else if (userView.getRol().equals("EDITOR")) {
+				rol = 3;
+
+			}
+			st.execute("update users_roles set role_id = " + rol + " where user_id = " + usr.getId() + ";");
+
+			st.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		userRepo.save(usr);
 
 		return "redirect:/editor";
 	}
@@ -563,14 +597,7 @@ public class ControllerMVC {
 
 			while (rs.next()) {
 
-				String local;
-
-				int id_localDB = rs.getInt(1);
-				local = rs.getString(2);
-				String direccion = rs.getString(3);
-				String empresa = rs.getString(4);
-
-				LocalView localView = new LocalView(id_localDB, local, direccion, empresa);
+				LocalView localView = new LocalView(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4));
 				model.addObject("localView", localView);
 			}
 
@@ -595,7 +622,7 @@ public class ControllerMVC {
 
 		try {
 			Statement st = Application.con.createStatement();
-			ResultSet rs = st.executeQuery("SELECT * from locales where id_local=" + id_local+ ";");
+			ResultSet rs = st.executeQuery("SELECT * from locales where id_local=" + id_local + ";");
 
 			while (rs.next()) {
 				String nombre = rs.getString(1);

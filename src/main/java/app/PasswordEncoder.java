@@ -10,7 +10,7 @@ public class PasswordEncoder {
 		System.out.println(System.getProperty("java.version"));
 		
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-		String rawPassword = "user1";
+		String rawPassword = "editor1";
 		String encodedPassword = encoder.encode(rawPassword);
 		
 		System.out.println(encodedPassword);

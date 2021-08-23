@@ -1,5 +1,6 @@
 package app.views;
 
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -17,6 +18,14 @@ public class UserView {
 	public String email;
 	public String nombre;
 	public String rol;
+
+	public int getUser_id() {
+		return user_id;
+	}
+
+	public void setUser_id(int user_id) {
+		this.user_id = user_id;
+	}
 
 	public String getUsername() {
 		return username;
@@ -72,14 +81,6 @@ public class UserView {
 
 	public void setRol(String rol) {
 		this.rol = rol;
-	}
-
-	public int getUser_id() {
-		return user_id;
-	}
-
-	public void setUser_id(int user_id) {
-		this.user_id = user_id;
 	}
 
 }
