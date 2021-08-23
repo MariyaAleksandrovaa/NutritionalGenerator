@@ -83,7 +83,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
                 "/css/**",
                 "/images/**",
                 "/js/**").permitAll()
-		.anyRequest().authenticated()
+		// .anyRequest().authenticated()
 		.and()
 		.formLogin()
 		.loginPage("/prueba")

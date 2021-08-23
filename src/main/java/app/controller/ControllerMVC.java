@@ -29,6 +29,7 @@ import app.model.GroupFood;
 import app.model.Local;
 import app.model.Role;
 import app.model.User;
+import app.objects.ResetPwdObj;
 import app.parametrizedObjects.AlergensFood;
 import app.parametrizedObjects.ComponentsFood;
 import app.repository.CompanyRepository;
@@ -648,6 +649,37 @@ public class ControllerMVC {
 		}
 
 		return "redirect:/editor";
+	}
+
+	@RequestMapping("/restablecer_contraseña")
+	public ModelAndView restablecerContraseña() {
+
+		ModelAndView model = new ModelAndView("/restablecer_contraseña");
+		ResetPwdObj resetPwdObj = new ResetPwdObj();
+
+		model.addObject("resetPwdObj", resetPwdObj);
+
+		return model;
+	}
+
+	@RequestMapping("/restablecer_contraseña/exito")
+	public ModelAndView restablecerContraseñaExito(ResetPwdObj resetPwdObj) {
+
+		ModelAndView model = new ModelAndView("inicio_sesion");
+
+		User user = userRepo.findByUsername(resetPwdObj.getUsername());
+		
+		if(user != null) {
+			if(resetPwdObj.getPwd().equals(resetPwdObj.getResetPwd())) {
+				
+				BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+				user.setPassword(encoder.encode(resetPwdObj.getPwd()));
+				userRepo.save(user);
+				
+			}
+		}
+
+		return model;
 	}
 
 }
