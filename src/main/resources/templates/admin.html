@@ -285,14 +285,6 @@ License URL: http://creativecommons.org/licenses/by/3.0/
     });
 	</script>
 	<script>
-	// Fires when user click a row
-// 	$('#myTable').bootstrapTable({
-// 	    onClickRow: function (row, $element) {
-// 	        // row: the record corresponding to the clicked row, 
-// 	        // $element: the tr element.
-// 	        console.log('22222222');
-// 	    }
-// 	});
 	$("#myTable").on("click","tr",function(e){
 		console.log(e.currentTarget);
 	})

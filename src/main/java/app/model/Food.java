@@ -13,15 +13,17 @@ import javax.persistence.Table;
 @Table(name = "alimentos")
 public class Food {
 
+//	@Id
+//	@GeneratedValue(strategy = GenerationType.AUTO)
+//	private int idAlimentos;
+
+	@Column(nullable = true)
+	private Integer id_grupo_alimento;
+
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int idAlimentos;
-
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(nullable = true)
-	private Integer idGrupo;
-
-	@Column(nullable = true)
-	private Integer idAlimento;
+	private Integer id_alimento;
 
 	@Column(length = 90, nullable = true)
 	private String nombre;
@@ -65,28 +67,28 @@ public class Food {
 	@Column(length = 400, nullable = true)
 	private String pt_descripcion;
 
-	public int getIdAlimentos() {
-		return idAlimentos;
-	}
-
-	public void setIdAlimentos(int idAlimentos) {
-		this.idAlimentos = idAlimentos;
-	}
+//	public int getIdAlimentos() {
+//		return idAlimentos;
+//	}
+//
+//	public void setIdAlimentos(int idAlimentos) {
+//		this.idAlimentos = idAlimentos;
+//	}
 
 	public Integer getIdGrupo() {
-		return idGrupo;
+		return id_grupo_alimento;
 	}
 
-	public void setIdGrupo(Integer idGrupo) {
-		this.idGrupo = idGrupo;
+	public void setIdGrupo(Integer id_grupo_alimento) {
+		this.id_grupo_alimento = id_grupo_alimento;
 	}
 
 	public Integer getIdAlimento() {
-		return idAlimento;
+		return id_alimento;
 	}
 
-	public void setIdAlimento(Integer idAlimento) {
-		this.idAlimento = idAlimento;
+	public void setIdAlimento(Integer id_alimento) {
+		this.id_alimento = id_alimento;
 	}
 
 	public String getNombre() {

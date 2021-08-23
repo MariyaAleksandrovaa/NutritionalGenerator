@@ -13,13 +13,18 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script type="application/x-javascript">
+	
+	
 	
 	 addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } 
 
+
+
 </script>
 <!-- Custom Theme files -->
-<link href="../css/bootstrap.css" type="text/css" rel="stylesheet"
+<link href="../../css/bootstrap.css" type="text/css" rel="stylesheet"
 	media="all">
 
 <!-- CSS only -->
@@ -34,16 +39,16 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
 	crossorigin="anonymous"></script>
 
-<link href="../css/style.css" type="text/css" rel="stylesheet"
+<link href="../../css/style.css" type="text/css" rel="stylesheet"
 	media="all">
-<link href="../css/font-awesome.css" rel="stylesheet">
+<link href="../../css/font-awesome.css" rel="stylesheet">
 <!-- font-awesome icons -->
 <link rel="stylesheet" href="../css/smoothbox.css" type='text/css'
 	media="all" />
 <!-- //Custom Theme files -->
 
 <!-- js -->
-<script src="../js/jquery-2.2.3.min.js"></script>
+<script src="../../js/jquery-2.2.3.min.js"></script>
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> -->
@@ -82,46 +87,78 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	<!-- gallery -->
 	<div class="about gallery">
 		<div class="container">
+			<nav aria-label="breadcrumb">
+				<ol class="breadcrumb"
+					style="background-color: #FFFFFF; margin-bottom: 30px; font-size: 150%;">
+					<li class="breadcrumb-item active" aria-current="page"><a
+						href="#">Inicio</a></li>
+					<li class="breadcrumb-item"><a href="#">Editar alimento</a></li>
+				</ol>
+			</nav>
 			<div role="tabpanel">
 				<ul class="nav nav-tabs" role="tablist">
 					<li role="presentation" class="active"><a href="#seccion1"
-						data-toggle="tab" role="tab">Registrar nuevo local</a></li>
+						data-toggle="tab" role="tab">Editar alimento</a></li>
 				</ul>
-				<div class="tab-content">
+				<div class="tab-content" style="margin-left: 40%;">
 					<div role="tabpanel" class="tab-pane active" id="seccion1"
-						style="width: 50%;margin: 0 auto;"></div>
+						style="width: 50%; margin: 0 auto;"></div>
 
-					<form
-						th:action="@{/editor/registrar_nuevo_local/exito}"
-						th:object="${local}" method="post" style="margin-left:35%;">
-						
+					<form th:action="@{'/editor/guardarUser/' + ${user_id} + '/' + ${rol}}"
+						th:object="${user}" method="post">
 						<div class="form-group" style="margin-top: 25px;">
-							<label for="exampleInputEmail1">Nombre del local</label> <input type="text"
-								class="form-control" id="id_cif" th:field="*{nombre}"
-								style="margin-top:8px;width:60%;"
-								aria-describedby="emailHelp" placeholder="Introduce nombre del local">
-						</div>
-						
-						<div class="form-group">
-							<label for="exampleInputEmail1">Dirección del local</label> <input
-								type="text" class="form-control" id="id_nombre"
-								th:field="*{direccion}" style="margin-top:8px;width:60%;"
+							<label for="exampleInputEmail1">Nombre de usuario</label> <input
+								type="text" class="form-control" th:field="*{username}"
+								style="margin-top: 8px; width: 40%;"
 								aria-describedby="emailHelp"
-								placeholder="Introduce la dirección del local" required>
+								placeholder="Introduce nombre de empresa" required>
 						</div>
-						
 						<div class="form-group">
-							<label for="exampleInputEmail1">Empresa a la que pertenece</label> 
-							<select class="form-select" th:field="*{idEmpresa}" aria-label="Default select example" style="margin-top:10px;width:60%">
-								<option selected th:value="${select}">Escoge una empresa</option>
-								<option th:each="company:${listCompanies}"
-									th:value="${company.id_empresa}"
-									th:text="${company.nombre}"
-								/>
-							</select>
+							<label for="exampleInputEmail1">Contraseña</label> <input
+								type="text" class="form-control" th:field="*{password}"
+								style="margin-top: 8px; width: 40%;"
+								aria-describedby="emailHelp"
+								placeholder="Introduce correo electrónico">
 						</div>
-
-						<button type="submit" class="btn btn-primary">Aceptar</button>
+						<div class="form-group">
+							<label for="exampleInputEmail1">Nombre personal</label> <input
+								type="tel" class="form-control" th:field="*{name}"
+								style="margin-top: 8px; width: 40%;"
+								aria-describedby="emailHelp"
+								placeholder="Introduce teléfono de empresa">
+						</div>
+						<div class="form-group">
+							<label for="exampleInputEmail1">Apellidos</label> <input
+								type="text" class="form-control" th:field="*{surname}"
+								style="margin-top: 8px; width: 40%;"
+								aria-describedby="emailHelp"
+								placeholder="Introduce correo electrónico">
+						</div>
+						<div class="form-group">
+							<label for="exampleInputEmail1">Correo elecrónico</label> <input
+								type="tel" class="form-control" th:field="*{email}"
+								style="margin-top: 8px; width: 40%;"
+								aria-describedby="emailHelp"
+								placeholder="Introduce teléfono de empresa">
+						</div>
+						<label for="exampleInputEmail1">Empresa</label> <select
+							class="form-select" th:field="*{nombre}"
+							aria-label="Default select example"
+							style="margin-top: 10px; width: 40%">
+							<option selected th:text="${nombre}" th:value="${nombre}"></option>
+							<option th:each="company:${listCompanies}"
+								th:value="${company.nombre}" th:text="${company.nombre}" />
+						</select>
+						<!-- 							    <input type="text" class="form-control" th:field="*{grupo}"  style="margin-top:8px;width:40%;" aria-describedby="emailHelp" placeholder="Introduce CIF"> -->
+						<label for="exampleInputEmail1">Rol</label> <select
+							class="form-select" th:field="*{rol}"
+							aria-label="Default select example"
+							style="margin-top: 10px; width: 40%">
+							<option selected th:value="*{rol}"></option>
+							<option th:each="rol:${listRoles}" th:value="${rol.name}"
+								th:text="${rol.name}" />
+						</select>
+						<button type="submit" class="btn btn-primary" style="margin-top:20px;">Aceptar</button>
 					</form>
 				</div>
 			</div>
@@ -131,8 +168,6 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	<!-- footer -->
 	<div class="footer">
 		<div class="container">
-
-
 			<div class="clearfix"></div>
 			<div class="w3agile_footer_copy">
 				<p>
@@ -142,6 +177,9 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 			</div>
 		</div>
 	</div>
+	<!-- //footer -->
+
+	<!-- menu-js -->
 	<script>
 		$('.navicon').on('click', function(e) {
 			e.preventDefault();
@@ -281,10 +319,25 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 		});
 	</script>
 
+	<script>
+		// jQuery version
+		$("input[type='number']").each(function(i, el) {
+			el.type = "text";
+			el.onfocus = function() {
+				this.type = "number";
+			};
+			el.onblur = function() {
+				this.type = "text";
+			};
+		});
+	</script>
+
+
+
 	<!-- //smooth-scrolling-of-move-up -->
 	<!-- Bootstrap core JavaScript
     ================================================== -->
 	<!-- Placed at the end of the document so the pages load faster -->
-	<script src="../js/bootstrap.js"></script>
+	<script src="js/bootstrap.js"></script>
 </body>
 </html>

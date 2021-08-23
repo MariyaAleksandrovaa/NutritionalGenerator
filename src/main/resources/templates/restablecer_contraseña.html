@@ -19,7 +19,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 
 </script>
 <!-- Custom Theme files -->
-<link href="../css/bootstrap.css" type="text/css" rel="stylesheet"
+<link href="css/bootstrap.css" type="text/css" rel="stylesheet"
 	media="all">
 
 <!-- CSS only -->
@@ -34,22 +34,24 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
 	crossorigin="anonymous"></script>
 
-<link href="../css/style.css" type="text/css" rel="stylesheet"
-	media="all">
-<link href="../css/font-awesome.css" rel="stylesheet">
+<link href="css/style.css" type="text/css" rel="stylesheet" media="all">
+<link href="css/font-awesome.css" rel="stylesheet">
 <!-- font-awesome icons -->
-<link rel="stylesheet" href="../css/smoothbox.css" type='text/css'
+<link rel="stylesheet" href="css/smoothbox.css" type='text/css'
 	media="all" />
 <!-- //Custom Theme files -->
 
 <!-- js -->
-<script src="../js/jquery-2.2.3.min.js"></script>
+<script src="js/jquery-2.2.3.min.js"></script>
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> -->
 <!-- //js -->
 
 <!-- web-fonts -->
+<link
+	href="//fonts.googleapis.com/css?family=Roboto+Condensed:300,300i,400,400i,700"
+	rel="stylesheet">
 <link
 	href="//fonts.googleapis.com/css?family=Playfair+Display:400,400i,700,700i,900,900i"
 	rel="stylesheet">
@@ -73,7 +75,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 		<!-- banner-text -->
 		<div class="banner-text w3labout-bnr">
 			<div class="container">
-				<h2>Cuenta de editor</h2>
+				<h2>Restablecimiento de contraseña</h2>
 			</div>
 		</div>
 		<!-- //banner-text -->
@@ -83,56 +85,45 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	<div class="about gallery">
 		<div class="container">
 			<div role="tabpanel">
-				<ul class="nav nav-tabs" role="tablist">
-					<li role="presentation" class="active"><a href="#seccion1"
-						data-toggle="tab" role="tab">Registrar nuevo local</a></li>
-				</ul>
-				<div class="tab-content">
-					<div role="tabpanel" class="tab-pane active" id="seccion1"
-						style="width: 50%;margin: 0 auto;"></div>
+				<form th:action="@{/restablecer_contraseña/exito}"
+					th:object="${resetPwdObj}" method="post" style="margin-left: 35%;">
 
-					<form
-						th:action="@{/editor/registrar_nuevo_local/exito}"
-						th:object="${local}" method="post" style="margin-left:35%;">
-						
-						<div class="form-group" style="margin-top: 25px;">
-							<label for="exampleInputEmail1">Nombre del local</label> <input type="text"
-								class="form-control" id="id_cif" th:field="*{nombre}"
-								style="margin-top:8px;width:60%;"
-								aria-describedby="emailHelp" placeholder="Introduce nombre del local">
-						</div>
-						
-						<div class="form-group">
-							<label for="exampleInputEmail1">Dirección del local</label> <input
-								type="text" class="form-control" id="id_nombre"
-								th:field="*{direccion}" style="margin-top:8px;width:60%;"
-								aria-describedby="emailHelp"
-								placeholder="Introduce la dirección del local" required>
-						</div>
-						
-						<div class="form-group">
-							<label for="exampleInputEmail1">Empresa a la que pertenece</label> 
-							<select class="form-select" th:field="*{idEmpresa}" aria-label="Default select example" style="margin-top:10px;width:60%">
-								<option selected th:value="${select}">Escoge una empresa</option>
-								<option th:each="company:${listCompanies}"
-									th:value="${company.id_empresa}"
-									th:text="${company.nombre}"
-								/>
-							</select>
-						</div>
+					<div class="form-group" style="margin-top: 25px;">
+						<label for="exampleInputEmail1">Nombre de usuario</label> <input
+							type="text" class="form-control" id="id_cif"
+							th:field="*{username}" style="margin-top: 8px; width: 40%;"
+							aria-describedby="emailHelp"
+							placeholder="Introduce el nombre de usuario " required>
+					</div>
+					<div class="form-group">
+						<label for="exampleInputEmail1">Contraseña</label> <input
+							type="text" class="form-control" id="id_nombre" th:field="*{pwd}"
+							style="margin-top: 8px; width: 40%;" aria-describedby="emailHelp"
+							placeholder="Introduce contraseña" required>
+					</div>
+					<div class="form-group">
+						<label for="exampleInputEmail1">Repite contraseña</label> <input
+							type="text" class="form-control" id="id_correo"
+							th:field="*{resetPwd}" style="margin-top: 8px; width: 40%;"
+							aria-describedby="emailHelp"
+							placeholder="Repite contraseña introducida" required>
+					</div>
 
-						<button type="submit" class="btn btn-primary">Aceptar</button>
-					</form>
-				</div>
+
+					<small id="emailHelp" class="form-text text-muted">Todos
+						los campos son obligatorios</small>
 			</div>
+			<button type="submit" class="btn btn-primary"
+				style="margin-left: 460px; margin-top: 20px;">Aceptar</button>
+			</form>
+
 		</div>
+	</div>
 	</div>
 	<!-- //gallery -->
 	<!-- footer -->
 	<div class="footer">
 		<div class="container">
-
-
 			<div class="clearfix"></div>
 			<div class="w3agile_footer_copy">
 				<p>
@@ -142,11 +133,43 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 			</div>
 		</div>
 	</div>
+	<!-- //footer -->
+	<!-- menu-js -->
 	<script>
 		$('.navicon').on('click', function(e) {
 			e.preventDefault();
 			$(this).toggleClass('navicon--active');
 			$('.toggle').toggleClass('toggle--active');
+		});
+	</script>
+	<script>
+		$(document).ready(
+				function() {
+					if (location.hash) {
+						$("a[href='" + location.hash + "']").tab("show");
+					}
+					$(document.body).on("click", "a[data-toggle='tab']",
+							function(event) {
+								location.hash = this.getAttribute("href");
+							});
+				});
+		$(window).on(
+				"popstate",
+				function() {
+					var anchor = location.hash
+							|| $("a[data-toggle='tab']").first().attr("href");
+					$("a[href='" + anchor + "']").tab("show");
+				});
+	</script>
+	<script>
+		$(document).ready(function() {
+			$('a[data-toggle="tab"]').on('show.bs.tab', function(e) {
+				localStorage.setItem('activeTab', $(e.target).attr('href'));
+			});
+			var activeTab = localStorage.getItem('activeTab');
+			if (activeTab) {
+				$('#myTab a[href="' + activeTab + '"]').tab('show');
+			}
 		});
 	</script>
 	<!-- //menu-js -->
@@ -221,14 +244,27 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 						});
 	</script>
 	<script>
-		$(document).ready(function() {
-			// Open modal on page load
-			$("#myModal").modal('show');
-			// Close modal on button click
-			$(".btn").click(function() {
-				$("#modal1").modal('hide');
-			});
-		});
+		$(document).ready(
+				function() {
+					// Open modal on page load
+					$("#myModal").modal('show');
+					// Close modal on button click
+					$(".btn").click(function() {
+						$("#modal1").modal('hide');
+					});
+					$("#myTable")
+							.on(
+									"click",
+									"tr",
+									function(e) {
+										var headerPopUp = $(e.currentTarget)
+												.children(":nth-child(2)")
+												.text();
+										$("#orderModal .modal-title").text(
+												headerPopUp);
+									});
+
+				});
 	</script>
 	<script>
 		$(function() {
@@ -281,10 +317,32 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 		});
 	</script>
 
+	<script>
+		function actionFormatter(index, row) {
+			var html = []
+			$
+					.each(
+							row,
+							function(key, value) {
+								if (key == 'id') {
+									html
+											.push('<a class="edit" href="?edit='
+													+ value
+													+ '" title="edit"><i class="fa fa-edit"></i></a>')
+									html
+											.push('<a class="remove" href="?remove='
+													+ value
+													+ '" title="Remove"><i class="fa fa-edit"></i></a>')
+								}
+							})
+			return html.join('')
+		}
+	</script>
+
 	<!-- //smooth-scrolling-of-move-up -->
 	<!-- Bootstrap core JavaScript
     ================================================== -->
 	<!-- Placed at the end of the document so the pages load faster -->
-	<script src="../js/bootstrap.js"></script>
+	<script src="js/bootstrap.js"></script>
 </body>
 </html>

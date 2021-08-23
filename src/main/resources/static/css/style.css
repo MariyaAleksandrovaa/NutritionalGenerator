@@ -38,6 +38,7 @@ body a:hover,body a:focus{
 	outline: none;
 	font-family: 'Playfair Display', serif;
 } 
+
 /*-- banner --*/  
 .banner{ 
 	/* background:url(../images/1.jpg)no-repeat center center; */
@@ -1185,7 +1186,7 @@ section#tables  p {
 }
 .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
 	font-size: 0.9em;
-	color: #999;
+	color: #3d3d3d;
 	border-top: none !important;
 }
 .table tr:hover{

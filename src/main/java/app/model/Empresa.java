@@ -1,5 +1,6 @@
 package app.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -13,6 +14,8 @@ public class Empresa {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	public int id_empresa;
+	
+	@Column(unique = true)
 	public String cif;
 	public String nombre;
 

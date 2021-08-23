@@ -15,20 +15,20 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	
 <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
 <!-- Custom Theme files -->
-<link href="css/bootstrap.css" type="text/css" rel="stylesheet" media="all">
+<link href="../../css/bootstrap.css" type="text/css" rel="stylesheet" media="all">
 
 <!-- CSS only -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"/>
 <!-- JavaScript Bundle with Popper -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
-<link href="css/style.css" type="text/css" rel="stylesheet" media="all">   
-<link href="css/font-awesome.css" rel="stylesheet"> <!-- font-awesome icons --> 
-<link rel="stylesheet" href="css/smoothbox.css" type='text/css' media="all" /> 
+<link href="../../css/style.css" type="text/css" rel="stylesheet" media="all">   
+<link href="../../css/font-awesome.css" rel="stylesheet"> <!-- font-awesome icons --> 
+<link rel="stylesheet" href="../../css/smoothbox.css" type='text/css' media="all" /> 
 <!-- //Custom Theme files --> 
 
 <!-- js -->
-<script src="js/jquery-2.2.3.min.js"></script>  
+<script src="../../js/jquery-2.2.3.min.js"></script>  
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> -->
 <!-- //js -->
@@ -71,6 +71,27 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 				</ul>
 				<div class="tab-content">
 					<div role="tabpanel" class="tab-pane active" id="seccion1" style="width: 50%;margin: 0 auto;">
+						<div class ="row">
+							<table class="table" style = "margin-top:30px">
+								
+							  <thead>
+							    <tr >
+								  <th scope="col">Grupo</th>
+							      <th scope="col">Nombre</th>
+							      <th scope="col">Cantidad </th>
+							      <th scope="col">Unidad</th>
+							    </tr>
+							  </thead>
+							  <tbody id="myTable">
+							    <tr th:each="componente: ${listaComponentes}">
+				                    <td th:text="${componente.grupo}">Grupo</td>
+				                    <td th:text="${componente.c_ori_name}">Nombre</td>
+				                    <td th:text="${componente.best_location}">Cantidad</td>
+				                    <td th:text="${componente.v_unit}">Unidad</td>
+							    </tr>
+							  </tbody>
+							</table>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -80,56 +101,12 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	<!-- footer -->
 	<div class="footer">
 		<div class="container">
-
-			<!-- <div class="col-md-5 col-sm-5 agileinfo_footer_grid"> -->
-				<!-- <h3 class="agileits-title">About Us</h3> -->
-				<!-- <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu  -->
-					<!-- fugiat nulla pariatur. <span>Excepteur sint occaecat cupidatat non proident  -->
-					<!-- sunt in culpa qui officia deserunt mollit anim id est laborum.</span></p> -->
-			<!-- </div> -->
-			<!-- <div class="col-md-3 col-sm-3 agileinfo_footer_grid mid-w3l nav2"> -->
-				<!-- <h3 class="agileits-title">Popular</h3> -->
-				<!-- <ul> -->
-					<!-- <li><a href="#myModal" data-toggle="modal"><i class="fa fa-arrow-right"></i> Proin placerat</a></li> -->
-					<!-- <li><a href="#myModal" data-toggle="modal"><i class="fa fa-arrow-right"></i> Ipsum et rutrum</a></li> -->
-					<!-- <li><a href="#myModal" data-toggle="modal"><i class="fa fa-arrow-right"></i> Proin semper utr</a></li> -->
-					<!-- <li><a href="#myModal" data-toggle="modal"><i class="fa fa-arrow-right"></i> Ligula sit amet</a></li> -->
-				<!-- </ul> -->
-			<!-- </div> -->
-			<!-- <div class="col-md-4 col-sm-4 agileinfo_footer_grid"> -->
-				<!-- <h3 class="agileits-title">Address</h3> -->
-				<!-- <ul> -->
-					<!-- <li><span class="glyphicon glyphicon-home" aria-hidden="true"></span> 738 Diamond Road, New York City</li> -->
-					<!-- <li><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span><a href="mailto:info@example.com">info@example.com</a></li> -->
-					<!-- <li><span class="glyphicon glyphicon-earphone" aria-hidden="true"></span> (0123) 0111 111 222</li> -->
-				<!-- </ul> -->
-			<!-- </div>  -->
 			<div class="clearfix"> </div>
 			<div class="w3agile_footer_copy">
 				<p>© 2017 Dine. All rights reserved | Design by <a href="http://w3layouts.com/" target="_blank">W3layouts.</a></p>
 			</div>
 		</div>
 	</div>
-	<!-- //footer -->
-	<!-- modal-about -->
-<!-- 	<div class="modal bnr-modal fade" id="myModal" tabindex="-1" role="dialog"> -->
-<!-- 		<div class="modal-dialog" role="document"> -->
-<!-- 			<div class="modal-content"> -->
-<!-- 				<div class="modal-header"> -->
-<!-- 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>						 -->
-<!-- 				</div>  -->
-<!-- 				<div class="modal-body modal-spa"> -->
-<!-- 					<img src="images/g2.jpg" class="img-responsive" alt=""/> -->
-<!-- 					<div class="modal-w3lstext"> -->
-<!-- 						<h4>Blanditiis deleniti</h4> -->
-<!-- 						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras rutrum iaculis enim, non convallis felis mattis at. Donec fringilla lacus eu pretium rutrum. Cras aliquet congue ullamcorper. Etiam mattis eros eu ullamcorper volutpat. Proin ut dui a urna efficitur varius. uisque molestie cursus mi et congue consectetur adipiscing elit cras rutrum iaculis enim, Lorem ipsum dolor sit amet, non convallis felis mattis at. Maecenas sodales tortor ac ligula ultrices dictum et quis urna. Etiam pulvinar metus neque, eget porttitor massa vulputate in. Fusce lacus purus, pulvinar ut lacinia id, sagittis eumi.</p> -->
-<!-- 					</div>  -->
-<!-- 				</div>  -->
-<!-- 			</div> -->
-<!-- 		</div> -->
-<!-- 	</div> -->
-	<!-- //modal-about -->    
-	<!-- menu-js -->
 	<script>
 		$('.navicon').on('click', function (e) {
 		  e.preventDefault();

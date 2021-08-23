@@ -63,27 +63,22 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	<!-- gallery -->
 	<div class="about gallery">
 		<div class="container">  
-			<nav aria-label="breadcrumb">
-			  <ol class="breadcrumb" style="background-color: #FFFFFF;margin-bottom:30px;font-size: 150%;">
-			    <li class="breadcrumb-item active"  aria-current="page"><a href="#">Inicio</a></li>
-			  </ol>
-			</nav>
 			<div role="tabpanel">
-				<ul class="nav nav-tabs" role="tablist">
-				  <li role ="presentation" class="active" >
-				    <a href="#seccion1" data-toggle="tab" role="tab">Gestión de empresas</a>
+				<ul class="nav nav-tabs" role="tablist" id="myTab">
+				  <li role ="presentation"  class="nav-item" >
+				    <a href="#seccion1" data-toggle="tab" role="tab" class="nav-link active">Gestión de empresas</a>
 				  </li>
-				  	<li role ="presentation">
-				  	<a href="#seccion4" data-toggle="tab" role="tab">Gestión de usuarios</a>
+				  	<li role ="presentation" class="nav-item">
+				  	<a href="#seccion4" data-toggle="tab" role="tab" class="nav-link" >Gestión de usuarios</a>
 				  </li>
-				  	<li role ="presentation">
-				  	<a href="#seccion5" data-toggle="tab" role="tab">Gestión de locales</a>
+				  	<li role ="presentation" class="nav-item">
+				  	<a href="#seccion5" data-toggle="tab" role="tab" class="nav-link" >Gestión de locales</a>
 				  </li>
-				  <li role ="presentation">
-				  	<a href="#seccion3" data-toggle="tab" role="tab">Alimentos</a>
+				  <li role ="presentation" class="nav-item">
+				  	<a href="#seccion3" data-toggle="tab" role="tab" class="nav-link" >Alimentos</a>
 				  </li>
-				  <li role ="presentation">
-				  	<a href="#seccion2" data-toggle="tab" role="tab">Exportación/Importación de base de datos</a>
+				  <li role ="presentation" class="nav-item">
+				  	<a href="#seccion2" data-toggle="tab" role="tab"class="nav-link" >Exportación/Importación de base de datos</a>
 				  </li>
 
 				</ul>
@@ -94,7 +89,6 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 							
 							<div class ="row">
 								<table class="table" style = "margin-top:30px">
-									
 								  <thead>
 								    <tr >
 									  <th scope="col" data-field="id">CIF</th>
@@ -112,15 +106,11 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 					                    <td th:text="${company.email}">Correo electrónico</td>
 					                    <td th:text="${company.telefono}">Teléfono</td>
 					                    <td th:text="${company.codigo_postal}">Código postal</td>
-					                    <td>
-											      
-<!-- 									        <a href="#" class="btn btn-info btn-lg"> -->
-<!-- 									          <span class="glyphicon glyphicon-pencil"></span> Editar  -->
-<!-- 									        </a> -->
-<!-- 									        <a href="#" class="btn btn-info btn-lg"> -->
-<!-- 									          <span class="glyphicon glyphicon-pencil"></span> Eliminar -->
-<!-- 									        </a> -->
-						                     					                    	
+					                    <td >
+											 <div class="botonesEdicion" style="margin-right:-140px">
+											 	<a th:href="@{'/editor/edit/' + ${company.id_empresa}}" class="btn btn-info btn-lg" style="background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;;font-size:0.9rem;">Editar</a>
+									        	<a th:href="@{'/editor/delete/' + ${company.id_empresa}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color:#FF3333;border-color:#FF3333;;color:#ffffff;font-size:0.9rem; " >Eliminar</a>
+											 </div>     	                    	
 					                    </td>
 								    </tr>
 								  </tbody>
@@ -132,59 +122,170 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 						<button type="button" class="btn btn-secondary" style="margin-top:25px;width:200px;margin-left:35%;">Importar base de datos</button>
 						<button type="button" class="btn btn-secondary" style="margin-top:10px;width:200px;margin-left:35%;">Exportar base de datos</button>		
 					</div>
-					<div role="tabpanel" class="tab-pane" id="seccion4" style="width: 50%;margin: 0 auto;">
-						<button type="button" class="btn btn-secondary" style="margin-top:25px;width:200px;margin-left:35%;" onclick="window.location.href='/editor/registrar_nuevo_usuario'">Registrar nuevo usuario</button>						
+					<div role="tabpanel" class="tab-pane" id="seccion4" style="width: 100%;margin: 0 auto;">
+						<button type="button" class="btn btn-secondary" style="margin-top:25px;width:200px;margin-left:43%;" onclick="window.location.href='/editor/registrar_nuevo_usuario'">Registrar nuevo usuario</button>									
+							<div class ="row">
+								<table class="table" style = "margin-top:30px">
+								  <thead>
+								    <tr >
+									  <th scope="col">Id</th>
+								      <th scope="col">Nombre usuario</th>
+								      <th scope="col">Contraseña</th>
+								      <th scope="col">Nombre personal</th>
+								      <th scope="col">Apellido</th>
+								      <th scope="col">Correo electrónico</th>
+								      <th scope="col">Empresa</th>
+								      <th scope="col">Rol</th>
+								      <th scope="col">Operaciones</th>
+								    </tr>
+								  </thead>
+								  <tbody id="table">
+							    <tr th:each="user: ${listUsers}" style="cursor: pointer;" data-toggle="modal" data-target="#orderModal">
+				                    <td th:text="${user.user_id}">Id</td>
+				                    <td th:text="${user.username}">Nombre usuario</td>
+				                    <td th:text="${user.password}">Contraseña</td>
+				                    <td th:text="${user.name}">Nombre personal</td>
+				                    <td th:text="${user.surname}">Apellido</td>
+				                    <td th:text="${user.email}">Correo electrónico</td>
+				                    <td th:text="${user.nombre}">Empresa</td>
+				                    <td th:text="${user.rol}">Rol</td>	
+				                    			                    
+				                    <td >
+					                    	<a th:href="@{'/editor/editUser/' + ${user.user_id}}" class="btn btn-info btn-lg" style="background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;font-size:0.9rem;">Editar</a>
+					                    	<a th:href="@{'/editor/deleteUser/' + ${user.user_id}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color: #FF3333;border-color:#FF3333;color:#ffffff;font-size:0.9rem;">Eliminar</a>
+				                    </td>
+								    </tr>
+								  </tbody>
+								</table>
+							</div>
 					</div>
 					<div role="tabpanel" class="tab-pane" id="seccion5" style="width: 50%;margin: 0 auto;">
 						<button type="button" class="btn btn-secondary" style="margin-top:25px;width:200px;margin-left:35%;" onclick="window.location.href='/editor/registrar_nuevo_local'">Registrar nuevo local</button>							
+							<div class ="row">
+								<table class="table" style = "margin-top:30px">
+								  <thead>
+								    <tr >
+									  <th scope="col">Local</th>
+									  <th scope="col">Dirección</th>
+								      <th scope="col">Empresa a la que pertenece</th>
+								      <th scope="col" style = "width:33%;">Operaciones</th>
+								    </tr>
+								  </thead>
+								  <tbody id="table">
+							    <tr th:each="local: ${listLocals}" style="cursor: pointer;" data-toggle="modal" data-target="#orderModal">
+				                    <td th:text="${local.local}">Local</td>
+				                    <td th:text="${local.direccion}">Dirección</td>
+				                    <td th:text="${local.empresa}">Empresa a la que pertenece</td>				                    			                    
+				                    <td style = "width:33%;">
+				                    	<a th:href="@{'/editor/editLocal/' + ${local.id_local}}" class="btn btn-info btn-lg" style="background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;font-size:0.9rem;">Editar</a>
+				                    	<a th:href="@{'/editor/deleteLocal/' + ${local.id_local}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color: #FF3333;border-color:#FF3333;color:#ffffff;font-size:0.9rem;">Eliminar</a>
+			                    	</td>
+								    </tr>
+								  </tbody>
+								</table>
+							</div>
+					
+					
 					</div>
 					<div role="tabpanel" class="tab-pane" id="seccion3">
-						<div class="row justify-content-start">
-							<div class="col-10">
-								<input class="form-control" id="myInput" type="text" placeholder="Busca alimento">
+					
+						<button type="button" class="btn btn-secondary" style="margin-top:25px;margin-bottom:35px;width:200px;margin-left:43%;" onclick="window.location.href='/editor/registrar_nueva_empresa'">Registrar nuevo alimento</button>
+							<div class="row justify-content-start">
+								<div class="col-10">
+									<input class="form-control" id="myInput" type="text" placeholder="Busca alimento" style="width:120%;">
+								</div>
 							</div>
-						</div>
-						<div class="modal" tabindex="-1" id="orderModal">
-							  <div class="modal-dialog">
-								    <div class="modal-content">
-								      <div class="modal-header">
-								        <h5 class="modal-title">  </h5>
-								        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
-								      </div>
-								      <div class="modal-body" style="width:50%;height:225px;">
-									      <div class="content-left" style="margin-left:100px;width:300px;">
-									      		<a href="componentes"class="btn-green-flat">Mostrar componentes</a>
-									      </div>
-									      <div class="content-right" style="margin-left:100px;width:300px;">
-									      		<a href="alergenos"class="btn-green-flat">Mostrar alérgenos</a>
-									   	  </div>
-								    </div>
-								  </div>
-							</div>
-						</div>
-
-
-						<div class ="row">
-							<table class="table" id="table">
-							  <thead>
-							    <tr >
-								  <th scope="col">Grupo</th>
-							      <th scope="col">Nombre</th>
-							      <th scope="col">Nombre en inglés</th>
-							      <th scope="col">Porción comestible</th>
-							    </tr>
-							  </thead>
-							  <tbody id="myTable">
+							<div class ="row">
+								<table class="table" style = "margin-top:10px">
+									
+								  <thead>
+								    <tr >
+									  <th scope="col">Grupo</th>
+								      <th scope="col">Nombre</th>
+								      <th scope="col">Nombre en inglés</th>
+								      <th scope="col">Porción comestible</th>
+								      <th scope="col">Operaciones</th>
+								      <th scope="col">Tablas</th>
+								    </tr>
+								  </thead>
+								  <tbody id="table">
 							    <tr th:each="food: ${listFood}" style="cursor: pointer;" data-toggle="modal" data-target="#orderModal">
 				                    <td th:text="${food.grupo}">Grupo</td>
 				                    <td th:text="${food.nombre}">Nombre</td>
 				                    <td th:text="${food.ingles}">Nombre en inglés</td>
 				                    <td th:text="${food.edible_portion}">Porción comestible</td>
-							    </tr>
-							  </tbody>
-							</table>
+				                    <td >
+					                    	<a th:href="@{'/editor/editFood/' + ${food.nombre}}" class="btn btn-info btn-lg" style="background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;font-size:0.9rem;">Editar</a>
+	<!-- 				                    	<button type="button" class="btn btn-primary" style="background-color: #4CBB17;border-color:#4CBB17;color:#ffffff">Editar</button> -->
+					                    	<a th:href="@{'/editor/deleteFood/' + ${food.nombre}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color: #FF3333;border-color:#FF3333;color:#ffffff;font-size:0.9rem;">Eliminar</a>
+				                    </td>
+				                    <td>
+				                    	<a th:href="@{'/editor/ComponentesFood/' + ${food.nombre}}" class="btn btn-info btn-lg" style="background-color: #3c89d0;border-color:#3c89d0;color:#ffffff;font-size:0.9rem;">Componentes</a>
+				                    	<a th:href="@{'/editor/AlergenosFood/' + ${food.nombre}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color: #c38452;border-color:#c38452;color:#ffffff;font-size:0.9rem;">Alérgenos</a>
+				                   
+				                    </td>
+								    </tr>
+								  </tbody>
+								</table>
+							</div>
+<!-- 						<button type="button" class="btn btn-secondary" style="margin-top:25px;width:200px;margin-left:43%;" onclick="window.location.href='/editor/registrar_nuevo_usuario'">Registrar nuevo alimento</button>						 -->
+					
+<!-- 						<div class="row justify-content-start" style="width:100%"> -->
+						
+<!-- 							<div class="col-15"> -->
+<!-- 								<input class="form-control" id="myInput" type="text" placeholder="Busca alimento" style="margin-top:30px;width:100%"> -->
+<!-- 							</div> -->
+<!-- 						</div> -->
+<!-- 						<div class="modal" tabindex="-1" id="orderModal"> -->
+<!-- 							  <div class="modal-dialog"> -->
+<!-- 								    <div class="modal-content"> -->
+<!-- 								      <div class="modal-header"> -->
+<!-- 								        <h5 class="modal-title">  </h5> -->
+<!-- 								        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button> -->
+<!-- 								      </div> -->
+<!-- 								      <div class="modal-body" style="width:50%;height:225px;"> -->
+<!-- 									      <div class="content-left" style="margin-left:100px;width:300px;"> -->
+<!-- 									      		<a href="componentes"class="btn-green-flat">Mostrar componentes</a> -->
+<!-- 									      </div> -->
+<!-- 									      <div class="content-right" style="margin-left:100px;width:300px;"> -->
+<!-- 									      		<a href="alergenos"class="btn-green-flat">Mostrar alérgenos</a> -->
+<!-- 									   	  </div> -->
+<!-- 								    </div> -->
+<!-- 								  </div> -->
+<!-- 							</div> -->
+<!-- 						</div> -->
+
+
+<!-- 						<div class ="row"> -->
+<!-- 							<table class="table" id="table"> -->
+<!-- 							  <thead> -->
+<!-- 							    <tr > -->
+<!-- 								  <th scope="col">Grupo</th> -->
+<!-- 							      <th scope="col">Nombre</th> -->
+<!-- 							      <th scope="col">Nombre en inglés</th> -->
+<!-- 							      <th scope="col">Porción comestible</th> -->
+<!-- 							      <th scope="col">Operaciones</th> -->
+<!-- 							    </tr> -->
+<!-- 							  </thead> -->
+<!-- 							  <tbody id="myTable"> -->
+<!-- 							    <tr th:each="food: ${listFood}" style="cursor: pointer;" data-toggle="modal" data-target="#orderModal"> -->
+<!-- 				                    <td th:text="${food.grupo}">Grupo</td> -->
+<!-- 				                    <td th:text="${food.nombre}">Nombre</td> -->
+<!-- 				                    <td th:text="${food.ingles}">Nombre en inglés</td> -->
+<!-- 				                    <td th:text="${food.edible_portion}">Porción comestible</td> -->
+<!-- 				                    <td> -->
+<!-- 			                    		<div class="botonesEdicion" style="margin-right:-90px"> -->
+<!-- 										 	<a th:href="@{'/editor/edit/' + ${food.nombre}}" class="btn btn-info btn-lg" style="background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;">Editar</a> -->
+<!-- <!-- 										 	<a th:href="@{'/editor/edit/' + ${food.nombre}}" class="btn btn-info btn-lg" style="background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;">Editar</a> --> -->
+										 	
+<!-- 								        	<a th:href="@{'/editor/delete/' + ${food.nombre}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color:#FF3333;border-color:#FF3333;;color:#ffffff " >Eliminar</a> -->
+<!-- 										</div>  -->
+<!-- 				                    </td> -->
+<!-- 							    </tr> -->
+<!-- 							  </tbody> -->
+<!-- 							</table> -->
 							
-						</div>
+<!-- 						</div> -->
 					</div>
 				</div>
 			</div>		
@@ -209,6 +310,31 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 		  $('.toggle').toggleClass('toggle--active');
 		});
 	</script> 
+	<script>
+	$(document).ready(function() {
+	    if (location.hash) {
+	        $("a[href='" + location.hash + "']").tab("show");
+	    }
+	    $(document.body).on("click", "a[data-toggle='tab']", function(event) {
+	        location.hash = this.getAttribute("href");
+	    });
+	});
+	$(window).on("popstate", function() {
+	    var anchor = location.hash || $("a[data-toggle='tab']").first().attr("href");
+	    $("a[href='" + anchor + "']").tab("show");
+	});
+	</script>
+	<script>
+	$(document).ready(function(){
+	    $('a[data-toggle="tab"]').on('show.bs.tab', function(e) {
+	        localStorage.setItem('activeTab', $(e.target).attr('href'));
+	    });
+	    var activeTab = localStorage.getItem('activeTab');
+	    if(activeTab){
+	        $('#myTab a[href="' + activeTab + '"]').tab('show');
+	    }
+	});
+	</script>
 	<!-- //menu-js -->
 	<!-- jarallax -->  
 	<script src="js/SmoothScroll.min.js"></script> 
