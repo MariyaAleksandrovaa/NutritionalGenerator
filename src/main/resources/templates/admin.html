@@ -150,6 +150,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 							      <th scope="col">Nombre del plato</th>
 							      <th scope="col">Descripción</th>
 							      <th scope="col" data-field="action" data-formatter="actionFormatter">Operacion</th>
+							      <th scope="col">Tablas</th>
 							    </tr>
 							  </thead>
 							  <tbody>
@@ -162,6 +163,12 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 										 	<a th:href="@{'/admin/editDish/' + ${dish.id_plato}}" class="btn btn-info btn-lg" style="background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;;font-size:0.9rem;">Editar</a>
 								        	<a th:href="@{'/admin/deleteDish/' + ${dish.id_plato}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color:#FF3333;border-color:#FF3333;;color:#ffffff;font-size:0.9rem; " >Eliminar</a>
 										 </div>     	                    	
+				                    </td>
+		                    		<td>
+		                    			<div class="botonesEdicion" style="margin-right:-110px">
+					                    	<a th:href="@{'/admin/ComponentesDish/' + ${dish.id_plato}}" class="btn btn-info btn-lg" style="background-color: #3c89d0;border-color:#3c89d0;color:#ffffff;font-size:0.9rem;">Componentes</a>
+					                    	<a th:href="@{'/admin/AlergenosDish/' + ${dish.id_plato}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color: #c38452;border-color:#c38452;color:#ffffff;font-size:0.9rem;">Alérgenos</a>
+					                   	</div>
 				                    </td>
 							    </tr>
 							  </tbody>

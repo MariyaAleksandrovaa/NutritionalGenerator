@@ -757,7 +757,6 @@ public class ControllerMVC {
 
 		return model;
 	}
-//	/admin/deleteDish
 
 	@RequestMapping("/admin/deleteDish/{id_plato}")
 	public String eliminarPlato(@PathVariable("id_plato") int id_plato) {
