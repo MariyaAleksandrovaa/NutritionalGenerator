@@ -1,5 +1,6 @@
 package app.controller;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 
 import java.sql.SQLException;
@@ -409,19 +410,21 @@ public class ControllerMVC {
 		try {
 
 			Statement st = Application.con.createStatement();
-			ResultSet rs = st.executeQuery("SELECT g.nombre, ac.c_ori_name, ac.best_location, ac.v_unit  \r\n"
-					+ "FROM nutri_db.alimentos_componentesquimicos as ac left join componentesquimicos as c on ac.c_ori_name = c.c_ori_name \r\n"
-					+ "left join gruposcomponentes as g on c.componentgroup_id = g.idGruposComponentes\r\n"
-					+ "where idAlimento = " + idAlimento + "\r\n" + "and ac.best_location > 0\r\n"
-					+ "order by best_location desc;");
+			ResultSet rs = st
+					.executeQuery("SELECT g.nombre, ac.c_ori_name, ac.best_location, ac.v_unit, ac.mu_descripcion  \r\n"
+							+ "FROM nutri_db.alimentos_componentesquimicos as ac left join componentesquimicos as c on ac.c_ori_name = c.c_ori_name \r\n"
+							+ "left join gruposcomponentes as g on c.componentgroup_id = g.idGruposComponentes\r\n"
+							+ "where idAlimento = " + idAlimento + "\r\n" + "and ac.best_location > 0\r\n"
+							+ "order by best_location desc;");
 
 			while (rs.next()) {
 				String nombreComponente = rs.getString(1);
 				String descripcionComponente = rs.getString(2);
 				Float valor = rs.getFloat(3);
 				String unidad = rs.getString(4);
+				String descripcion = rs.getString(5);
 
-				ComponentsFood componente = new ComponentsFood(nombreComponente, descripcionComponente, valor, unidad);
+				ComponentsFood componente = new ComponentsFood(nombreComponente, descripcionComponente, valor, unidad,descripcion);
 				listaComponentes.add(componente);
 			}
 			rs.close();
@@ -668,14 +671,14 @@ public class ControllerMVC {
 		ModelAndView model = new ModelAndView("inicio_sesion");
 
 		User user = userRepo.findByUsername(resetPwdObj.getUsername());
-		
-		if(user != null) {
-			if(resetPwdObj.getPwd().equals(resetPwdObj.getResetPwd())) {
-				
+
+		if (user != null) {
+			if (resetPwdObj.getPwd().equals(resetPwdObj.getResetPwd())) {
+
 				BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 				user.setPassword(encoder.encode(resetPwdObj.getPwd()));
 				userRepo.save(user);
-				
+
 			}
 		}
 

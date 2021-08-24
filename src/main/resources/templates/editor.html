@@ -209,22 +209,21 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 								    </tr>
 								  </thead>
 								  <tbody id="table">
-							    <tr th:each="food: ${listFood}" style="cursor: pointer;" data-toggle="modal" data-target="#orderModal">
-				                    <td th:text="${food.grupo}">Grupo</td>
-				                    <td th:text="${food.nombre}">Nombre</td>
-				                    <td th:text="${food.ingles}">Nombre en inglés</td>
-				                    <td th:text="${food.edible_portion}">Porción comestible</td>
-				                    <td >
-					                    	<a th:href="@{'/editor/editFood/' + ${food.nombre}}" class="btn btn-info btn-lg" style="background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;font-size:0.9rem;">Editar</a>
-	<!-- 				                    	<button type="button" class="btn btn-primary" style="background-color: #4CBB17;border-color:#4CBB17;color:#ffffff">Editar</button> -->
-					                    	<a th:href="@{'/editor/deleteFood/' + ${food.nombre}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color: #FF3333;border-color:#FF3333;color:#ffffff;font-size:0.9rem;">Eliminar</a>
-				                    </td>
-				                    <td>
-				                    	<a th:href="@{'/editor/ComponentesFood/' + ${food.nombre}}" class="btn btn-info btn-lg" style="background-color: #3c89d0;border-color:#3c89d0;color:#ffffff;font-size:0.9rem;">Componentes</a>
-				                    	<a th:href="@{'/editor/AlergenosFood/' + ${food.nombre}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color: #c38452;border-color:#c38452;color:#ffffff;font-size:0.9rem;">Alérgenos</a>
-				                   
-				                    </td>
-								    </tr>
+								    	<tr th:each="food: ${listFood}" style="cursor: pointer;" data-toggle="modal" data-target="#orderModal">
+						                    <td th:text="${food.grupo}">Grupo</td>
+						                    <td th:text="${food.nombre}">Nombre</td>
+						                    <td th:text="${food.ingles}">Nombre en inglés</td>
+						                    <td th:text="${food.edible_portion}">Porción comestible</td>
+						                    <td >
+							                    	<a th:href="@{'/editor/editFood/' + ${food.nombre}}" class="btn btn-info btn-lg" style="background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;font-size:0.9rem;">Editar</a>
+							                    	<a th:href="@{'/editor/deleteFood/' + ${food.nombre}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color: #FF3333;border-color:#FF3333;color:#ffffff;font-size:0.9rem;">Eliminar</a>
+						                    </td>
+						                    <td>
+						                    	<a th:href="@{'/editor/ComponentesFood/' + ${food.nombre}}" class="btn btn-info btn-lg" style="background-color: #3c89d0;border-color:#3c89d0;color:#ffffff;font-size:0.9rem;">Componentes</a>
+						                    	<a th:href="@{'/editor/AlergenosFood/' + ${food.nombre}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color: #c38452;border-color:#c38452;color:#ffffff;font-size:0.9rem;">Alérgenos</a>
+						                   
+						                    </td>
+									    </tr>
 								  </tbody>
 								</table>
 							</div>
@@ -381,7 +380,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	$(document).ready(function(){
 	  $("#myInput").on("keyup", function() {
 	    var value = $(this).val().toLowerCase();
-	    $("#myTable tr").filter(function() {
+	    $("#table tr").filter(function() {
 	      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
 	    });
 	  });

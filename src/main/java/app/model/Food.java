@@ -13,10 +13,6 @@ import javax.persistence.Table;
 @Table(name = "alimentos")
 public class Food {
 
-//	@Id
-//	@GeneratedValue(strategy = GenerationType.AUTO)
-//	private int idAlimentos;
-
 	@Column(nullable = true)
 	private Integer id_grupo_alimento;
 
@@ -67,13 +63,8 @@ public class Food {
 	@Column(length = 400, nullable = true)
 	private String pt_descripcion;
 
-//	public int getIdAlimentos() {
-//		return idAlimentos;
-//	}
-//
-//	public void setIdAlimentos(int idAlimentos) {
-//		this.idAlimentos = idAlimentos;
-//	}
+	private BigDecimal calorias;
+	private String unity;
 
 	public Integer getIdGrupo() {
 		return id_grupo_alimento;
@@ -201,6 +192,22 @@ public class Food {
 
 	public void setPt_descripcion(String pt_descripcion) {
 		this.pt_descripcion = pt_descripcion;
+	}
+
+	public BigDecimal getCalorias() {
+		return calorias;
+	}
+
+	public void setCalorias(BigDecimal calorias) {
+		this.calorias = calorias;
+	}
+
+	public String getUnity() {
+		return unity;
+	}
+
+	public void setUnity(String unity) {
+		this.unity = unity;
 	}
 
 }
