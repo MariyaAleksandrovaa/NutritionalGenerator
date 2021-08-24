@@ -8,27 +8,28 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 <html lang="en">
 
 <head>
-<title>AdminNutriApp</title>
+<title>EditorNutriApp</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	
+
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>	
 <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
 <!-- Custom Theme files -->
-<link href="css/bootstrap.css" type="text/css" rel="stylesheet" media="all">
+<link href="../css/bootstrap.css" type="text/css" rel="stylesheet" media="all">
 
 <!-- CSS only -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"/>
 <!-- JavaScript Bundle with Popper -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
-<link href="css/style.css" type="text/css" rel="stylesheet" media="all">   
-<link href="css/font-awesome.css" rel="stylesheet"> <!-- font-awesome icons --> 
-<link rel="stylesheet" href="css/smoothbox.css" type='text/css' media="all" /> 
+<link href="../css/style.css" type="text/css" rel="stylesheet" media="all">   
+<link href="../css/font-awesome.css" rel="stylesheet"> <!-- font-awesome icons --> 
+<link rel="stylesheet" href="../css/smoothbox.css" type='text/css' media="all" /> 
 <!-- //Custom Theme files --> 
 
 <!-- js -->
-<script src="js/jquery-2.2.3.min.js"></script>  
+<script src="../js/jquery-2.2.3.min.js"></script>  
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> -->
 <!-- //js -->
@@ -53,7 +54,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 		<!-- banner-text -->
 		<div class="banner-text w3labout-bnr"> 
 			<div class="container">  
-				<h2>Cuenta de administrador</h2>   
+				<h2>Cuenta de editor</h2>   
 			</div>
 		</div>
 		<!-- //banner-text -->
@@ -61,101 +62,41 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	<!-- //banner -->   
 	<!-- gallery -->
 	<div class="about gallery">
-		<div class="container">  
+		<div class="container">
 			<div role="tabpanel">
-				<ul class="nav nav-tabs" role="tablist">
-				  <li role ="presentation" class="active" >
-				    <a href="#seccion1" data-toggle="tab" role="tab">Menús</a>
-				  </li>
-				  <li role ="presentation">
-				  	<a href="#seccion2" data-toggle="tab" role="tab">Platos</a>
-				  </li>
-				</ul>
-				<div class="tab-content">
-					<div role="tabpanel" class="tab-pane active" id="seccion1">
-						<div class="modal" tabindex="-1" id="modal1">
-						  <div class="modal-dialog">
-						    <div class="modal-content">
-						      <div class="modal-header">
-						        <h5 class="modal-title">Generar menú individual</h5>
-						        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
-						      </div>
-						      <div class="modal-body">
-								<div class="container py-4" style="margin-left:80px" >
-									<select class="form-select" aria-label="Default select example" style="margin-top:10px;width:70%">
-										<option selected>Escoge primer plato</option>
-										<option th:each="dish:${dishes}"
-											th:value="${dish.id_plato}"
-											th:text="${dish.nombre_plato}"
-										/>
-									</select>
-
-									<select class="form-select" aria-label="Default select example" style="margin-top:10px;width:70%">
-									  <option selected>Escoge segundo plato</option>
-										<option th:each="dish:${dishes}"
-											th:value="${dish.id_plato}"
-											th:text="${dish.nombre_plato}"
-										/>
-									</select>
-									<select class="form-select" aria-label="Default select example" style="margin-top:10px;width:70%">
-									  <option selected>Escoge postre (Opcional)</option>
-										<option th:each="dish:${dishes}"
-											th:value="${dish.id_plato}"
-											th:text="${dish.nombre_plato}"
-										/>
-									</select>
-								</div>
-
-						      </div>
-						      <div class="modal-footer">
-						        <button type="button" class="btn btn-primary"  style="background-color:#28B463;border-color:#28B463" >Guardar cambios</button>
-						      </div>
+				<div class="tab-content" style="margin-left: 20%;">
+						<div role="tabpanel" class="tab-pane active" id="seccion1" style="width: 50%;margin: 0 auto;">
+						<form
+							th:action="@{/admin/crear_nuevo_plato/ingredientes}"
+							th:object="${dishObj}" 
+							method="post" >
+							
+						    <div class="form-group" style="margin-top:25px;">
+						    	<label for="exampleInputEmail1" >Nombre del plato</label>
+						    	<input type="text" class="form-control" id="id_cif" th:field="*{nombre_plato}"  style="margin-top:8px;width:60%;" aria-describedby="emailHelp" placeholder="Introduce nombre que le quieras dar al plato">
 						    </div>
-						  </div>
-						</div>
-						<button class="btn btn-primary" type="button" data-toggle='modal' data-target='#modal1' style="background-color:#E00000;border-color:#E00000" >Generar nuevo menú</button>
-						<div class ="row">
-							<table class="table">
-							  <thead>
-							    <tr >
-							      <th scope="col">Fecha Creación</th>
-							      <th scope="col">Nombre del menú</th>
-							      <th scope="col">Descripción</th>
-							    </tr>
-							  </thead>
-							  <tbody>
-							    <tr th:each="menu: ${listMenus}">
-				                    <td th:text="${menu.fecha_creacion}">Fecha Creación</td>
-				                    <td th:text="${menu.nombre_menu}">Nombre del menú</td>
-				                    <td th:text="${menu.descripcion}">Descripción</td>
-							    </tr>
-							  </tbody>
-							</table>
-						</div>
+						    <div class="form-group">
+						   		 <label for="exampleInputEmail1">Descripción</label>
+						  		 <input type="text" class="form-control" id="id_nombre" th:field="*{descripcion}" style="margin-top:8px;width:60%;"  aria-describedby="emailHelp" placeholder="Introduce descripción" required>
+						    </div>
+							
+							<div class="form-group" style="margin-top:30px;">
+								<label for="exampleInputEmail1">Escoge el tipo de plato</label> 
+								<select class="form-select" th:field="*{typeDish}" aria-label="Default select example" style="margin-top:10px;width:60%">
+<!-- 									<option selected th:value="${select}">Escoge una empresa</option> -->
+									<option th:each="typeDish:${listTypeDishes}"
+										th:value="${typeDish.id_tipos_platos}"
+										th:text="${typeDish.descripcion}"
+									/>
+								</select>
+							</div>
+	
+							<button type="submit" class="btn btn-primary">Proceder a escoger ingredientes</button>
+						</form>
 					</div>
-					<div role="tabpanel" class="tab-pane" id="seccion2">
-						<button type="button" class="btn btn-secondary" style="margin-top:25px;width:200px;margin-left:43%;margin-bottom:20px;" onclick="window.location.href='/admin/crear_nuevo_plato'">Crear nuevo plato</button>
-						<div class ="row">
-							<table class="table">
-							  <thead>
-							    <tr >
-							      <th scope="col">Número</th>
-							      <th scope="col">Nombre del plato</th>
-							      <th scope="col">Descripción</th>
-							    </tr>
-							  </thead>
-							  <tbody>
-							    <tr th:each="dish: ${listDish}">
-				                    <td th:text="${dish.plato}">Número</td>
-				                    <td th:text="${dish.nombre_plato}">Nombre del plato</td>
-				                    <td th:text="${dish.descripcion}">Descripción</td>
-							    </tr>
-							  </tbody>
-							</table>
-						</div>
-					</div>
+
 				</div>
-			</div>		
+			</div>
 		</div>
 	</div>
 	<!-- //gallery -->  
@@ -169,7 +110,8 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 		</div>
 	</div>
 	<!-- //footer -->
-
+  
+	<!-- menu-js -->
 	<script>
 		$('.navicon').on('click', function (e) {
 		  e.preventDefault();
@@ -237,16 +179,64 @@ License URL: http://creativecommons.org/licenses/by/3.0/
         $(".btn").click(function(){
             $("#modal1").modal('hide');
         });
-    	$("#myTable").on("click","tr",function(e){
-    		console.log(e.currentTarget);
-    	})
     });
 	</script>
 	<script>
-	$("#myTable").on("click","tr",function(e){
-		console.log(e.currentTarget);
-	})
+	$(function(){
+	    $('#orderModal').modal({
+	        keyboard: true,
+	        backdrop: "static",
+	        show:false,
+
+	    }).on('show', function(){ //subscribe to show method
+	          var getIdFromRow = $(event.target).closest('tr').data('id'); //get the id from tr
+	        //make your ajax call populate items or what even you need
+	        $(this).find('#orderDetails').html($('<b> Order Id selected: ' + getIdFromRow  + '</b>'))
+	    });
+	});
 	</script>
+	<script>
+	var globalModal = $('.global-modal');
+    $( ".btn-green-flat-trigger" ).on( "click", function(e) {
+      e.preventDefault();
+      $( globalModal ).toggleClass('global-modal-show');
+    });
+    $( ".overlay" ).on( "click", function() {
+      $( globalModal ).toggleClass('global-modal-show');
+    });
+    $( ".global-modal_close" ).on( "click", function() {
+      $( globalModal ).toggleClass('global-modal-show');
+    });
+    $(".mobile-close").on("click", function(){
+      $( globalModal ).toggleClass('global-modal-show');
+    });
+	</script>
+	<script>
+	$('#myTable').bootstrapTable({
+	    onClickRow: function (row, $element) {
+	        // row: the record corresponding to the clicked row, 
+	        // $element: the tr element.
+	        
+	        var address = [];
+	        $(this).closest('tr').find('td').not(':last').each(function() {
+	            var textval = $(this).text(); // this will be the text of each <td>
+	           address.push(textval);
+	       });
+	        alert(address.join('\n'));
+	    }
+	});
+	</script>
+	
+	<script>
+	// jQuery version
+	$("input[type='number']").each(function(i, el) {
+	    el.type = "text";
+	    el.onfocus = function(){this.type="number";};
+	    el.onblur = function(){this.type="text";};
+	});
+	</script>
+
+	
 
 	<!-- //smooth-scrolling-of-move-up -->  		
 	<!-- Bootstrap core JavaScript

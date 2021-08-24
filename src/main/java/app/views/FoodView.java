@@ -11,7 +11,9 @@ import javax.persistence.Table;
 public class FoodView {
 
 	public String grupo;
+
 	@Id
+	public int id_alimento;
 	public String nombre;
 	public String ingles;
 	public BigDecimal edible_portion;

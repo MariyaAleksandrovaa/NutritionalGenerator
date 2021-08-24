@@ -15,20 +15,20 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	
 <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
 <!-- Custom Theme files -->
-<link href="css/bootstrap.css" type="text/css" rel="stylesheet" media="all">
+<link href="../../css/bootstrap.css" type="text/css" rel="stylesheet" media="all">
 
 <!-- CSS only -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"/>
 <!-- JavaScript Bundle with Popper -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
-<link href="css/style.css" type="text/css" rel="stylesheet" media="all">   
-<link href="css/font-awesome.css" rel="stylesheet"> <!-- font-awesome icons --> 
-<link rel="stylesheet" href="css/smoothbox.css" type='text/css' media="all" /> 
+<link href="../../css/style.css" type="text/css" rel="stylesheet" media="all">   
+<link href="../../css/font-awesome.css" rel="stylesheet"> <!-- font-awesome icons --> 
+<link rel="stylesheet" href="../../css/smoothbox.css" type='text/css' media="all" /> 
 <!-- //Custom Theme files --> 
 
 <!-- js -->
-<script src="js/jquery-2.2.3.min.js"></script>  
+<script src="../../js/jquery-2.2.3.min.js"></script>  
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> -->
 <!-- //js -->
@@ -62,100 +62,40 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	<!-- gallery -->
 	<div class="about gallery">
 		<div class="container">  
-			<div role="tabpanel">
-				<ul class="nav nav-tabs" role="tablist">
-				  <li role ="presentation" class="active" >
-				    <a href="#seccion1" data-toggle="tab" role="tab">Menús</a>
-				  </li>
-				  <li role ="presentation">
-				  	<a href="#seccion2" data-toggle="tab" role="tab">Platos</a>
-				  </li>
-				</ul>
-				<div class="tab-content">
-					<div role="tabpanel" class="tab-pane active" id="seccion1">
-						<div class="modal" tabindex="-1" id="modal1">
-						  <div class="modal-dialog">
-						    <div class="modal-content">
-						      <div class="modal-header">
-						        <h5 class="modal-title">Generar menú individual</h5>
-						        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
-						      </div>
-						      <div class="modal-body">
-								<div class="container py-4" style="margin-left:80px" >
-									<select class="form-select" aria-label="Default select example" style="margin-top:10px;width:70%">
-										<option selected>Escoge primer plato</option>
-										<option th:each="dish:${dishes}"
-											th:value="${dish.id_plato}"
-											th:text="${dish.nombre_plato}"
-										/>
-									</select>
-
-									<select class="form-select" aria-label="Default select example" style="margin-top:10px;width:70%">
-									  <option selected>Escoge segundo plato</option>
-										<option th:each="dish:${dishes}"
-											th:value="${dish.id_plato}"
-											th:text="${dish.nombre_plato}"
-										/>
-									</select>
-									<select class="form-select" aria-label="Default select example" style="margin-top:10px;width:70%">
-									  <option selected>Escoge postre (Opcional)</option>
-										<option th:each="dish:${dishes}"
-											th:value="${dish.id_plato}"
-											th:text="${dish.nombre_plato}"
-										/>
-									</select>
-								</div>
-
-						      </div>
-						      <div class="modal-footer">
-						        <button type="button" class="btn btn-primary"  style="background-color:#28B463;border-color:#28B463" >Guardar cambios</button>
-						      </div>
-						    </div>
-						  </div>
+						<a th:href="@{/admin/crear_nuevo_plato/ingrediente/terminarPlato}" class="btn btn-info btn-lg" style="margin-bottom:35px;background-color: #6c757d;margin-left:91%;font-size:1.5rem;border-color: #6c757d;color:#ffffff;">Terminar plato</a>
+						<div class="row justify-content-start">
+							<div class="col-12">
+								<input class="form-control" id="myInput" type="text" placeholder="Busca alimento">
+							</div>
 						</div>
-						<button class="btn btn-primary" type="button" data-toggle='modal' data-target='#modal1' style="background-color:#E00000;border-color:#E00000" >Generar nuevo menú</button>
 						<div class ="row">
 							<table class="table">
 							  <thead>
 							    <tr >
-							      <th scope="col">Fecha Creación</th>
-							      <th scope="col">Nombre del menú</th>
-							      <th scope="col">Descripción</th>
+								  <th scope="col">Grupo</th>
+							      <th scope="col">Nombre</th>
+							      <th scope="col">Nombre en inglés</th>
+							      <th scope="col">Porción comestible</th>
+							      <th scope="col">Operacion</th>
+							      
 							    </tr>
 							  </thead>
-							  <tbody>
-							    <tr th:each="menu: ${listMenus}">
-				                    <td th:text="${menu.fecha_creacion}">Fecha Creación</td>
-				                    <td th:text="${menu.nombre_menu}">Nombre del menú</td>
-				                    <td th:text="${menu.descripcion}">Descripción</td>
+							  <tbody id="myTable">
+							    <tr th:each="food: ${listFood}">
+				                    <td th:text="${food.grupo}">Grupo</td>
+				                    <td th:text="${food.nombre}">Nombre</td>
+				                    <td th:text="${food.ingles}">Nombre en inglés</td>
+				                    <td th:text="${food.edible_portion}">Porción comestible</td>
+				                    <td >
+										 <div class="botonesEdicion" style="margin-right:-140px">
+										 	<a th:href="@{'/admin/crear_nuevo_plato/ingredientes/' + ${food.id_alimento}}" class="btn btn-info btn-lg" style="background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;;font-size:0.9rem;">Añadir al plato</a>
+										 </div>     	                    	
+					                 </td>
 							    </tr>
 							  </tbody>
 							</table>
 						</div>
-					</div>
-					<div role="tabpanel" class="tab-pane" id="seccion2">
-						<button type="button" class="btn btn-secondary" style="margin-top:25px;width:200px;margin-left:43%;margin-bottom:20px;" onclick="window.location.href='/admin/crear_nuevo_plato'">Crear nuevo plato</button>
-						<div class ="row">
-							<table class="table">
-							  <thead>
-							    <tr >
-							      <th scope="col">Número</th>
-							      <th scope="col">Nombre del plato</th>
-							      <th scope="col">Descripción</th>
-							    </tr>
-							  </thead>
-							  <tbody>
-							    <tr th:each="dish: ${listDish}">
-				                    <td th:text="${dish.plato}">Número</td>
-				                    <td th:text="${dish.nombre_plato}">Nombre del plato</td>
-				                    <td th:text="${dish.descripcion}">Descripción</td>
-							    </tr>
-							  </tbody>
-							</table>
-						</div>
-					</div>
-				</div>
-			</div>		
+						
 		</div>
 	</div>
 	<!-- //gallery -->  

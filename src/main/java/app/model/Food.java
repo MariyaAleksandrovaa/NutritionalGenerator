@@ -19,7 +19,7 @@ public class Food {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(nullable = true)
-	private Integer id_alimento;
+	public Integer id_alimento;
 
 	@Column(length = 90, nullable = true)
 	private String nombre;

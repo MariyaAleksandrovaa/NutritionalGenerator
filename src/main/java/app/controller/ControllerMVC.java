@@ -6,7 +6,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +31,10 @@ import app.model.Food;
 import app.model.GroupFood;
 import app.model.Local;
 import app.model.Role;
+import app.model.TypeDish;
 import app.model.User;
+import app.objects.DishObj;
+import app.objects.FoodAmountObj;
 import app.objects.ResetPwdObj;
 import app.parametrizedObjects.AlergensFood;
 import app.parametrizedObjects.ComponentsFood;
@@ -40,6 +45,7 @@ import app.repository.GroupFoodRepository;
 import app.repository.LocalRepository;
 //import app.repository.LocalRepository;
 import app.repository.RoleRepository;
+import app.repository.TypeDishRepository;
 import app.repository.UserRepository;
 import app.repository.view.DishViewRepository;
 import app.repository.view.FoodViewRepository;
@@ -100,7 +106,12 @@ public class ControllerMVC {
 	@Autowired
 	private LocalRepository localRepo;
 
+	@Autowired
+	private TypeDishRepository typeDishRepo;
+
 	public String password;
+
+	public DishObj dishObj;
 
 	@RequestMapping(value = { "/prueba", "/" }, method = RequestMethod.GET)
 	public ModelAndView viewHomePage2() {
@@ -117,13 +128,11 @@ public class ControllerMVC {
 	public String viewAdminPage(Model model) {
 
 		List<MenuView> listMenus = menuViewRepo.findAll();
-		List<FoodView> listFood = foodViewRepo.findAll();
 		List<DishView> listDish = dishViewRepo.findAll();
 
 		List<Dish> dishes = dishRepo.findAll();
 
 		model.addAttribute("listMenus", listMenus);
-		model.addAttribute("listFood", listFood);
 		model.addAttribute("listDish", listDish);
 		model.addAttribute("dishes", dishes);
 
@@ -147,45 +156,6 @@ public class ControllerMVC {
 
 		return "editor";
 	}
-
-//	public String getCompanyUser(Statement st, int idUser) {
-//		String company = "";
-//		try {
-//			ResultSet resultCompany = st.executeQuery(
-//					"select e.nombre\r\n" + "from users as u left join empresas as e on u.id_empresa=e.id_empresa\r\n"
-//							+ "where user_id= " + idUser + ";");
-//			while (resultCompany.next()) {
-//				if (resultCompany.getString(1) != null) {
-//					company = resultCompany.getString(1);
-//					int a = 0;
-//				}
-//			}
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		}
-//		return company;
-//	}
-//
-//	public String getRoleUser(Statement st, int idUser) {
-//		String role = "";
-//		ResultSet resultRole;
-//		try {
-//			resultRole = st.executeQuery("select r.name\r\n"
-//					+ "from users as u right join users_roles as ur on u.user_id=ur.user_id\r\n"
-//					+ "left join roles as r on ur.role_id = r.role_id \r\n" + "where u.user_id = " + idUser + ";");
-//
-//			while (resultRole.next()) {
-//
-//				return resultRole.getString(1);
-//			}
-//
-//		} catch (SQLException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//
-//		return role;
-//	}
 
 	// NutriApp para usuario normal
 
@@ -424,7 +394,8 @@ public class ControllerMVC {
 				String unidad = rs.getString(4);
 				String descripcion = rs.getString(5);
 
-				ComponentsFood componente = new ComponentsFood(nombreComponente, descripcionComponente, valor, unidad,descripcion);
+				ComponentsFood componente = new ComponentsFood(nombreComponente, descripcionComponente, valor, unidad,
+						descripcion);
 				listaComponentes.add(componente);
 			}
 			rs.close();
@@ -679,6 +650,108 @@ public class ControllerMVC {
 				user.setPassword(encoder.encode(resetPwdObj.getPwd()));
 				userRepo.save(user);
 
+			}
+		}
+
+		return model;
+	}
+
+	List<Food> listFoodDish = new ArrayList<Food>();
+
+	@RequestMapping(value = "/admin/crear_nuevo_plato", method = RequestMethod.GET)
+	public ModelAndView crearNuevoPlato() {
+
+		ModelAndView model = new ModelAndView("crear_nuevo_plato");
+		dishObj = new DishObj();
+
+		List<TypeDish> listTypeDishes = typeDishRepo.findAll();
+
+		model.addObject("listTypeDishes", listTypeDishes);
+		model.addObject("dishObj", dishObj);
+
+		return model;
+	}
+
+	@PostMapping("/admin/crear_nuevo_plato/ingredientes")
+	public ModelAndView escogerIngredientes(DishObj dishObj) {
+
+		ModelAndView model = new ModelAndView("ingredientes");
+
+		this.dishObj = dishObj;
+
+		List<FoodView> listFood = foodViewRepo.findAll();
+
+		model.addObject("listFood", listFood);
+
+		return model;
+	}
+
+	@RequestMapping("/admin/crear_nuevo_plato/ingredientes/{id_alimento}")
+	public ModelAndView añadirIngrediente(@PathVariable("id_alimento") int id_alimento) {
+
+		ModelAndView model = new ModelAndView("opciones_ingrediente");
+
+		Food food = foodRepo.findByIdAlimento(id_alimento);
+		listFoodDish.add(food);
+		dishObj.setMapFood(ingredientes);
+
+		List<Food> listFood = foodRepo.findAll();
+
+		FoodAmountObj foodAmountObj = new FoodAmountObj();
+		foodAmountObj.setFood(food.getNombre());
+
+		model.addObject("listFood", listFood);
+		model.addObject("foodAmountObj", foodAmountObj);
+
+		return model;
+	}
+
+	public Map<String, BigDecimal> ingredientes = new HashMap<String, BigDecimal>();
+
+	@PostMapping("/admin/crear_nuevo_plato/ingrediente")
+	public ModelAndView guardarIngrediente(FoodAmountObj foodAmountObj) {
+
+		ModelAndView model = new ModelAndView("ingredientes");
+		ingredientes.put(foodAmountObj.getFood(), foodAmountObj.getAmount());
+		List<FoodView> listFood = foodViewRepo.findAll();
+
+		model.addObject("listFood", listFood);
+
+		return model;
+	}
+
+	@RequestMapping("/admin/crear_nuevo_plato/ingrediente/terminarPlato")
+	public ModelAndView terminarPlato() {
+
+		ModelAndView model = new ModelAndView("terminar_plato");
+
+		model.addObject("listIngredientes", ingredientes);
+
+		return model;
+	}
+
+	@RequestMapping("/admin/crear_nuevo_plato/ingrediente/terminarPlatoExito")
+	public ModelAndView terminarPlatoExito() {
+
+		ModelAndView model = new ModelAndView("admin");
+
+		Dish dish = new Dish();
+		dish.setNombre_plato(dishObj.getNombre_plato());
+		dish.setDescripcion(dishObj.getDescripcion());
+
+		dish.setId_tipo_platos(Integer.parseInt(dishObj.getTypeDish()));
+
+		dishRepo.save(dish);
+
+		for (var ingrediente : dishObj.getMapFood().entrySet()) {
+
+			try {
+				Statement st = Application.con.createStatement();
+				st.executeUpdate("insert into platos_alimentos (idPlato, idAlimento, cantidad) values (" + dish.getId_plato() + ", "
+						+ foodRepo.findByNameAlimento(ingrediente.getKey()).getIdAlimento() + ","
+						+ ingrediente.getValue() + ");");
+			} catch (SQLException e) {
+				e.printStackTrace();
 			}
 		}
 
