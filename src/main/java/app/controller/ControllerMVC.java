@@ -747,15 +747,24 @@ public class ControllerMVC {
 
 			try {
 				Statement st = Application.con.createStatement();
-				st.executeUpdate("insert into platos_alimentos (idPlato, idAlimento, cantidad) values (" + dish.getId_plato() + ", "
-						+ foodRepo.findByNameAlimento(ingrediente.getKey()).getIdAlimento() + ","
-						+ ingrediente.getValue() + ");");
+				st.executeUpdate("insert into platos_alimentos (idPlato, idAlimento, cantidad) values ("
+						+ dish.getId_plato() + ", " + foodRepo.findByNameAlimento(ingrediente.getKey()).getIdAlimento()
+						+ "," + ingrediente.getValue() + ");");
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 		}
 
 		return model;
+	}
+//	/admin/deleteDish
+
+	@RequestMapping("/admin/deleteDish/{id_plato}")
+	public String eliminarPlato(@PathVariable("id_plato") int id_plato) {
+
+		dishRepo.deleteById(id_plato);
+
+		return "redirect:/admin";
 	}
 
 }
