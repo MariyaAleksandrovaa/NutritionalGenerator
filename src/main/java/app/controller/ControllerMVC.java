@@ -766,4 +766,27 @@ public class ControllerMVC {
 		return "redirect:/admin";
 	}
 
+	@RequestMapping("/admin/editDish/{id_plato}")
+	public ModelAndView editarPlato(@PathVariable("id_plato") int id_plato) {
+
+		ModelAndView model = new ModelAndView("editar_plato");
+
+		Dish dish = dishRepo.findById(id_plato).get();
+		List<TypeDish> listTypeDish = typeDishRepo.findAll();
+
+		model.addObject("dish", dish);
+		model.addObject("listTypeDish", listTypeDish);
+
+		return model;
+	}
+
+	@PostMapping("/admin/saveDish/{id_plato}")
+	public String guardarPlato(Dish dish) {
+
+
+		dishRepo.save(dish);
+
+		return "redirect:/admin";
+	}
+
 }
