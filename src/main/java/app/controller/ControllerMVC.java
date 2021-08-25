@@ -253,7 +253,6 @@ public class ControllerMVC {
 			companyRepo.delete(companyService.get(id));
 
 		} catch (CompanyNotfound e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -736,8 +735,6 @@ public class ControllerMVC {
 	@RequestMapping("/admin/crear_nuevo_plato/terminarPlatoExito")
 	public String terminarPlatoExito() {
 
-		ModelAndView model = new ModelAndView("terminar_plato");
-
 		Dish dish = new Dish();
 		dish.setNombre_plato(dishObj.getNombre_plato());
 		dish.setDescripcion(dishObj.getDescripcion());
@@ -874,7 +871,6 @@ public class ControllerMVC {
 			}
 			st2.close();
 
-			List<ComponentsFood> listaComponentesPlato = new ArrayList<ComponentsFood>();
 			Map<String, Float> mapComponentsDish2 = new HashMap<String, Float>();
 
 			for (var ingrediente : mapComponentsDish.entrySet()) {
@@ -948,7 +944,7 @@ public class ControllerMVC {
 
 				componentDishTable.setGroupComponent(groupUnitObj.getGroup());
 				componentDishTable.setUnit(groupUnitObj.getUnit());
-				
+
 				listComponentDishTable.add(componentDishTable);
 
 			}
@@ -958,6 +954,65 @@ public class ControllerMVC {
 		}
 
 		return listComponentDishTable;
+	}
+
+//	List<AlergensFood> obtenerBDalergenosAlimento(int idAlimento)
+
+//	/admin/AlergenosDish/' + ${dish.id_plato}
+
+	@RequestMapping("/admin/AlergenosDish/{id_plato}")
+	public ModelAndView mostrarAlergenosPlato(@PathVariable("id_plato") int id_plato) {
+
+		ModelAndView model = new ModelAndView("alergenos_plato");
+
+//		List<ComponentsDishTable> listComponentsDish = obtenerBDalergenosAlimento(id_plato);
+
+//		model.addObject("listComponentsDish", listComponentsDish);
+		
+		
+
+//		1º Obtener los ids de los alimentos que tiene un plato
+
+		List<Integer> listIdAliment = new ArrayList<Integer>();
+
+
+
+		try {
+			
+			Statement st = Application.con.createStatement();
+
+			ResultSet rs = st.executeQuery(
+					"select idAlimento\r\n" + "from platos_alimentos\r\n" + "where idPlato =" + id_plato + ";");
+			
+			Map<String, String> mapAlergensDish = new HashMap<String, String>();
+			while (rs.next()) {
+				
+				List<AlergensFood> listAlergensFood = obtenerBDalergenosAlimento(rs.getInt(1));
+				
+				for(AlergensFood alergensFood: listAlergensFood) {
+					mapAlergensDish.put(alergensFood.getAlergeno(), alergensFood.getDescripcion());
+					
+				}
+
+			}
+			
+			rs.close();
+			
+			model.addObject("mapAlergensDish", mapAlergensDish);
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		
+
+//		2º Por cada id obtener sus alérgenos
+
+//		3º Almacenar en un mapa los alérgenos
+
+//		4º Enviar alérgenos a la página
+
+		return model;
 	}
 
 }
