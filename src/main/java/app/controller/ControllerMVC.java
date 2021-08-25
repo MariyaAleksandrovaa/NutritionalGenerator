@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import app.Application;
+import app.model.ComponentsDishTable;
 import app.model.Dish;
 import app.model.Empresa;
 import app.model.Food;
@@ -35,6 +36,7 @@ import app.model.TypeDish;
 import app.model.User;
 import app.objects.DishObj;
 import app.objects.FoodAmountObj;
+import app.objects.GroupUnitObj;
 import app.objects.ResetPwdObj;
 import app.parametrizedObjects.AlergensFood;
 import app.parametrizedObjects.ComponentsFood;
@@ -726,14 +728,15 @@ public class ControllerMVC {
 		ModelAndView model = new ModelAndView("terminar_plato");
 
 		model.addObject("listIngredientes", ingredientes);
+		ingredientes = new HashMap<String, BigDecimal>();
 
 		return model;
 	}
 
-	@RequestMapping("/admin/crear_nuevo_plato/ingrediente/terminarPlatoExito")
-	public ModelAndView terminarPlatoExito() {
+	@RequestMapping("/admin/crear_nuevo_plato/terminarPlatoExito")
+	public String terminarPlatoExito() {
 
-		ModelAndView model = new ModelAndView("admin");
+		ModelAndView model = new ModelAndView("terminar_plato");
 
 		Dish dish = new Dish();
 		dish.setNombre_plato(dishObj.getNombre_plato());
@@ -755,8 +758,9 @@ public class ControllerMVC {
 			}
 		}
 
-		return model;
+		return "redirect:/admin";
 	}
+//	@RequestMapping("/admin/crear_nuevo_plato/fin")
 
 	@RequestMapping("/admin/deleteDish/{id_plato}")
 	public String eliminarPlato(@PathVariable("id_plato") int id_plato) {
@@ -783,10 +787,177 @@ public class ControllerMVC {
 	@PostMapping("/admin/saveDish/{id_plato}")
 	public String guardarPlato(Dish dish) {
 
-
 		dishRepo.save(dish);
 
 		return "redirect:/admin";
+	}
+
+	@RequestMapping("/admin/ComponentesDish/{id_plato}")
+	public ModelAndView mostrarComponentesPlato(@PathVariable("id_plato") int id_plato) {
+
+		ModelAndView model = new ModelAndView("componentes_plato");
+
+		List<ComponentsDishTable> listComponentsDish = obtenerBDcomponentesPlato(id_plato);
+
+		model.addObject("listComponentsDish", listComponentsDish);
+
+		return model;
+	}
+
+	public List<ComponentsDishTable> obtenerBDcomponentesPlato(int id_plato) {
+
+		List<ComponentsDishTable> listComponentDishTable = new ArrayList<ComponentsDishTable>();
+
+		try {
+
+			// 1º Buscar todos los ingredientes del plato y sus cantidades
+
+			Map<Integer, BigDecimal> mapIngredientAmount = new HashMap<Integer, BigDecimal>();
+
+			Statement st = Application.con.createStatement();
+			ResultSet rs = st.executeQuery("select idAlimento, cantidad\r\n" + "from platos_alimentos\r\n"
+					+ "where idPlato = " + id_plato + ";");
+
+			while (rs.next()) {
+				mapIngredientAmount.put(rs.getInt(1), rs.getBigDecimal(2));
+
+			}
+			rs.close();
+			st.close();
+
+			// 2º Encontrar los componentes quimicos de cada alimento
+
+			// Mapa que contiene los ingredientes del plato
+			Map<Integer, List<ComponentsFood>> mapComponentsDish = new HashMap<Integer, List<ComponentsFood>>();
+
+			Statement st2 = Application.con.createStatement();
+
+			// Lista que almacena los componentes de todos los alimentos del plato
+			List<ComponentsFood> listaComponentes = new ArrayList<ComponentsFood>();
+
+			// Almacenar el grupo y unidad de los componentess
+			Map<String, GroupUnitObj> mapComponentUnit = new HashMap<String, GroupUnitObj>();
+
+			for (var ingrediente : mapIngredientAmount.entrySet()) {
+				ResultSet rs2 = st2.executeQuery(
+						"SELECT g.nombre, ac.c_ori_name, ac.best_location, ac.v_unit, ac.mu_descripcion  \r\n"
+								+ "FROM nutri_db.alimentos_componentesquimicos as ac left join componentesquimicos as c on ac.c_ori_name = c.c_ori_name \r\n"
+								+ "left join gruposcomponentes as g on c.componentgroup_id = g.idGruposComponentes\r\n"
+								+ "where idAlimento = " + ingrediente.getKey() + "\r\n" + "and ac.best_location > 0\r\n"
+								+ "order by best_location desc;");
+
+				while (rs2.next()) {
+					String nombreComponente = rs2.getString(1);
+					String descripcionComponente = rs2.getString(2);
+					Float valor = rs2.getFloat(3);
+					String unidad = rs2.getString(4);
+					String descripcion = rs2.getString(5);
+
+					ComponentsFood componente = new ComponentsFood(nombreComponente, descripcionComponente, valor,
+							unidad, descripcion);
+
+					listaComponentes.add(componente);
+
+					GroupUnitObj groupUnitObj = new GroupUnitObj(nombreComponente, unidad);
+					mapComponentUnit.put(descripcionComponente, groupUnitObj);
+
+				}
+				mapComponentsDish.put(ingrediente.getKey(), listaComponentes);
+
+				// Reinicio lista de componentes para que los componentes de cada alimento los
+				// almacene en una entrada distinta del mapa
+
+				listaComponentes = new ArrayList<ComponentsFood>();
+
+				rs2.close();
+
+			}
+			st2.close();
+
+			List<ComponentsFood> listaComponentesPlato = new ArrayList<ComponentsFood>();
+			Map<String, Float> mapComponentsDish2 = new HashMap<String, Float>();
+
+			for (var ingrediente : mapComponentsDish.entrySet()) {
+
+				ingrediente.getKey();
+				List<ComponentsFood> listaCompon = ingrediente.getValue();
+
+				for (int i = 0; i < listaCompon.size(); i++) {
+					if (mapComponentsDish2.get(listaCompon.get(i).getC_ori_name()) == null) {
+
+						Float amount = listaCompon.get(i).getBest_location();
+
+						String proportion = listaCompon.get(i).getDescripcion();
+						Float propor = null;
+						switch (proportion) {
+						case "por 100 g de porción comestible":
+							propor = amount / 100;
+							break;
+						case "por Kg de parte comestible":
+							propor = amount / 1000;
+							break;
+						case "por 100 g de peso en seco":
+							propor = amount / 100;
+							break;
+						case "por ml de volumen del alimento":
+							propor = amount;
+							break;
+
+						}
+						BigDecimal quantity = mapIngredientAmount.get(ingrediente.getKey());
+						mapComponentsDish2.put(listaCompon.get(i).getC_ori_name(), propor * quantity.floatValue());
+
+					} else {
+						Float value = mapComponentsDish2.get(listaCompon.get(i).getC_ori_name());
+						Float amount = listaCompon.get(i).getBest_location();
+
+						String proportion = listaCompon.get(i).getDescripcion();
+						Float propor = null;
+						switch (proportion) {
+						case "por 100 g de porción comestible":
+							propor = amount / 100;
+							break;
+						case "por Kg de parte comestible":
+							propor = amount / 1000;
+							break;
+						case "por 100 g de peso en seco":
+							propor = amount / 100;
+							break;
+						case "por ml de volumen del alimento":
+							propor = amount;
+							break;
+
+						}
+						BigDecimal quantity = mapIngredientAmount.get(ingrediente.getKey());
+						Float sum = value + propor * quantity.floatValue();
+						mapComponentsDish2.replace(listaCompon.get(i).getC_ori_name(), sum);
+
+					}
+				}
+
+			}
+
+			for (var componente : mapComponentsDish2.entrySet()) {
+
+				ComponentsDishTable componentDishTable = new ComponentsDishTable();
+
+				componentDishTable.setNameComponent(componente.getKey());
+				componentDishTable.setAmount(componente.getValue());
+
+				GroupUnitObj groupUnitObj = mapComponentUnit.get(componente.getKey());
+
+				componentDishTable.setGroupComponent(groupUnitObj.getGroup());
+				componentDishTable.setUnit(groupUnitObj.getUnit());
+				
+				listComponentDishTable.add(componentDishTable);
+
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return listComponentDishTable;
 	}
 
 }
