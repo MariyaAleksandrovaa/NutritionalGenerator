@@ -1,17 +1,24 @@
 package app.controller;
 
 import java.math.BigDecimal;
+import java.security.Principal;
 import java.sql.ResultSet;
 
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,12 +38,14 @@ import app.model.Empresa;
 import app.model.Food;
 import app.model.GroupFood;
 import app.model.Local;
+import app.model.Menu;
 import app.model.Role;
 import app.model.TypeDish;
 import app.model.User;
 import app.objects.DishObj;
 import app.objects.FoodAmountObj;
 import app.objects.GroupUnitObj;
+import app.objects.MenuObj;
 import app.objects.ResetPwdObj;
 import app.parametrizedObjects.AlergensFood;
 import app.parametrizedObjects.ComponentsFood;
@@ -45,6 +54,7 @@ import app.repository.DishRepository;
 import app.repository.FoodRepository;
 import app.repository.GroupFoodRepository;
 import app.repository.LocalRepository;
+import app.repository.MenuRepository;
 //import app.repository.LocalRepository;
 import app.repository.RoleRepository;
 import app.repository.TypeDishRepository;
@@ -54,6 +64,7 @@ import app.repository.view.FoodViewRepository;
 import app.repository.view.LocalViewRepository;
 import app.repository.view.MenuViewRepository;
 import app.repository.view.UserViewRepository;
+import app.service.CustomUserDetails;
 import app.service.company.CompanyNotfound;
 import app.service.company.CompanyService;
 import app.views.DishView;
@@ -110,6 +121,9 @@ public class ControllerMVC {
 
 	@Autowired
 	private TypeDishRepository typeDishRepo;
+
+	@Autowired
+	private MenuRepository menuRepo;
 
 	public String password;
 
@@ -739,6 +753,8 @@ public class ControllerMVC {
 		dish.setNombre_plato(dishObj.getNombre_plato());
 		dish.setDescripcion(dishObj.getDescripcion());
 
+		dish.setId_empresa(obtenerUsuario().getIdEmpresa());
+
 		dish.setId_tipo_platos(Integer.parseInt(dishObj.getTypeDish()));
 
 		dishRepo.save(dish);
@@ -757,7 +773,6 @@ public class ControllerMVC {
 
 		return "redirect:/admin";
 	}
-//	@RequestMapping("/admin/crear_nuevo_plato/fin")
 
 	@RequestMapping("/admin/deleteDish/{id_plato}")
 	public String eliminarPlato(@PathVariable("id_plato") int id_plato) {
@@ -965,54 +980,117 @@ public class ControllerMVC {
 
 		ModelAndView model = new ModelAndView("alergenos_plato");
 
-//		List<ComponentsDishTable> listComponentsDish = obtenerBDalergenosAlimento(id_plato);
-
-//		model.addObject("listComponentsDish", listComponentsDish);
-		
-		
-
-//		1º Obtener los ids de los alimentos que tiene un plato
-
-		List<Integer> listIdAliment = new ArrayList<Integer>();
-
-
-
 		try {
-			
+//			1º Obtener los ids de los alimentos que tiene un plato
+
 			Statement st = Application.con.createStatement();
 
 			ResultSet rs = st.executeQuery(
 					"select idAlimento\r\n" + "from platos_alimentos\r\n" + "where idPlato =" + id_plato + ";");
-			
+
 			Map<String, String> mapAlergensDish = new HashMap<String, String>();
 			while (rs.next()) {
-				
+
+//				2º Por cada id obtener sus alérgenos
+
 				List<AlergensFood> listAlergensFood = obtenerBDalergenosAlimento(rs.getInt(1));
-				
-				for(AlergensFood alergensFood: listAlergensFood) {
+
+				for (AlergensFood alergensFood : listAlergensFood) {
+
+//					3º Almacenar en un mapa los alérgenos
+
 					mapAlergensDish.put(alergensFood.getAlergeno(), alergensFood.getDescripcion());
-					
+
 				}
 
 			}
-			
+
 			rs.close();
-			
+			st.close();
+
+//			4º Enviar alérgenos a la página			
+
 			model.addObject("mapAlergensDish", mapAlergensDish);
-			
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
-		
+		return model;
+	}
 
-//		2º Por cada id obtener sus alérgenos
+//	CustomUserDetails pri =  (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-//		3º Almacenar en un mapa los alérgenos
+	@RequestMapping("/admin/crear_menu_individual")
+	public ModelAndView crearMenuIndividual() {
 
-//		4º Enviar alérgenos a la página
+		ModelAndView model = new ModelAndView("crear_menu_individual");
+
+		List<Dish> listDish = dishRepo.findAll();
+		int id_company = obtenerUsuario().getIdEmpresa();
+		int select = 0;
+
+		List<Dish> listDishCompany = new ArrayList<Dish>();
+
+		for (int i = 0; i < listDish.size(); i++) {
+			Integer id_empresa = listDish.get(i).getId_empresa();
+			if (id_empresa != null && id_empresa == id_company) {
+				listDishCompany.add(listDish.get(i));
+			}
+		}
+
+		MenuObj menuObj = new MenuObj();
+
+		model.addObject("listDishCompany", listDishCompany);
+		model.addObject("menuObj", menuObj);
+		model.addObject("select", select);
 
 		return model;
+	}
+//	/admin/crear_menu_individual/guardar
+
+	@RequestMapping("/admin/crear_menu_individual/guardar")
+	public ModelAndView guardarMenuIndividual(MenuObj menuObj) {
+
+		ModelAndView model = new ModelAndView("crear_menu_individual");
+
+		Menu menu = new Menu();
+		String description = "Menú individual";
+		menu.setDescripcion(description);
+		menu.setNombre_menu(menuObj.getName_menu());
+
+		int id_company = obtenerUsuario().getIdEmpresa();
+		menu.setId_empresa(id_company);
+
+		LocalDate localDate = java.time.LocalDate.now();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd LLLL yyyy");
+		String formattedString = localDate.format(formatter);
+
+		menu.setFecha_creacion(formattedString);
+
+		Menu menuDb = menuRepo.save(menu);
+		
+		if(menuObj.getThird_dish() == 0) {
+			menuObj.setThird_dish(null);
+		}
+
+		try {
+			Statement st = Application.con.createStatement();
+			String query = "insert into menus_platos values(" + menuDb.getId_menu() + "," + menuObj.getFirst_dish()
+					+ "," + menuObj.getSecond_dish() + ",'" + menuObj.getName_menu() + "','" + description + "'," + id_company + ","
+					+ menuObj.getThird_dish() + ");";
+			st.execute(query);
+
+			st.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return model;
+	}
+
+	public User obtenerUsuario() {
+		return ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUser();
 	}
 
 }

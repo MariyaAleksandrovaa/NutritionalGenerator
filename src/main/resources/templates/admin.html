@@ -73,47 +73,16 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 				</ul>
 				<div class="tab-content">
 					<div role="tabpanel" class="tab-pane active" id="seccion1">
-						<div class="modal" tabindex="-1" id="modal1">
-						  <div class="modal-dialog">
-						    <div class="modal-content">
-						      <div class="modal-header">
-						        <h5 class="modal-title">Generar menú individual</h5>
-						        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
-						      </div>
-						      <div class="modal-body">
-								<div class="container py-4" style="margin-left:80px" >
-									<select class="form-select" aria-label="Default select example" style="margin-top:10px;width:70%">
-										<option selected>Escoge primer plato</option>
-										<option th:each="dish:${dishes}"
-											th:value="${dish.id_plato}"
-											th:text="${dish.nombre_plato}"
-										/>
-									</select>
-
-									<select class="form-select" aria-label="Default select example" style="margin-top:10px;width:70%">
-									  <option selected>Escoge segundo plato</option>
-										<option th:each="dish:${dishes}"
-											th:value="${dish.id_plato}"
-											th:text="${dish.nombre_plato}"
-										/>
-									</select>
-									<select class="form-select" aria-label="Default select example" style="margin-top:10px;width:70%">
-									  <option selected>Escoge postre (Opcional)</option>
-										<option th:each="dish:${dishes}"
-											th:value="${dish.id_plato}"
-											th:text="${dish.nombre_plato}"
-										/>
-									</select>
-								</div>
-
-						      </div>
-						      <div class="modal-footer">
-						        <button type="button" class="btn btn-primary"  style="background-color:#28B463;border-color:#28B463" >Guardar cambios</button>
-						      </div>
-						    </div>
-						  </div>
+						<div class="dropdown">
+							  <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false" style="width:200px;margin-left: 43.5%;margin-bottom: 60px;margin-top: 25px;">
+							    Crear nuevo menú
+							  </a>
+							
+							  <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink" style="width: 15.5%;">
+							    <li><a class="dropdown-item" th:href="@{/admin/crear_menu_individual}">Menú individual</a></li>
+							    <li><a class="dropdown-item" href="#">Menú grupal</a></li>
+							  </ul>
 						</div>
-						<button class="btn btn-primary" type="button" data-toggle='modal' data-target='#modal1' style="background-color:#E00000;border-color:#E00000" >Generar nuevo menú</button>
 						<div class ="row">
 							<table class="table">
 							  <thead>
