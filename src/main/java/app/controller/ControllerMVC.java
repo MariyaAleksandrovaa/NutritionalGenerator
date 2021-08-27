@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -1050,9 +1051,7 @@ public class ControllerMVC {
 //	/admin/crear_menu_individual/guardar
 
 	@RequestMapping("/admin/crear_menu_individual/guardar")
-	public ModelAndView guardarMenuIndividual(MenuObj menuObj) {
-
-		ModelAndView model = new ModelAndView("crear_menu_individual");
+	public String guardarMenuIndividual(MenuObj menuObj) {
 
 		Menu menu = new Menu();
 		String description = "Menú individual";
@@ -1062,11 +1061,20 @@ public class ControllerMVC {
 		int id_company = obtenerUsuario().getIdEmpresa();
 		menu.setId_empresa(id_company);
 
-		LocalDate localDate = java.time.LocalDate.now();
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd LLLL yyyy");
-		String formattedString = localDate.format(formatter);
+//		LocalDate localDate = java.time.LocalDate.now();
+//		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd LLLL yyyy");
+//		String formattedString = localDate.format(formatter);
+		
+		
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+		Date date = new Date();
+		System.out.println(formatter.format(date));
+		
+		java.sql.Timestamp date2 = new java.sql.Timestamp(Calendar.getInstance().getTime().getTime());
+		
+		
 
-		menu.setFecha_creacion(formattedString);
+		menu.setFecha_creacion(date2);
 
 		Menu menuDb = menuRepo.save(menu);
 		
@@ -1086,7 +1094,7 @@ public class ControllerMVC {
 			e.printStackTrace();
 		}
 
-		return model;
+		return "redirect:/admin";
 	}
 
 	public User obtenerUsuario() {

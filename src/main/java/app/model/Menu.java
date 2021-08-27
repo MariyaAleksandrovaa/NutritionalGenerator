@@ -16,10 +16,10 @@ public class Menu {
 	public int id_menu;
 	public String nombre_menu;
 	public String descripcion;
-	public String fecha_creacion;
+	public java.sql.Timestamp fecha_creacion;
 	public int id_empresa;
 
-	public Menu(int id_menu, String nombre_menu, String descripcion, String fecha_creacion, int id_empresa) {
+	public Menu(int id_menu, String nombre_menu, String descripcion, java.sql.Timestamp fecha_creacion, int id_empresa) {
 		this.id_menu = id_menu;
 		this.nombre_menu = nombre_menu;
 		this.descripcion = descripcion;
@@ -55,11 +55,11 @@ public class Menu {
 		this.descripcion = descripcion;
 	}
 
-	public String getFecha_creacion() {
+	public java.sql.Timestamp getFecha_creacion() {
 		return fecha_creacion;
 	}
 
-	public void setFecha_creacion(String fecha_creacion) {
+	public void setFecha_creacion(java.sql.Timestamp fecha_creacion) {
 		this.fecha_creacion = fecha_creacion;
 	}
 
