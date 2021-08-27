@@ -46,6 +46,7 @@ import app.model.User;
 import app.objects.DishObj;
 import app.objects.FoodAmountObj;
 import app.objects.GroupUnitObj;
+import app.objects.GroupalDish;
 import app.objects.MenuObj;
 import app.objects.ResetPwdObj;
 import app.parametrizedObjects.AlergensFood;
@@ -1020,8 +1021,6 @@ public class ControllerMVC {
 		return model;
 	}
 
-//	CustomUserDetails pri =  (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
 	@RequestMapping("/admin/crear_menu_individual")
 	public ModelAndView crearMenuIndividual() {
 
@@ -1049,9 +1048,14 @@ public class ControllerMVC {
 		return model;
 	}
 
-
 	@RequestMapping("/admin/crear_menu_individual/guardar")
 	public String guardarMenuIndividual(MenuObj menuObj) {
+
+		List<Integer> listDishes = new ArrayList<Integer>();
+
+		listDishes.add(menuObj.getFirst_dish());
+		listDishes.add(menuObj.getSecond_dish());
+		listDishes.add(menuObj.getThird_dish());
 
 		Menu menu = new Menu();
 		String description = "Menú individual";
@@ -1060,10 +1064,6 @@ public class ControllerMVC {
 
 		int id_company = obtenerUsuario().getIdEmpresa();
 		menu.setId_empresa(id_company);
-
-		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-		Date date = new Date();
-		System.out.println(formatter.format(date));
 
 		menu.setFecha_creacion(new java.sql.Timestamp(Calendar.getInstance().getTime().getTime()));
 
@@ -1075,10 +1075,14 @@ public class ControllerMVC {
 
 		try {
 			Statement st = Application.con.createStatement();
-			String query = "insert into menus_platos values(" + menuDb.getId_menu() + "," + menuObj.getFirst_dish()
-					+ "," + menuObj.getSecond_dish() + ",'" + menuObj.getName_menu() + "','" + description + "',"
-					+ id_company + "," + menuObj.getThird_dish() + ");";
-			st.execute(query);
+
+			for (int i = 0; i < listDishes.size(); i++) {
+				if (listDishes.get(i) != 0) {
+					String query = "insert into menus_platos values(" + menuDb.getId_menu() + "," + listDishes.get(i)
+							+ ",'" + menuObj.getName_menu() + "','" + description + "'," + id_company + ");";
+					st.execute(query);
+				}
+			}
 
 			st.close();
 		} catch (SQLException e) {
@@ -1091,5 +1095,103 @@ public class ControllerMVC {
 	public User obtenerUsuario() {
 		return ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUser();
 	}
+
+	@RequestMapping("/admin/crear_menu_grupal")
+	public ModelAndView crearMenuGrupal() {
+
+		ModelAndView model = new ModelAndView("crear_menu_grupal");
+
+		listDishesGroupalMenu = new ArrayList<Integer>();
+
+		Menu menu = new Menu();
+		model.addObject("menu", menu);
+
+		return model;
+	}
+
+	private Menu menu_grupal;
+
+	@PostMapping("/admin/crear_menu_grupal/guardar")
+	public String crearMenuGrupalGuardar(Menu menu) {
+
+		menu.setDescripcion("Menu grupal");
+		menu.setFecha_creacion(new java.sql.Timestamp(Calendar.getInstance().getTime().getTime()));
+		menu.setId_empresa(obtenerUsuario().getIdEmpresa());
+
+		menu_grupal = menuRepo.save(menu);
+
+		return "redirect:/admin/crear_menu_grupal/platos";
+	}
+
+	@RequestMapping("/admin/crear_menu_grupal/platos")
+	public ModelAndView escogerPlatosMenuGrupal() {
+
+		ModelAndView model = new ModelAndView("escoger_platos_menu_grupal");
+
+		int select = 0;
+		GroupalDish groupalDish = new GroupalDish();
+
+		List<Dish> listDish = dishRepo.findAll();
+		model.addObject("select", select);
+		model.addObject("listDish", listDish);
+		model.addObject("groupalDish", groupalDish);
+		return model;
+	}
+
+	public List<Integer> listDishesGroupalMenu;
+
+	@RequestMapping("/admin/crear_menu_grupal/guardarPlato")
+	public String añadirPlatoMenuGrupal(GroupalDish groupalDish) {
+
+		int id_menu = menu_grupal.getId_menu();
+		String nombre_menu = menu_grupal.getNombre_menu();
+		String descripcion_menu = menu_grupal.getDescripcion();
+		int empresa_menu = menu_grupal.getId_empresa();
+
+		listDishesGroupalMenu.add(groupalDish.getId_dish());
+
+		try {
+			Statement st = Application.con.createStatement();
+
+			String query = "insert into menus_platos values(" + id_menu + "," + groupalDish.getId_dish() + ",'"
+					+ nombre_menu + "','" + descripcion_menu + "'," + empresa_menu + ");";
+			st.execute(query);
+
+			st.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return "redirect:/admin/crear_menu_grupal/platos";
+	}
+
+//	'/admin/crear_menu_grupal/' + ${groupalDish.id_dish}
+
+	@RequestMapping("/admin/crear_nuevo_plato/terminarMenu")
+	public ModelAndView terminarMenuGrupal() {
+
+		ModelAndView model = new ModelAndView("mostrar_platos_menu");
+		Map<Integer, String> mapDishesMenu = new HashMap<Integer, String>();
+
+		for (int i = 0; i < listDishesGroupalMenu.size(); i++) {
+			int id_dish = listDishesGroupalMenu.get(i);
+			mapDishesMenu.put(id_dish, dishRepo.findById(id_dish).get().getNombre_plato());
+		}
+
+		model.addObject("mapDishesMenu", mapDishesMenu);
+
+		return model;
+	}
+	
+	@RequestMapping("/admin/crear_menu_grupal/terminar")
+	public String terminarMenuGrupalExito() {
+
+
+		return "redirect:/admin";
+	}
+	
+	
+	
+	
 
 }
