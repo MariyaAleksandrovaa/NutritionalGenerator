@@ -88,25 +88,25 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 							  <thead>
 							    <tr >
 							      <th scope="col">Fecha Creación</th>
-							      <th scope="col">Nombre del menú</th>
-							      <th scope="col">Descripción</th>
-							      <th scope="col" data-field="action" data-formatter="actionFormatter">Operacion</th>
-							      <th scope="col">Tablas</th>
+							      <th scope="col" style="width:27%">Nombre del menú</th>
+							      <th scope="col" style="width:35%">Descripción</th>
+							      <th scope="col" data-field="action" style="margin-left:30%">Operacion</th>
+							      <th scope="col" style="margin-left:30%">Tablas</th>
 							    </tr>
 							  </thead>
 							  <tbody>
 							    <tr th:each="menu: ${listMenus}">
 				                    <td th:text="${menu.fecha_creacion}">Fecha Creación</td>
-				                    <td th:text="${menu.nombre_menu}">Nombre del menú</td>
-				                    <td th:text="${menu.descripcion}">Descripción</td>
+				                    <td th:text="${menu.nombre_menu}" style="width:27%">Nombre del menú</td>
+				                    <td th:text="${menu.descripcion}" style="width:35%">Descripción</td>
 			                    	<td >
-										 <div class="botonesEdicion" style="margin-right:-140px">
+										 <div class="botonesEdicion" >
 										 	<a th:href="@{'/admin/editMenu' + ${menu.id_menu}}" class="btn btn-info btn-lg" style="background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;;font-size:0.9rem;">Editar</a>
 								        	<a th:href="@{'/admin/deleteMenu' + ${menu.id_menu}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color:#FF3333;border-color:#FF3333;;color:#ffffff;font-size:0.9rem; " >Eliminar</a>
 										 </div>     	                    	
 				                    </td>
-				                    <td>
-		                    			<div class="botonesEdicion" style="margin-right:-85px">
+				                    <td >
+		                    			<div class="botonesEdicion" >
 					                    	<a th:href="@{'/admin/ComponentesMenu' + ${menu.id_menu}}" class="btn btn-info btn-lg" style="background-color: #3c89d0;border-color:#3c89d0;color:#ffffff;font-size:0.9rem;">Componentes</a>
 					                    	<a th:href="@{'/admin/AlergenosMenu' + ${menu.id_menu}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color: #c38452;border-color:#c38452;color:#ffffff;font-size:0.9rem;">Alérgenos</a>
 					                   	</div>

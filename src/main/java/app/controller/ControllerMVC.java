@@ -1048,7 +1048,7 @@ public class ControllerMVC {
 
 		return model;
 	}
-//	/admin/crear_menu_individual/guardar
+
 
 	@RequestMapping("/admin/crear_menu_individual/guardar")
 	public String guardarMenuIndividual(MenuObj menuObj) {
@@ -1061,32 +1061,23 @@ public class ControllerMVC {
 		int id_company = obtenerUsuario().getIdEmpresa();
 		menu.setId_empresa(id_company);
 
-//		LocalDate localDate = java.time.LocalDate.now();
-//		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd LLLL yyyy");
-//		String formattedString = localDate.format(formatter);
-		
-		
 		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 		Date date = new Date();
 		System.out.println(formatter.format(date));
-		
-		java.sql.Timestamp date2 = new java.sql.Timestamp(Calendar.getInstance().getTime().getTime());
-		
-		
 
-		menu.setFecha_creacion(date2);
+		menu.setFecha_creacion(new java.sql.Timestamp(Calendar.getInstance().getTime().getTime()));
 
 		Menu menuDb = menuRepo.save(menu);
-		
-		if(menuObj.getThird_dish() == 0) {
+
+		if (menuObj.getThird_dish() == 0) {
 			menuObj.setThird_dish(null);
 		}
 
 		try {
 			Statement st = Application.con.createStatement();
 			String query = "insert into menus_platos values(" + menuDb.getId_menu() + "," + menuObj.getFirst_dish()
-					+ "," + menuObj.getSecond_dish() + ",'" + menuObj.getName_menu() + "','" + description + "'," + id_company + ","
-					+ menuObj.getThird_dish() + ");";
+					+ "," + menuObj.getSecond_dish() + ",'" + menuObj.getName_menu() + "','" + description + "',"
+					+ id_company + "," + menuObj.getThird_dish() + ");";
 			st.execute(query);
 
 			st.close();
