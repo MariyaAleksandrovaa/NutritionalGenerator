@@ -9,17 +9,17 @@ import javax.persistence.Table;
 public class DishView {
 
 	@Id
-	public int id_plato;
+	public Integer id_plato;
 	public String plato;
 	public String nombre_plato;
 	public String descripcion;
-	public int id_empresa;
+	public Integer id_empresa;
 
-	public int getId_empresa() {
+	public Integer getId_empresa() {
 		return id_empresa;
 	}
 
-	public void setId_empresa(int id_empresa) {
+	public void setId_empresa(Integer id_empresa) {
 		this.id_empresa = id_empresa;
 	}
 
@@ -47,11 +47,11 @@ public class DishView {
 		this.descripcion = descripcion;
 	}
 
-	public int getId_plato() {
+	public Integer getId_plato() {
 		return id_plato;
 	}
 
-	public void setId_plato(int id_plato) {
+	public void setId_plato(Integer id_plato) {
 		this.id_plato = id_plato;
 	}
 

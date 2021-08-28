@@ -838,6 +838,7 @@ public class ControllerMVC {
 	@PostMapping("/admin/saveDish/{id_plato}")
 	public String guardarPlato(Dish dish) {
 
+		dish.setId_empresa(obtenerUsuario().getIdEmpresa());
 		dishRepo.save(dish);
 
 		return "redirect:/admin";
