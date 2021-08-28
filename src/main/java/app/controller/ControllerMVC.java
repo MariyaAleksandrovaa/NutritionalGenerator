@@ -131,6 +131,10 @@ public class ControllerMVC {
 
 	public DishObj dishObj;
 
+	public User obtenerUsuario() {
+		return ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUser();
+	}
+
 	@RequestMapping(value = { "/prueba", "/" }, method = RequestMethod.GET)
 	public ModelAndView viewHomePage2() {
 
@@ -145,16 +149,49 @@ public class ControllerMVC {
 	@GetMapping("/admin")
 	public String viewAdminPage(Model model) {
 
-		List<MenuView> listMenus = menuViewRepo.findAll();
-		List<DishView> listDish = dishViewRepo.findAll();
+		int id_empresa = obtenerUsuario().getIdEmpresa();
 
-		List<Dish> dishes = dishRepo.findAll();
+		List<DishView> listDish = obtenerPlatosUsuario(id_empresa);
+		List<Menu> listMenus = obtenerMenusUsuario(id_empresa);
 
 		model.addAttribute("listMenus", listMenus);
 		model.addAttribute("listDish", listDish);
-		model.addAttribute("dishes", dishes);
 
 		return "admin";
+	}
+
+	private List<DishView> obtenerPlatosUsuario(int id_empresa) {
+
+		List<DishView> listDishAll = dishViewRepo.findAll();
+		List<DishView> listDish = new ArrayList<DishView>();
+
+		for (int i = 0; i < listDishAll.size(); i++) {
+			DishView dishView = listDishAll.get(i);
+
+			if (dishView.getId_empresa() == id_empresa) {
+				listDish.add(dishView);
+			}
+		}
+
+		return listDish;
+	}
+
+	private List<Menu> obtenerMenusUsuario(int id_empresa) {
+
+		List<Menu> listMenusAll = menuRepo.findAll();
+
+		List<Menu> listMenu = new ArrayList<Menu>();
+
+		for (int i = 0; i < listMenusAll.size(); i++) {
+			Menu menuView = listMenusAll.get(i);
+
+			if (menuView.getId_empresa() == id_empresa) {
+				listMenu.add(menuView);
+			}
+		}
+
+		return listMenu;
+
 	}
 
 	// NutriApp para editor
@@ -973,14 +1010,22 @@ public class ControllerMVC {
 		return listComponentDishTable;
 	}
 
-//	List<AlergensFood> obtenerBDalergenosAlimento(int idAlimento)
-
-//	/admin/AlergenosDish/' + ${dish.id_plato}
-
 	@RequestMapping("/admin/AlergenosDish/{id_plato}")
 	public ModelAndView mostrarAlergenosPlato(@PathVariable("id_plato") int id_plato) {
 
 		ModelAndView model = new ModelAndView("alergenos_plato");
+
+		Map<String, String> mapAlergensDish = obtenerAlergenosPlato(id_plato);
+
+//		4º Enviar alérgenos a la página			
+		model.addObject("mapAlergensDish", mapAlergensDish);
+
+		return model;
+	}
+
+	public Map<String, String> obtenerAlergenosPlato(int id_plato) {
+
+		Map<String, String> mapAlergensDish = null;
 
 		try {
 //			1º Obtener los ids de los alimentos que tiene un plato
@@ -990,7 +1035,7 @@ public class ControllerMVC {
 			ResultSet rs = st.executeQuery(
 					"select idAlimento\r\n" + "from platos_alimentos\r\n" + "where idPlato =" + id_plato + ";");
 
-			Map<String, String> mapAlergensDish = new HashMap<String, String>();
+			mapAlergensDish = new HashMap<String, String>();
 			while (rs.next()) {
 
 //				2º Por cada id obtener sus alérgenos
@@ -1010,15 +1055,10 @@ public class ControllerMVC {
 			rs.close();
 			st.close();
 
-//			4º Enviar alérgenos a la página			
-
-			model.addObject("mapAlergensDish", mapAlergensDish);
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-
-		return model;
+		return mapAlergensDish;
 	}
 
 	@RequestMapping("/admin/crear_menu_individual")
@@ -1092,10 +1132,6 @@ public class ControllerMVC {
 		return "redirect:/admin";
 	}
 
-	public User obtenerUsuario() {
-		return ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUser();
-	}
-
 	@RequestMapping("/admin/crear_menu_grupal")
 	public ModelAndView crearMenuGrupal() {
 
@@ -1114,7 +1150,7 @@ public class ControllerMVC {
 	@PostMapping("/admin/crear_menu_grupal/guardar")
 	public String crearMenuGrupalGuardar(Menu menu) {
 
-		menu.setDescripcion("Menu grupal");
+		menu.setDescripcion("Menú grupal");
 		menu.setFecha_creacion(new java.sql.Timestamp(Calendar.getInstance().getTime().getTime()));
 		menu.setId_empresa(obtenerUsuario().getIdEmpresa());
 
@@ -1182,25 +1218,182 @@ public class ControllerMVC {
 
 		return model;
 	}
-	
+
 	@RequestMapping("/admin/crear_menu_grupal/terminar")
 	public String terminarMenuGrupalExito() {
 
-
 		return "redirect:/admin";
 	}
-	
 
-	
 	@RequestMapping("/admin/deleteMenu/{id_menu}")
 	public String eliminarMenu(@PathVariable("id_menu") int id_menu) {
 
 		menuRepo.delete(menuRepo.findById(id_menu).get());
 
-
 		return "redirect:/admin";
 	}
-	
-	
+
+	@GetMapping("/admin/AlergenosMenu/{id_menu}")
+	public String obtenerAlergenosMenuIndividual(@PathVariable("id_menu") int id_menu) {
+
+		String type_menu = menuRepo.findById(id_menu).get().getDescripcion();
+
+		if (type_menu.equals("Menú individual")) {
+			return "redirect:/admin/alergenos_menu_individual/{id_menu}";
+
+		} else if (type_menu.equals("Menu grupal")) {
+			return "redirect:/admin/escoger_platos_menu_grupal/{id_menu}";
+		}
+		return null;
+
+	}
+
+	@GetMapping("/admin/alergenos_menu_individual/{id_menu}")
+	public ModelAndView alergenosMenusIndividuales(@PathVariable("id_menu") int id_menu) {
+		ModelAndView model = new ModelAndView("alergenos_menu");
+		Map<String, String> mapAlergensMenu = obtenerAlergenosMenu(id_menu);
+		model.addObject("mapAlergensMenu", mapAlergensMenu);
+
+		return model;
+	}
+
+	@GetMapping("/admin/alergenos_menu_colectivo")
+	public ModelAndView alergenosMenusColectivos(MenuObj menuObj) {
+		ModelAndView model = new ModelAndView("alergenos_menu");
+
+		Map<String, String> mapAlergensMenu = new HashMap<String, String>();
+
+		if (menuObj.getFirst_dish() != 0) {
+			Map<String, String> mapFirstDish = obtenerAlergenosPlato(menuObj.getFirst_dish());
+
+			for (var alergen : mapFirstDish.entrySet()) {
+				mapAlergensMenu.put(alergen.getKey(), alergen.getValue());
+			}
+
+		} else if (menuObj.getSecond_dish() != 0) {
+			Map<String, String> mapSecondDish = obtenerAlergenosPlato(menuObj.getSecond_dish());
+
+			for (var alergen : mapSecondDish.entrySet()) {
+				mapAlergensMenu.put(alergen.getKey(), alergen.getValue());
+			}
+
+		} else if (menuObj.getThird_dish() != 0) {
+			Map<String, String> mapThirdDish = obtenerAlergenosPlato(menuObj.getThird_dish());
+
+			for (var alergen : mapThirdDish.entrySet()) {
+				mapAlergensMenu.put(alergen.getKey(), alergen.getValue());
+			}
+
+		}
+
+		model.addObject("mapAlergensMenu", mapAlergensMenu);
+
+		return model;
+	}
+
+//	Permite escoger los platos del menú que se van a consumir para proceder a calcular los alérgeno del mismo
+	@GetMapping("/admin/escoger_platos_menu_grupal/{id_menu}")
+	public ModelAndView escogerPlatosMenuGrupalAlergenos(@PathVariable("id_menu") int id_menu) {
+
+		ModelAndView model = new ModelAndView("escoger_platos_menu_grupal_alergenos");
+
+		Map<Integer, String> mapaPlatosTipo1Menu = new HashMap<Integer, String>();
+		Map<Integer, String> mapaPlatosTipo2Menu = new HashMap<Integer, String>();
+		Map<Integer, String> mapaPlatosTipo3Menu = new HashMap<Integer, String>();
+
+		try {
+
+			Statement st = Application.con.createStatement();
+
+			for (int i = 1; i <= 3; i++) {
+				ResultSet rs = st.executeQuery("select mp.idPlato, p.nombre_plato\r\n"
+						+ "from menus_platos as mp right join platos as p on mp.idPlato = p.id_plato \r\n"
+						+ "where mp.idMenu = " + id_menu + " and mp.descripcion = 'Menú grupal' and p.id_tipo_platos = "
+						+ i + ";");
+
+				while (rs.next()) {
+					if (i == 1) {
+						mapaPlatosTipo1Menu.put(rs.getInt(1), rs.getString(2));
+					} else if (i == 2) {
+						mapaPlatosTipo2Menu.put(rs.getInt(1), rs.getString(2));
+					} else if (i == 3) {
+						Integer id_plato = rs.getInt(1);
+						String nombre_plato = rs.getString(2);
+
+						if (id_plato != null) {
+							mapaPlatosTipo3Menu.put(id_plato, nombre_plato);
+						}
+
+					}
+
+				}
+
+				rs.close();
+			}
+
+			st.close();
+
+			model.addObject("mapaPlatosTipo1Menu", mapaPlatosTipo1Menu);
+			model.addObject("mapaPlatosTipo2Menu", mapaPlatosTipo2Menu);
+			model.addObject("mapaPlatosTipo3Menu", mapaPlatosTipo3Menu);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		MenuObj menuObj = new MenuObj();
+		model.addObject("menuObj", menuObj);
+
+		int select = 0;
+		model.addObject("select", select);
+
+		return model;
+	}
+
+	// Obtiene los alergenos de los platos de un menú indicando el id del menu (Para
+	// menús individuales donde los platos del menú son los mismos que los que va a
+	// tomar el cliente )
+	public Map<String, String> obtenerAlergenosMenu(int id_menu) {
+		Map<String, String> mapAlergensMenu = new HashMap<String, String>();
+
+		try {
+
+			Statement st = Application.con.createStatement();
+
+			ResultSet rs = st.executeQuery("select idPlato from menus_platos where idMenu = " + id_menu + ";");
+
+			while (rs.next()) {
+
+				int idPlato = rs.getInt(1);
+
+				Map<String, String> mapAlergensDish = obtenerAlergenosPlato(idPlato);
+
+				for (var alergenDish : mapAlergensDish.entrySet()) {
+
+					mapAlergensMenu.put(alergenDish.getKey(), alergenDish.getValue());
+				}
+
+			}
+
+			rs.close();
+			st.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return mapAlergensMenu;
+
+	}
+
+	@RequestMapping("/admin/ComponentesMenu/{id_menu}")
+	public ModelAndView mostrarComponentesMenu(@PathVariable("id_menu") int id_menu) {
+
+		ModelAndView model = new ModelAndView("componentes_plato");
+
+//		List<ComponentsDishTable> listComponentsDish = obtenerBDcomponentesPlato(id_plato);
+//
+//		model.addObject("listComponentsDish", listComponentsDish);
+
+		return model;
+	}
 
 }

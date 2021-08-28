@@ -13,6 +13,15 @@ public class DishView {
 	public String plato;
 	public String nombre_plato;
 	public String descripcion;
+	public int id_empresa;
+
+	public int getId_empresa() {
+		return id_empresa;
+	}
+
+	public void setId_empresa(int id_empresa) {
+		this.id_empresa = id_empresa;
+	}
 
 	public String getPlato() {
 		return plato;
