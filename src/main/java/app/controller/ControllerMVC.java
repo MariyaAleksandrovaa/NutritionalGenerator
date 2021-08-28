@@ -1190,7 +1190,16 @@ public class ControllerMVC {
 		return "redirect:/admin";
 	}
 	
+
 	
+	@RequestMapping("/admin/deleteMenu/{id_menu}")
+	public String eliminarMenu(@PathVariable("id_menu") int id_menu) {
+
+		menuRepo.delete(menuRepo.findById(id_menu).get());
+
+
+		return "redirect:/admin";
+	}
 	
 	
 
