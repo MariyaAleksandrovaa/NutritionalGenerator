@@ -14,9 +14,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -1386,15 +1388,105 @@ public class ControllerMVC {
 	}
 
 	@RequestMapping("/admin/ComponentesMenu/{id_menu}")
-	public ModelAndView mostrarComponentesMenu(@PathVariable("id_menu") int id_menu) {
+	public String mostrarComponentesMenu(@PathVariable("id_menu") int id_menu) {
 
-		ModelAndView model = new ModelAndView("componentes_plato");
+//		ModelAndView model = new ModelAndView("componentes_plato");
 
 //		List<ComponentsDishTable> listComponentsDish = obtenerBDcomponentesPlato(id_plato);
 //
 //		model.addObject("listComponentsDish", listComponentsDish);
 
+		String type_menu = menuRepo.findById(id_menu).get().getDescripcion();
+
+		if (type_menu.equals("Menú individual")) {
+			return "redirect:/admin/componentes_menu_individual/{id_menu}";
+
+		} else if (type_menu.equals("Menu grupal")) {
+			return "redirect:/admin/escoger_platos_menu_grupal/{id_menu}";
+		}
+
+		return null;
+	}
+
+	@GetMapping("/admin/componentes_menu_individual/{id_menu}")
+	public ModelAndView componentesMenuIndividual(@PathVariable("id_menu") int id_menu) {
+
+		ModelAndView model = new ModelAndView("componentes_plato");
+
+		List<ComponentsDishTable> listComponentsDish = obtenerComponentesMenu(id_menu);
+		model.addObject("listComponentsDish", listComponentsDish);
+
 		return model;
+	}
+
+	public List<ComponentsDishTable> obtenerComponentesMenu(int id_menu) {
+		List<ComponentsDishTable> listListComponentsDish = new ArrayList<ComponentsDishTable>();
+		List<ComponentsDishTable> listComponentsDish;
+		Map<String, Float> mapComponentsMenu = new HashMap<String, Float>();
+
+		try {
+
+			Statement st = Application.con.createStatement();
+
+			ResultSet rs = st.executeQuery("select idPlato from menus_platos where idMenu = " + id_menu + ";");
+
+			while (rs.next()) {
+
+				int idPlato = rs.getInt(1);
+				if (idPlato != 0) {
+					// He obtenido los componentes que tiene un plato
+					listComponentsDish = obtenerBDcomponentesPlato(idPlato);
+
+					for (int i = 0; i < listComponentsDish.size(); i++) {
+						// Cuando no existe entrada en mapa para ese componente
+						if (mapComponentsMenu.get(listComponentsDish.get(i).getNameComponent()) == null) {
+							mapComponentsMenu.put(listComponentsDish.get(i).getNameComponent(),
+									listComponentsDish.get(i).getAmount());
+
+						} else {
+							float oldAmount = mapComponentsMenu.get(listComponentsDish.get(i).getNameComponent());
+							float newAmount = listComponentsDish.get(i).getAmount();
+							mapComponentsMenu.replace(listComponentsDish.get(i).getNameComponent(),
+									oldAmount + newAmount);
+						}
+					}
+					listListComponentsDish.addAll(listComponentsDish);
+				}
+
+			}
+
+			rs.close();
+			st.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		// Mantengo lista con componentes sin repetir
+//		List<ComponentsDishTable> listFinalComponents = new ArrayList<>();
+		// Recorro las listas de listas
+		for (int i = 0; i < listListComponentsDish.size(); i++) {
+
+			String component = listListComponentsDish.get(i).getNameComponent();
+
+			for (int j = 0; j < listListComponentsDish.size(); j++) {
+				if (i != j) {
+					String component2 = listListComponentsDish.get(j).getNameComponent();
+					if (component.equals(component2)) {
+						listListComponentsDish.remove(j);
+
+					}
+				}
+
+			}
+		}
+		for (int i = 0; i < listListComponentsDish.size(); i++) {
+			listListComponentsDish.get(i)
+					.setAmount(mapComponentsMenu.get(listListComponentsDish.get(i).getNameComponent()));
+		}
+
+		return listListComponentsDish;
+
 	}
 
 }
