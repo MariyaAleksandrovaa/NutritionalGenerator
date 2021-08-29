@@ -63,14 +63,14 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	<div class="about gallery">
 		<div class="container">  
 			<div role="tabpanel">
-				<ul class="nav nav-tabs" role="tablist">
-				  <li role ="presentation" class="active" >
-				    <a href="#seccion1" data-toggle="tab" role="tab">Menús</a>
+				<ul class="nav nav-tabs" role="tablist" id="myTab">
+				  <li role ="presentation"  class="nav-item" >
+				    <a href="#seccion1" data-toggle="tab" role="tab" class="nav-link active">Menús</a>
 				  </li>
-				  <li role ="presentation">
-				  	<a href="#seccion2" data-toggle="tab" role="tab">Platos</a>
+				  <li role ="presentation" class="nav-item">
+				  	<a href="#seccion2" data-toggle="tab" role="tab"class="nav-link">Platos</a>
 				  </li>
-				</ul>
+				</ul>	
 				<div class="tab-content">
 					<div role="tabpanel" class="tab-pane active" id="seccion1">
 						<div class="dropdown">
@@ -174,6 +174,31 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 		  $('.toggle').toggleClass('toggle--active');
 		});
 	</script> 
+	<script>
+	$(document).ready(function(){
+	    $('a[data-toggle="tab"]').on('show.bs.tab', function(e) {
+	        localStorage.setItem('activeTab', $(e.target).attr('href'));
+	    });
+	    var activeTab = localStorage.getItem('activeTab');
+	    if(activeTab){
+	        $('#myTab a[href="' + activeTab + '"]').tab('show');
+	    }
+	});
+	</script>
+	<script>
+	$(document).ready(function() {
+	    if (location.hash) {
+	        $("a[href='" + location.hash + "']").tab("show");
+	    }
+	    $(document.body).on("click", "a[data-toggle='tab']", function(event) {
+	        location.hash = this.getAttribute("href");
+	    });
+	});
+	$(window).on("popstate", function() {
+	    var anchor = location.hash || $("a[data-toggle='tab']").first().attr("href");
+	    $("a[href='" + anchor + "']").tab("show");
+	});
+	</script>
 	<!-- //menu-js -->
 	<!-- jarallax -->  
 	<script src="js/SmoothScroll.min.js"></script> 

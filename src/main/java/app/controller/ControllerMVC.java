@@ -1529,7 +1529,6 @@ public class ControllerMVC {
 				listListComponentsDish.addAll(listComponentsDish);
 
 				// Mantengo lista con componentes sin repetir
-//				List<ComponentsDishTable> listFinalComponents = new ArrayList<>();
 				// Recorro las listas de listas
 				for (int j = 0; j < listListComponentsDish.size(); j++) {
 
