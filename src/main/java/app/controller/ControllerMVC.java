@@ -1247,7 +1247,7 @@ public class ControllerMVC {
 		if (type_menu.equals("Menú individual")) {
 			return "redirect:/admin/alergenos_menu_individual/{id_menu}";
 
-		} else if (type_menu.equals("Menu grupal")) {
+		} else if (type_menu.equals("Menú grupal")) {
 			return "redirect:/admin/escoger_platos_menu_grupal/{id_menu}";
 		}
 		return null;
@@ -1263,7 +1263,7 @@ public class ControllerMVC {
 		return model;
 	}
 
-	@GetMapping("/admin/alergenos_menu_colectivo")
+	@RequestMapping("/admin/alergenos_menu_colectivo")
 	public ModelAndView alergenosMenusColectivos(MenuObj menuObj) {
 		ModelAndView model = new ModelAndView("alergenos_menu");
 
@@ -1276,14 +1276,16 @@ public class ControllerMVC {
 				mapAlergensMenu.put(alergen.getKey(), alergen.getValue());
 			}
 
-		} else if (menuObj.getSecond_dish() != 0) {
+		} 
+		if (menuObj.getSecond_dish() != 0) {
 			Map<String, String> mapSecondDish = obtenerAlergenosPlato(menuObj.getSecond_dish());
 
 			for (var alergen : mapSecondDish.entrySet()) {
 				mapAlergensMenu.put(alergen.getKey(), alergen.getValue());
 			}
 
-		} else if (menuObj.getThird_dish() != 0) {
+		} 
+		if (menuObj.getThird_dish() != 0) {
 			Map<String, String> mapThirdDish = obtenerAlergenosPlato(menuObj.getThird_dish());
 
 			for (var alergen : mapThirdDish.entrySet()) {
