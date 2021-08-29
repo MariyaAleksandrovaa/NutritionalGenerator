@@ -1152,6 +1152,8 @@ public class ControllerMVC {
 
 	@PostMapping("/admin/crear_menu_grupal/guardar")
 	public String crearMenuGrupalGuardar(Menu menu) {
+		
+		
 
 		menu.setDescripcion("Menú grupal");
 		menu.setFecha_creacion(new java.sql.Timestamp(Calendar.getInstance().getTime().getTime()));
@@ -1159,21 +1161,23 @@ public class ControllerMVC {
 
 		menu_grupal = menuRepo.save(menu);
 
+
 		return "redirect:/admin/crear_menu_grupal/platos";
 	}
 
-	@RequestMapping("/admin/crear_menu_grupal/platos")
+	@GetMapping("/admin/crear_menu_grupal/platos")
 	public ModelAndView escogerPlatosMenuGrupal() {
-
 		ModelAndView model = new ModelAndView("escoger_platos_menu_grupal");
-
-		int select = 0;
+		
 		GroupalDish groupalDish = new GroupalDish();
-
+		int select = 0;
 		List<Dish> listDish = dishRepo.findAll();
+		model.addObject("groupalDish", groupalDish);
 		model.addObject("select", select);
 		model.addObject("listDish", listDish);
-		model.addObject("groupalDish", groupalDish);
+		
+		
+//		/admin/escoger_platos_menu_grupal/{id_menu}
 		return model;
 	}
 
@@ -1204,7 +1208,6 @@ public class ControllerMVC {
 		return "redirect:/admin/crear_menu_grupal/platos";
 	}
 
-//	'/admin/crear_menu_grupal/' + ${groupalDish.id_dish}
 
 	@RequestMapping("/admin/crear_nuevo_plato/terminarMenu")
 	public ModelAndView terminarMenuGrupal() {
@@ -1389,12 +1392,6 @@ public class ControllerMVC {
 
 	@RequestMapping("/admin/ComponentesMenu/{id_menu}")
 	public String mostrarComponentesMenu(@PathVariable("id_menu") int id_menu) {
-
-//		ModelAndView model = new ModelAndView("componentes_plato");
-
-//		List<ComponentsDishTable> listComponentsDish = obtenerBDcomponentesPlato(id_plato);
-//
-//		model.addObject("listComponentsDish", listComponentsDish);
 
 		String type_menu = menuRepo.findById(id_menu).get().getDescripcion();
 
