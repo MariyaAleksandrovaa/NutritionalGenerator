@@ -836,7 +836,30 @@ public class ControllerMVC {
 
 		return model;
 	}
+	
+	@RequestMapping("/admin/editMenu/{id_menu}")
+	public ModelAndView editarMenu(@PathVariable("id_menu") int id_menu) {
 
+		ModelAndView model = new ModelAndView("editar_menu");
+		
+		Menu menu = menuRepo.findById(id_menu).get();
+
+		model.addObject("menu", menu);
+
+		return model;
+	}
+
+	@PostMapping("/admin/saveMenu/{id_menu}")
+	public String guardarMenu(Menu menu) {
+		
+		Menu menuObj = menuRepo.findById(menu.getId_menu()).get();
+		menuObj.setNombre_menu(menu.getNombre_menu());
+		
+		menuRepo.save(menuObj);
+
+		return "redirect:/admin";
+	}
+	
 	@PostMapping("/admin/saveDish/{id_plato}")
 	public String guardarPlato(Dish dish) {
 
