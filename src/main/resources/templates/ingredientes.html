@@ -8,7 +8,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 <html lang="en">
 
 <head>
-<title>EditorNutriApp</title>
+<title>AdminNutriApp</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -34,7 +34,6 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 <!-- //js -->
 
 <!-- web-fonts -->   
-<link href="//fonts.googleapis.com/css?family=Roboto+Condensed:300,300i,400,400i,700" rel="stylesheet">
 <link href="//fonts.googleapis.com/css?family=Playfair+Display:400,400i,700,700i,900,900i" rel="stylesheet">
 <!-- //web-fonts -->
 </head>
@@ -54,7 +53,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 		<!-- banner-text -->
 		<div class="banner-text w3labout-bnr"> 
 			<div class="container">  
-				<h2>Cuenta de editor</h2>   
+				<h2>Cuenta de administrador</h2>   
 			</div>
 		</div>
 		<!-- //banner-text -->
@@ -63,40 +62,40 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	<!-- gallery -->
 	<div class="about gallery">
 		<div class="container">  
-			<div role="tabpanel">
-				<ul class="nav nav-tabs" role="tablist">
-				  <li role ="presentation" class="active" >
-				    <a href="#seccion1" data-toggle="tab" role="tab">Componentes de ...</a>
-				  </li>
-				</ul>
-				<div class="tab-content">
-					<div role="tabpanel" class="tab-pane active" id="seccion1" style="width: 50%;margin: 0 auto;">
+						<a th:href="@{/admin/crear_nuevo_plato/ingrediente/terminarPlato}" class="btn btn-info btn-lg" style="margin-bottom:35px;background-color: #6c757d;margin-left:91%;font-size:1.5rem;border-color: #6c757d;color:#ffffff;">Terminar plato</a>
+						<div class="row justify-content-start">
+							<div class="col-12">
+								<input class="form-control" id="myInput" type="text" placeholder="Busca alimento">
+							</div>
+						</div>
 						<div class ="row">
-							<table class="table" style = "margin-top:30px">
-								
+							<table class="table">
 							  <thead>
 							    <tr >
 								  <th scope="col">Grupo</th>
 							      <th scope="col">Nombre</th>
-							      <th scope="col">Cantidad </th>
-							      <th scope="col">Unidad</th>
-							      <th scope="col" style="width:27%;">Proporción</th>
+							      <th scope="col">Nombre en inglés</th>
+							      <th scope="col">Porción comestible</th>
+							      <th scope="col">Operacion</th>
+							      
 							    </tr>
 							  </thead>
 							  <tbody id="myTable">
-							    <tr th:each="componente: ${listaComponentes}">
-				                    <td th:text="${componente.grupo}">Grupo</td>
-				                    <td th:text="${componente.c_ori_name}">Nombre</td>
-				                    <td th:text="${componente.best_location}">Cantidad</td>
-				                    <td th:text="${componente.v_unit}">Unidad</td>
-				                    <td th:text="${componente.descripcion}">Unidad</td>
+							    <tr th:each="food: ${listFood}">
+				                    <td th:text="${food.grupo}">Grupo</td>
+				                    <td th:text="${food.nombre}">Nombre</td>
+				                    <td th:text="${food.ingles}">Nombre en inglés</td>
+				                    <td th:text="${food.edible_portion}">Porción comestible</td>
+				                    <td >
+										 <div class="botonesEdicion" style="margin-right:-140px">
+										 	<a th:href="@{'/admin/crear_nuevo_plato/ingredientes/' + ${food.id_alimento}}" class="btn btn-info btn-lg" style="background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;;font-size:0.9rem;">Añadir al plato</a>
+										 </div>     	                    	
+					                 </td>
 							    </tr>
 							  </tbody>
 							</table>
 						</div>
-					</div>
-				</div>
-			</div>
+						
 		</div>
 	</div>
 	<!-- //gallery -->  
@@ -109,6 +108,8 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 			</div>
 		</div>
 	</div>
+	<!-- //footer -->
+
 	<script>
 		$('.navicon').on('click', function (e) {
 		  e.preventDefault();
@@ -176,52 +177,15 @@ License URL: http://creativecommons.org/licenses/by/3.0/
         $(".btn").click(function(){
             $("#modal1").modal('hide');
         });
+    	$("#myTable").on("click","tr",function(e){
+    		console.log(e.currentTarget);
+    	})
     });
 	</script>
 	<script>
-	$(function(){
-	    $('#orderModal').modal({
-	        keyboard: true,
-	        backdrop: "static",
-	        show:false,
-
-	    }).on('show', function(){ //subscribe to show method
-	          var getIdFromRow = $(event.target).closest('tr').data('id'); //get the id from tr
-	        //make your ajax call populate items or what even you need
-	        $(this).find('#orderDetails').html($('<b> Order Id selected: ' + getIdFromRow  + '</b>'))
-	    });
-	});
-	</script>
-	<script>
-	var globalModal = $('.global-modal');
-    $( ".btn-green-flat-trigger" ).on( "click", function(e) {
-      e.preventDefault();
-      $( globalModal ).toggleClass('global-modal-show');
-    });
-    $( ".overlay" ).on( "click", function() {
-      $( globalModal ).toggleClass('global-modal-show');
-    });
-    $( ".global-modal_close" ).on( "click", function() {
-      $( globalModal ).toggleClass('global-modal-show');
-    });
-    $(".mobile-close").on("click", function(){
-      $( globalModal ).toggleClass('global-modal-show');
-    });
-	</script>
-	<script>
-	$('#myTable').bootstrapTable({
-	    onClickRow: function (row, $element) {
-	        // row: the record corresponding to the clicked row, 
-	        // $element: the tr element.
-	        
-	        var address = [];
-	        $(this).closest('tr').find('td').not(':last').each(function() {
-	            var textval = $(this).text(); // this will be the text of each <td>
-	           address.push(textval);
-	       });
-	        alert(address.join('\n'));
-	    }
-	});
+	$("#myTable").on("click","tr",function(e){
+		console.log(e.currentTarget);
+	})
 	</script>
 
 	<!-- //smooth-scrolling-of-move-up -->  		

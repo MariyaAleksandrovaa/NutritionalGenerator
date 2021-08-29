@@ -1,17 +1,23 @@
 package app.parametrizedObjects;
 
+import java.math.BigDecimal;
+
 public class ComponentsFood {
 
 	public String grupo;
 	public String c_ori_name;
 	public float best_location;
 	public String v_unit;
+	public String descripcion;
+	public BigDecimal calorias;
+	public String unity;
 
-	public ComponentsFood(String grupo, String c_ori_name, float best_location, String v_unit) {
+	public ComponentsFood(String grupo, String c_ori_name, float best_location, String v_unit, String descripcion) {
 		this.grupo = grupo;
 		this.c_ori_name = c_ori_name;
 		this.best_location = best_location;
 		this.v_unit = v_unit;
+		this.descripcion = descripcion;
 	}
 
 	public ComponentsFood() {
@@ -48,6 +54,14 @@ public class ComponentsFood {
 
 	public void setV_unit(String v_unit) {
 		this.v_unit = v_unit;
+	}
+
+	public String getDescripcion() {
+		return descripcion;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
 	}
 
 }

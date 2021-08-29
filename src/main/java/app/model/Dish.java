@@ -13,21 +13,30 @@ public class Dish {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	public int id_plato;
-	
+
 	@Column(nullable = false)
 	public int id_tipo_platos;
-	
+
 	@Column(length = 100, nullable = true)
 	public String nombre_plato;
-	
+
 	@Column(length = 100, nullable = true)
 	public String descripcion;
-	
-	@Column(nullable = true)
-	public int activo;
-	
-	@Column(length = 100, nullable = true)
-	public String nombre_ingles;
+
+	public Integer id_empresa;
+
+	public Dish(int id_plato, int id_tipo_platos, String nombre_plato, String descripcion, Integer id_empresa) {
+		this.id_plato = id_plato;
+		this.id_tipo_platos = id_tipo_platos;
+		this.nombre_plato = nombre_plato;
+		this.descripcion = descripcion;
+		this.id_empresa = id_empresa;
+
+	}
+
+	public Dish() {
+
+	}
 
 	public int getId_plato() {
 		return id_plato;
@@ -61,20 +70,12 @@ public class Dish {
 		this.descripcion = descripcion;
 	}
 
-	public int getActivo() {
-		return activo;
+	public Integer getId_empresa() {
+		return id_empresa;
 	}
 
-	public void setActivo(int activo) {
-		this.activo = activo;
-	}
-
-	public String getNombre_ingles() {
-		return nombre_ingles;
-	}
-
-	public void setNombre_ingles(String nombre_ingles) {
-		this.nombre_ingles = nombre_ingles;
+	public void setId_empresa(Integer id_empresa) {
+		this.id_empresa = id_empresa;
 	}
 
 }

@@ -12,11 +12,13 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "view_gestionmenus")
 public class MenuView {
-	
+
+	@Id
+	public int id_menu;
+
 	@Column()
 	public Date fecha_creacion;
 	
-	@Id
 	@Column(length = 100)
 	public String nombre_menu;
 	
@@ -47,6 +49,14 @@ public class MenuView {
 
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
+	}
+	
+	public int getId_menu() {
+		return id_menu;
+	}
+
+	public void setId_menu(int id_menu) {
+		this.id_menu = id_menu;
 	}
 
 
