@@ -92,7 +92,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 								<label for="exampleInputEmail1">Escoge el primer plato del menú</label> 
 								<select class="form-select" th:field="*{first_dish}" aria-label="Default select example" style="margin-top:10px;width:60%">
 									<option selected th:value="${select}">Primer plato</option>
-									<option th:each="dish:${listDishCompany}"
+									<option th:each="dish:${listDishCompany1}"
 										th:value="${dish.id_plato}"
 										th:text="${dish.nombre_plato}"
 									/>
@@ -103,7 +103,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 								<label for="exampleInputEmail1">Escoge el segundo plato del menú</label> 
 								<select class="form-select" th:field="*{second_dish}" aria-label="Default select example" style="margin-top:10px;width:60%">
 									<option selected th:value="${select}" >Segundo plato</option>
-									<option th:each="dish:${listDishCompany}"
+									<option th:each="dish:${listDishCompany2}"
 										th:value="${dish.id_plato}"
 										th:text="${dish.nombre_plato}"
 									/>
@@ -114,7 +114,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 								<label for="exampleInputEmail1">Escoge el postre del menú (opcional)</label> 
 								<select class="form-select" th:field="*{third_dish}" aria-label="Default select example" style="margin-top:10px;width:60%">
 									<option selected th:value="${select}">Postre</option>
-									<option th:each="dish:${listDishCompany}"
+									<option th:each="dish:${listDishCompany3}"
 										th:value="${dish.id_plato}"
 										th:text="${dish.nombre_plato}"
 									/>
