@@ -75,6 +75,19 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 						    	<label for="exampleInputEmail1" >Nombre del menú</label>
 						    	<input type="text" class="form-control"  th:field="*{name_menu}"  style="margin-top:8px;width:60%;" aria-describedby="emailHelp" placeholder="Introduce nombre del menú">
 						    </div>
+						    
+						    <div class="form-group" style="margin-top:30px;">
+								<label for="exampleInputEmail1">Escoge el local al que pertenece menú</label> 
+								<select class="form-select" th:field="*{id_local}" aria-label="Default select example" style="margin-top:10px;width:60%">
+									<option selected th:value="${select}">Escoge el local al que va a pertenecer este menú</option>
+									<option th:each="local:${listLocals}"
+										th:value="${local.id_local}"
+										th:text="${local.nombre}"
+									/>
+								</select>
+							</div>
+						    
+						    
 							<div class="form-group" style="margin-top:30px;">
 								<label for="exampleInputEmail1">Escoge el primer plato del menú</label> 
 								<select class="form-select" th:field="*{first_dish}" aria-label="Default select example" style="margin-top:10px;width:60%">

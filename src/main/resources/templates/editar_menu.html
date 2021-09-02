@@ -64,7 +64,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	<div class="about gallery">
 		<div class="container">
 			<div role="tabpanel">
-				<form th:action="@{'/admin/saveMenu/' + ${id_menu}}" th:object="${menu}" method="post" style="width:60%;margin-left:41%;">
+				<form th:action="@{'/admin/saveMenu/' + ${id_menu}}" th:action="@{'/user/saveMenu/' + ${id_menu}}" th:object="${menu}" method="post" style="width:60%;margin-left:41%;">
 					  <div class="form-group">
 					    <label for="exampleInputEmail1">Nombre del menú</label>
 					    <input type="text" class="form-control"  th:field="*{nombre_menu}" style="margin-top:8px;width:40%;"  aria-describedby="emailHelp" placeholder="Introduce nombre del menú" required>

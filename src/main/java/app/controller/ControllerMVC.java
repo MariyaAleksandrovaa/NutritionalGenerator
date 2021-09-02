@@ -1,24 +1,17 @@
 package app.controller;
 
 import java.math.BigDecimal;
-import java.security.Principal;
+
 import java.sql.ResultSet;
 
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -218,10 +211,21 @@ public class ControllerMVC {
 
 	@GetMapping("/user")
 	public String viewUserPage(Model model) {
+		
+		int id_empresa = obtenerUsuario().getIdEmpresa();
 
-		List<MenuView> listMenus = menuViewRepo.findAll();
+		List<DishView> listDish = obtenerPlatosUsuario(id_empresa);
+		List<Menu> listMenus = obtenerMenusUsuario(id_empresa);
 
 		model.addAttribute("listMenus", listMenus);
+		model.addAttribute("listDish", listDish);
+		
+		
+		
+
+//		List<MenuView> listMenus = menuViewRepo.findAll();
+//
+//		model.addAttribute("listMenus", listMenus);
 
 		return "user";
 	}
@@ -837,7 +841,7 @@ public class ControllerMVC {
 		return model;
 	}
 	
-	@RequestMapping("/admin/editMenu/{id_menu}")
+	@RequestMapping({"/admin/editMenu/{id_menu}"})
 	public ModelAndView editarMenu(@PathVariable("id_menu") int id_menu) {
 
 		ModelAndView model = new ModelAndView("editar_menu");
@@ -848,8 +852,20 @@ public class ControllerMVC {
 
 		return model;
 	}
+	
+//	@RequestMapping({"/user/editMenu/{id_menu}"})
+//	public ModelAndView editarMenu_user(@PathVariable("id_menu") int id_menu) {
+//
+//		ModelAndView model = new ModelAndView("editar_menu");
+//		
+//		Menu menu = menuRepo.findById(id_menu).get();
+//
+//		model.addObject("menu", menu);
+//
+//		return model;
+//	}
 
-	@PostMapping("/admin/saveMenu/{id_menu}")
+	@PostMapping({"/admin/saveMenu/{id_menu}"})
 	public String guardarMenu(Menu menu) {
 		
 		Menu menuObj = menuRepo.findById(menu.getId_menu()).get();
@@ -860,6 +876,17 @@ public class ControllerMVC {
 		return "redirect:/admin";
 	}
 	
+//	@PostMapping({"/user/saveMenu/{id_menu}"})
+//	public String guardarMenu_user(Menu menu) {
+//		
+//		Menu menuObj = menuRepo.findById(menu.getId_menu()).get();
+//		menuObj.setNombre_menu(menu.getNombre_menu());
+//		
+//		menuRepo.save(menuObj);
+//
+//		return "redirect:/user";
+//	}
+//	
 	@PostMapping("/admin/saveDish/{id_plato}")
 	public String guardarPlato(Dish dish) {
 
@@ -1087,7 +1114,7 @@ public class ControllerMVC {
 		return mapAlergensDish;
 	}
 
-	@RequestMapping("/admin/crear_menu_individual")
+	@RequestMapping({"/admin/crear_menu_individual"})
 	public ModelAndView crearMenuIndividual() {
 
 		ModelAndView model = new ModelAndView("crear_menu_individual");
@@ -1106,13 +1133,43 @@ public class ControllerMVC {
 		}
 
 		MenuObj menuObj = new MenuObj();
+		List<Local> listLocals = localRepo.findByIdEmpresa(obtenerUsuario().getIdEmpresa());
+
 
 		model.addObject("listDishCompany", listDishCompany);
 		model.addObject("menuObj", menuObj);
 		model.addObject("select", select);
+		model.addObject("listLocals", listLocals);
 
 		return model;
 	}
+	
+//	@RequestMapping({"/user/crear_menu_individual"})
+//	public ModelAndView crearMenuIndividual_user() {
+//
+//		ModelAndView model = new ModelAndView("crear_menu_individual");
+//
+//		List<Dish> listDish = dishRepo.findAll();
+//		int id_company = obtenerUsuario().getIdEmpresa();
+//		int select = 0;
+//
+//		List<Dish> listDishCompany = new ArrayList<Dish>();
+//
+//		for (int i = 0; i < listDish.size(); i++) {
+//			Integer id_empresa = listDish.get(i).getId_empresa();
+//			if (id_empresa != null && id_empresa == id_company) {
+//				listDishCompany.add(listDish.get(i));
+//			}
+//		}
+//
+//		MenuObj menuObj = new MenuObj();
+//
+//		model.addObject("listDishCompany", listDishCompany);
+//		model.addObject("menuObj", menuObj);
+//		model.addObject("select", select);
+//
+//		return model;
+//	}
 
 	@RequestMapping("/admin/crear_menu_individual/guardar")
 	public String guardarMenuIndividual(MenuObj menuObj) {
@@ -1151,14 +1208,65 @@ public class ControllerMVC {
 			}
 
 			st.close();
+			
+			Statement st2 = Application.con.createStatement();
+			
+			String query = "insert into locales_menus values(" + menuObj.getId_local() + "," + menuDb.getId_menu() + ");";
+			st2.execute(query);
+			
+			st2.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
 		return "redirect:/admin";
 	}
+	
+//	@RequestMapping("/user/crear_menu_individual/guardar")
+//	public String guardarMenuIndividual_user(MenuObj menuObj) {
+//
+//		List<Integer> listDishes = new ArrayList<Integer>();
+//
+//		listDishes.add(menuObj.getFirst_dish());
+//		listDishes.add(menuObj.getSecond_dish());
+//		listDishes.add(menuObj.getThird_dish());
+//
+//		Menu menu = new Menu();
+//		String description = "Menú individual";
+//		menu.setDescripcion(description);
+//		menu.setNombre_menu(menuObj.getName_menu());
+//
+//		int id_company = obtenerUsuario().getIdEmpresa();
+//		menu.setId_empresa(id_company);
+//
+//		menu.setFecha_creacion(new java.sql.Timestamp(Calendar.getInstance().getTime().getTime()));
+//
+//		Menu menuDb = menuRepo.save(menu);
+//
+//		if (menuObj.getThird_dish() == 0) {
+//			menuObj.setThird_dish(null);
+//		}
+//
+//		try {
+//			Statement st = Application.con.createStatement();
+//
+//			for (int i = 0; i < listDishes.size(); i++) {
+//				if (listDishes.get(i) != 0) {
+//					String query = "insert into menus_platos values(" + menuDb.getId_menu() + "," + listDishes.get(i)
+//							+ ",'" + menuObj.getName_menu() + "','" + description + "'," + id_company + ");";
+//					st.execute(query);
+//				}
+//			}
+//
+//			st.close();
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+//
+//		return "redirect:/user";
+//	}
 
-	@RequestMapping("/admin/crear_menu_grupal")
+	@RequestMapping({"/admin/crear_menu_grupal"})
 	public ModelAndView crearMenuGrupal() {
 
 		ModelAndView model = new ModelAndView("crear_menu_grupal");
@@ -1170,6 +1278,19 @@ public class ControllerMVC {
 
 		return model;
 	}
+	
+//	@RequestMapping({"/user/crear_menu_grupal"})
+//	public ModelAndView crearMenuGrupal_user() {
+//
+//		ModelAndView model = new ModelAndView("crear_menu_grupal");
+//
+//		listDishesGroupalMenu = new ArrayList<Integer>();
+//
+//		Menu menu = new Menu();
+//		model.addObject("menu", menu);
+//
+//		return model;
+//	}
 
 	private Menu menu_grupal;
 
@@ -1184,6 +1305,18 @@ public class ControllerMVC {
 
 		return "redirect:/admin/crear_menu_grupal/platos";
 	}
+	
+//	@PostMapping("/user/crear_menu_grupal/guardar")
+//	public String crearMenuGrupalGuardar_user(Menu menu) {
+//
+//		menu.setDescripcion("Menú grupal");
+//		menu.setFecha_creacion(new java.sql.Timestamp(Calendar.getInstance().getTime().getTime()));
+//		menu.setId_empresa(obtenerUsuario().getIdEmpresa());
+//
+//		menu_grupal = menuRepo.save(menu);
+//
+//		return "redirect:/user/crear_menu_grupal/platos";
+//	}
 
 	@GetMapping("/admin/crear_menu_grupal/platos")
 	public ModelAndView escogerPlatosMenuGrupal() {
@@ -1198,6 +1331,20 @@ public class ControllerMVC {
 
 		return model;
 	}
+	
+//	@GetMapping("/user/crear_menu_grupal/platos")
+//	public ModelAndView escogerPlatosMenuGrupal_user() {
+//		ModelAndView model = new ModelAndView("escoger_platos_menu_grupal");
+//
+//		GroupalDish groupalDish = new GroupalDish();
+//		int select = 0;
+//		List<Dish> listDish = dishRepo.findAll();
+//		model.addObject("groupalDish", groupalDish);
+//		model.addObject("select", select);
+//		model.addObject("listDish", listDish);
+//
+//		return model;
+//	}
 
 	public List<Integer> listDishesGroupalMenu;
 
@@ -1225,6 +1372,32 @@ public class ControllerMVC {
 
 		return "redirect:/admin/crear_menu_grupal/platos";
 	}
+	
+//	@RequestMapping("/user/crear_menu_grupal/guardarPlato")
+//	public String añadirPlatoMenuGrupal_user(GroupalDish groupalDish) {
+//
+//		int id_menu = menu_grupal.getId_menu();
+//		String nombre_menu = menu_grupal.getNombre_menu();
+//		String descripcion_menu = menu_grupal.getDescripcion();
+//		int empresa_menu = menu_grupal.getId_empresa();
+//
+//		listDishesGroupalMenu.add(groupalDish.getId_dish());
+//
+//		try {
+//			Statement st = Application.con.createStatement();
+//
+//			String query = "insert into menus_platos values(" + id_menu + "," + groupalDish.getId_dish() + ",'"
+//					+ nombre_menu + "','" + descripcion_menu + "'," + empresa_menu + ");";
+//			st.execute(query);
+//
+//			st.close();
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+//
+//		return "redirect:/user/crear_menu_grupal/platos";
+//	}
+
 
 	@RequestMapping("/admin/crear_nuevo_plato/terminarMenu")
 	public ModelAndView terminarMenuGrupal() {
@@ -1241,22 +1414,52 @@ public class ControllerMVC {
 
 		return model;
 	}
+	
+//	@RequestMapping("/user/crear_nuevo_plato/terminarMenu")
+//	public ModelAndView terminarMenuGrupal_user() {
+//
+//		ModelAndView model = new ModelAndView("mostrar_platos_menu");
+//		Map<Integer, String> mapDishesMenu = new HashMap<Integer, String>();
+//
+//		for (int i = 0; i < listDishesGroupalMenu.size(); i++) {
+//			int id_dish = listDishesGroupalMenu.get(i);
+//			mapDishesMenu.put(id_dish, dishRepo.findById(id_dish).get().getNombre_plato());
+//		}
+//
+//		model.addObject("mapDishesMenu", mapDishesMenu);
+//
+//		return model;
+//	}
 
 	@RequestMapping("/admin/crear_menu_grupal/terminar")
 	public String terminarMenuGrupalExito() {
 
 		return "redirect:/admin";
 	}
+	
+//	@RequestMapping("/user/crear_menu_grupal/terminar")
+//	public String terminarMenuGrupalExito_user() {
+//
+//		return "redirect:/admin";
+//	}
 
-	@RequestMapping("/admin/deleteMenu/{id_menu}")
+	@RequestMapping({"/admin/deleteMenu/{id_menu}"})
 	public String eliminarMenu(@PathVariable("id_menu") int id_menu) {
 
 		menuRepo.delete(menuRepo.findById(id_menu).get());
 
 		return "redirect:/admin";
 	}
+	
+//	@RequestMapping({"/user/deleteMenu/{id_menu}"})
+//	public String eliminarMenu_user(@PathVariable("id_menu") int id_menu) {
+//
+//		menuRepo.delete(menuRepo.findById(id_menu).get());
+//
+//		return "redirect:/admin";
+//	}
 
-	@GetMapping("/admin/AlergenosMenu/{id_menu}")
+	@GetMapping({"/admin/AlergenosMenu/{id_menu}"})
 	public String obtenerAlergenosMenuIndividual(@PathVariable("id_menu") int id_menu) {
 
 		String type_menu = menuRepo.findById(id_menu).get().getDescripcion();
@@ -1438,7 +1641,7 @@ public class ControllerMVC {
 
 	}
 
-	@RequestMapping("/admin/ComponentesMenu/{id_menu}")
+	@RequestMapping({"/admin/ComponentesMenu/{id_menu}"})
 	public String mostrarComponentesMenu(@PathVariable("id_menu") int id_menu) {
 
 		String type_menu = menuRepo.findById(id_menu).get().getDescripcion();
