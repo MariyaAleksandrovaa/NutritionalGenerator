@@ -16,7 +16,7 @@
 	<description>Genarator of nutritional informs</description>
 	<properties>
 		<java.version>11</java.version>
-		<start-class>src.main.java.app.Application</start-class>
+		<start-class>app.Application</start-class>
 	</properties>
 	<dependencies>
 		<dependency>
