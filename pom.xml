@@ -16,6 +16,7 @@
 	<description>Genarator of nutritional informs</description>
 	<properties>
 		<java.version>11</java.version>
+		<start-class>src.main.java.app.Application</start-class>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -110,40 +111,40 @@
 <!-- 			</plugin> -->
 <!-- 		</plugins> -->
 <!-- 	</build> -->
-<!-- 	<build> -->
-<!--     <plugins> -->
-<!--         <plugin> -->
-<!--             <groupId>org.apache.maven.plugins</groupId> -->
-<!--             <artifactId>maven-compiler-plugin</artifactId> -->
-<!--             <version>3.1</version> -->
-<!--             <configuration> -->
-<!--                 <source>1.8</source> -->
-<!--                 <target>1.8</target> -->
-<!--                 <archive>   -->
-<!--                     <manifest>   -->
-<!--                         <mainClass>app</mainClass>   -->
-<!--                     </manifest>   -->
-<!--                 </archive>   -->
-<!--             </configuration> -->
-<!--         </plugin> -->
-<!--     </plugins> -->
-<!-- </build> -->
-
-<build>  
-    <plugins>  
-        <plugin>  
-            <!-- Build an executable JAR -->  
-            <groupId>org.apache.maven.plugins</groupId>  
-            <artifactId>maven-jar-plugin</artifactId>  
-            <version>3.2.0</version>  
-            <configuration>  
+	<build>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.1</version>
+            <configuration>
+                <source>1.8</source>
+                <target>1.8</target>
                 <archive>  
                     <manifest>  
                         <mainClass>app</mainClass>  
                     </manifest>  
                 </archive>  
-            </configuration>  
-        </plugin>  
-    </plugins>  
-</build>  
+            </configuration>
+        </plugin>
+    </plugins>
+</build>
+
+<!-- <build>   -->
+<!--     <plugins>   -->
+<!--         <plugin>   -->
+<!--             Build an executable JAR   -->
+<!--             <groupId>org.apache.maven.plugins</groupId>   -->
+<!--             <artifactId>maven-jar-plugin</artifactId>   -->
+<!--             <version>3.2.0</version>   -->
+<!--             <configuration>   -->
+<!--                 <archive>   -->
+<!--                     <manifest>   -->
+<!--                         <mainClass>app</mainClass>   -->
+<!--                     </manifest>   -->
+<!--                 </archive>   -->
+<!--             </configuration>   -->
+<!--         </plugin>   -->
+<!--     </plugins>   -->
+<!-- </build>   -->
 </project>
