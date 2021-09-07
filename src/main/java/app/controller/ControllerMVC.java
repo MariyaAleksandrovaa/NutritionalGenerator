@@ -12,6 +12,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -798,7 +799,7 @@ public class ControllerMVC {
 
 		dishRepo.save(dish);
 
-		for (var ingrediente : dishObj.getMapFood().entrySet()) {
+		for (Entry<String, BigDecimal> ingrediente : dishObj.getMapFood().entrySet()) {
 
 			try {
 				Statement st = Application.con.createStatement();
@@ -936,7 +937,7 @@ public class ControllerMVC {
 			// Almacenar el grupo y unidad de los componentess
 			Map<String, GroupUnitObj> mapComponentUnit = new HashMap<String, GroupUnitObj>();
 
-			for (var ingrediente : mapIngredientAmount.entrySet()) {
+			for (Entry<Integer, BigDecimal>  ingrediente : mapIngredientAmount.entrySet()) {
 				ResultSet rs2 = st2.executeQuery(
 						"SELECT g.nombre, ac.c_ori_name, ac.best_location, ac.v_unit, ac.mu_descripcion  \r\n"
 								+ "FROM nutri_db.alimentos_componentesquimicos as ac left join componentesquimicos as c on ac.c_ori_name = c.c_ori_name \r\n"
@@ -974,7 +975,7 @@ public class ControllerMVC {
 
 			Map<String, Float> mapComponentsDish2 = new HashMap<String, Float>();
 
-			for (var ingrediente : mapComponentsDish.entrySet()) {
+			for (Entry<Integer, List<ComponentsFood>>  ingrediente : mapComponentsDish.entrySet()) {
 
 				ingrediente.getKey();
 				List<ComponentsFood> listaCompon = ingrediente.getValue();
@@ -1034,7 +1035,7 @@ public class ControllerMVC {
 
 			}
 
-			for (var componente : mapComponentsDish2.entrySet()) {
+			for (Entry<String, Float> componente : mapComponentsDish2.entrySet()) {
 
 				ComponentsDishTable componentDishTable = new ComponentsDishTable();
 
@@ -1568,7 +1569,7 @@ public class ControllerMVC {
 		if (menuObj.getFirst_dish() != 0) {
 			Map<String, String> mapFirstDish = obtenerAlergenosPlato(menuObj.getFirst_dish());
 
-			for (var alergen : mapFirstDish.entrySet()) {
+			for (Entry<String, String>  alergen : mapFirstDish.entrySet()) {
 				mapAlergensMenu.put(alergen.getKey(), alergen.getValue());
 			}
 
@@ -1576,7 +1577,7 @@ public class ControllerMVC {
 		if (menuObj.getSecond_dish() != 0) {
 			Map<String, String> mapSecondDish = obtenerAlergenosPlato(menuObj.getSecond_dish());
 
-			for (var alergen : mapSecondDish.entrySet()) {
+			for (Entry<String, String>  alergen : mapSecondDish.entrySet()) {
 				mapAlergensMenu.put(alergen.getKey(), alergen.getValue());
 			}
 
@@ -1584,7 +1585,7 @@ public class ControllerMVC {
 		if (menuObj.getThird_dish() != 0) {
 			Map<String, String> mapThirdDish = obtenerAlergenosPlato(menuObj.getThird_dish());
 
-			for (var alergen : mapThirdDish.entrySet()) {
+			for (Entry<String, String>  alergen : mapThirdDish.entrySet()) {
 				mapAlergensMenu.put(alergen.getKey(), alergen.getValue());
 			}
 
@@ -1735,7 +1736,7 @@ public class ControllerMVC {
 
 				Map<String, String> mapAlergensDish = obtenerAlergenosPlato(idPlato);
 
-				for (var alergenDish : mapAlergensDish.entrySet()) {
+				for (Entry<String, String> alergenDish : mapAlergensDish.entrySet()) {
 
 					mapAlergensMenu.put(alergenDish.getKey(), alergenDish.getValue());
 				}
