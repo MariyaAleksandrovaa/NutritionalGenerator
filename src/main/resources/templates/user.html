@@ -34,7 +34,6 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 <!-- //js -->
 
 <!-- web-fonts -->   
-<link href="//fonts.googleapis.com/css?family=Roboto+Condensed:300,300i,400,400i,700" rel="stylesheet">
 <link href="//fonts.googleapis.com/css?family=Playfair+Display:400,400i,700,700i,900,900i" rel="stylesheet">
 <!-- //web-fonts -->
 </head>
@@ -64,68 +63,51 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	<div class="about gallery">
 		<div class="container">  
 			<div role="tabpanel">
-				<ul class="nav nav-tabs" role="tablist">
-				  <li role ="presentation" class="active" >
-				    <a href="#seccion1" data-toggle="tab" role="tab">Menús</a>
+				<ul class="nav nav-tabs" role="tablist" id="myTab">
+				  <li role ="presentation"  class="nav-item" >
+				    <a href="#seccion1" data-toggle="tab" role="tab" class="nav-link active">Menús</a>
 				  </li>
-				</ul>
+				</ul>	
 				<div class="tab-content">
 					<div role="tabpanel" class="tab-pane active" id="seccion1">
-						<div class="modal" tabindex="-1" id="modal1">
-						  <div class="modal-dialog">
-						    <div class="modal-content">
-						      <div class="modal-header">
-						        <h5 class="modal-title">Generar menú individual</h5>
-						        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
-						      </div>
-						      <div class="modal-body">
-								<div class="container py-4" style="margin-left:80px" >
-									<select class="form-select" aria-label="Default select example" style="margin-top:10px;width:70%">
-										<option selected>Escoge primer plato</option>
-										<option th:each="dish:${dishes}"
-											th:value="${dish.id_plato}"
-											th:text="${dish.nombre_plato}"
-										/>
-									</select>
-
-									<select class="form-select" aria-label="Default select example" style="margin-top:10px;width:70%">
-									  <option selected>Escoge segundo plato</option>
-										<option th:each="dish:${dishes}"
-											th:value="${dish.id_plato}"
-											th:text="${dish.nombre_plato}"
-										/>
-									</select>
-									<select class="form-select" aria-label="Default select example" style="margin-top:10px;width:70%">
-									  <option selected>Escoge postre (Opcional)</option>
-										<option th:each="dish:${dishes}"
-											th:value="${dish.id_plato}"
-											th:text="${dish.nombre_plato}"
-										/>
-									</select>
-								</div>
-
-						      </div>
-						      <div class="modal-footer">
-						        <button type="button" class="btn btn-primary"  style="background-color:#28B463;border-color:#28B463" >Guardar cambios</button>
-						      </div>
-						    </div>
-						  </div>
+						<div class="dropdown">
+							  <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false" style="width:200px;margin-left: 43.5%;margin-bottom: 60px;margin-top: 25px;">
+							    Crear nuevo menú
+							  </a>
+							
+							  <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink" style="width: 15.5%;">
+							    <li><a class="dropdown-item" th:href="@{/user/crear_menu_individual}">Menú individual</a></li>
+							    <li><a class="dropdown-item" th:href="@{/user/crear_menu_grupal}">Menú grupal</a></li>
+							  </ul>
 						</div>
-						<button class="btn btn-primary" type="button" data-toggle='modal' data-target='#modal1' style="background-color:#E00000;border-color:#E00000" >Generar nuevo menú</button>
 						<div class ="row">
 							<table class="table">
 							  <thead>
 							    <tr >
 							      <th scope="col">Fecha Creación</th>
-							      <th scope="col">Nombre del menú</th>
-							      <th scope="col">Descripción</th>
+							      <th scope="col" style="width:27%">Nombre del menú</th>
+							      <th scope="col" style="width:35%">Descripción</th>
+							      <th scope="col" data-field="action" style="margin-left:30%">Operacion</th>
+							      <th scope="col" style="margin-left:30%">Tablas</th>
 							    </tr>
 							  </thead>
 							  <tbody>
 							    <tr th:each="menu: ${listMenus}">
 				                    <td th:text="${menu.fecha_creacion}">Fecha Creación</td>
-				                    <td th:text="${menu.nombre_menu}">Nombre del menú</td>
-				                    <td th:text="${menu.descripcion}">Descripción</td>
+				                    <td th:text="${menu.nombre_menu}" style="width:27%">Nombre del menú</td>
+				                    <td th:text="${menu.descripcion}" style="width:35%">Descripción</td>
+			                    	<td >
+										 <div class="botonesEdicion" >
+										 	<a th:href="@{'/user/editMenu/' + ${menu.id_menu}}" class="btn btn-info btn-lg" style="background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;;font-size:0.9rem;">Editar</a>
+								        	<a th:href="@{'/user/deleteMenu/' + ${menu.id_menu}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color:#FF3333;border-color:#FF3333;;color:#ffffff;font-size:0.9rem; " >Eliminar</a>
+										 </div>     	                    	
+				                    </td>
+				                    <td >
+		                    			<div class="botonesEdicion" >
+					                    	<a th:href="@{'/user/ComponentesMenu/' + ${menu.id_menu}}" class="btn btn-info btn-lg" style="background-color: #3c89d0;border-color:#3c89d0;color:#ffffff;font-size:0.9rem;">Componentes</a>
+					                    	<a th:href="@{'/user/AlergenosMenu/' + ${menu.id_menu}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color: #c38452;border-color:#c38452;color:#ffffff;font-size:0.9rem;">Alérgenos</a>
+					                   	</div>
+				                    </td>
 							    </tr>
 							  </tbody>
 							</table>

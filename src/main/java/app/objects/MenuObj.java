@@ -6,17 +6,26 @@ public class MenuObj {
 	public int first_dish;
 	public int second_dish;
 	public Integer third_dish;
+	public Integer id_local;
 
-	public MenuObj(String name_menu, int first_dish, int second_dish, Integer third_dish) {
+	public MenuObj(String name_menu, int first_dish, int second_dish, Integer third_dish, Integer id_local) {
 		this.name_menu = name_menu;
 		this.first_dish = first_dish;
 		this.second_dish = second_dish;
 		this.third_dish = third_dish;
+		this.id_local = id_local;
 	}
 	public MenuObj() {
 		
 	}
 
+
+	public Integer getId_local() {
+		return id_local;
+	}
+	public void setId_local(Integer id_local) {
+		this.id_local = id_local;
+	}
 	public String getName_menu() {
 		return name_menu;
 	}
