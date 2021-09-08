@@ -45,17 +45,16 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 		<div class="header">
 			<div class="container">
 				<div class="logo">
-					<h1><a href="index.html">NutriApp</a></h1>
+					<h1>NutriApp</h1>
 				</div> 
+				<div class="banner-text w3labout-bnr" > 
+						<h2 >Cuenta de editor</h2>   
+				</div>
 			</div>
 		</div>
 		<!-- //header --> 
 		<!-- banner-text -->
-		<div class="banner-text w3labout-bnr"> 
-			<div class="container">  
-				<h2>Cuenta de editor</h2>   
-			</div>
-		</div>
+
 		<!-- //banner-text -->
 	</div>
 	<!-- //banner -->   
@@ -127,9 +126,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 								<table class="table" style = "margin-top:30px">
 								  <thead>
 								    <tr >
-									  <th scope="col">Id</th>
 								      <th scope="col">Nombre usuario</th>
-								      <th scope="col">Contraseña</th>
 								      <th scope="col">Nombre personal</th>
 								      <th scope="col">Apellido</th>
 								      <th scope="col">Correo electrónico</th>
@@ -140,9 +137,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 								  </thead>
 								  <tbody id="table">
 							    <tr th:each="user: ${listUsers}" style="cursor: pointer;" data-toggle="modal" data-target="#orderModal">
-				                    <td th:text="${user.user_id}">Id</td>
 				                    <td th:text="${user.username}">Nombre usuario</td>
-				                    <td th:text="${user.password}">Contraseña</td>
 				                    <td th:text="${user.name}">Nombre personal</td>
 				                    <td th:text="${user.surname}">Apellido</td>
 				                    <td th:text="${user.email}">Correo electrónico</td>
