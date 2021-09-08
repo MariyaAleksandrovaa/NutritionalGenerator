@@ -91,7 +91,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
 		.successHandler(successHandler).failureUrl("/login?error=true")
 		.permitAll()
 		.and()
-		.logout().permitAll();
+		.logout().logoutSuccessUrl("/").permitAll();
 
 	}
 
