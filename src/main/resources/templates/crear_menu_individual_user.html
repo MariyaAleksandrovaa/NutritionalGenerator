@@ -25,6 +25,16 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 
 <link href="../css/style.css" type="text/css" rel="stylesheet" media="all">   
 <link href="../css/font-awesome.css" rel="stylesheet"> <!-- font-awesome icons --> 
+
+<link href="../css/bootstrap-multiselect.css" rel="stylesheet" type="text/css"> 
+<link href="../css/bootstrap-multiselect.min.css" rel="stylesheet" type="text/css">
+
+<script src="../js/bootstrap-multiselect.js" rel="stylesheet" type="text/javascript"></script>
+<script src="../js/bootstrap-multiselect.min.js" rel="stylesheet" type="text/javascript"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+
 <link rel="stylesheet" href="../css/smoothbox.css" type='text/css' media="all" /> 
 <!-- //Custom Theme files --> 
 
@@ -40,6 +50,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 </head>
 
 <body> 
+
 	<div class="banner">
 		<p style="float: left;margin-top:10px;font-size:1.5em;margin-left:20px;">
 			Bienvenido <b>[[${#request.userPrincipal.principal.username}]]</b> 
@@ -62,6 +73,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	</div>
 	<!-- //banner -->   
 	<!-- gallery -->
+	<div id="wrapper">
 	<div class="about gallery">
 		<div class="container">
 			<div role="tabpanel">
@@ -78,16 +90,38 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 						    </div>
 						    
 						    <div class="form-group" style="margin-top:30px;">
-								<label for="exampleInputEmail1">Escoge el local al que pertenece menú</label> 
-								<select class="form-select" th:field="*{id_local}" aria-label="Default select example" style="margin-top:10px;width:60%">
+								<label for="exampleInputEmail1" class="form-label select-label">Escoge el local al que pertenece menú</label> 
+								<select class="select" th:field="*{id_local}" aria-label="Default select example" style="margin-top:10px;width:60%" >
 									<option selected th:value="${select}">Escoge el local al que va a pertenecer este menú</option>
 									<option th:each="local:${listLocals}"
 										th:value="${local.id_local}"
 										th:text="${local.nombre}"
 									/>
 								</select>
+								<select class="select" multiple data-mdb-placeholder="Example placeholder">
+								  <option value="1">One</option>
+								  <option value="2">Two</option>
+								  <option value="3">Three</option>
+								  <option value="4">Four</option>
+								  <option value="5">Five</option>
+								</select>
 							</div>
-						    
+						    <div class="row">
+							  <div class="col-md-12">
+								
+								    <select id="Example" multiple="multiple" searchable="Search here..">
+								      <option value="" disabled selected>Choose your country</option>
+								      <option value="1">USA</option>
+								      <option value="2">Germany</option>
+								      <option value="3">France</option>
+								      <option value="4">Poland</option>
+								      <option value="5">Japan</option>
+								    </select>
+								    <label class="mdb-main-label">Label example</label>
+								    <button class="btn-save btn btn-primary btn-sm">Save</button>
+								
+								  </div>
+								</div>
 						    
 							<div class="form-group" style="margin-top:30px;">
 								<label for="exampleInputEmail1">Escoge el primer plato del menú</label> 
@@ -129,6 +163,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 				</div>
 			</div>
 		</div>
+	</div>
 	</div>
 	<!-- //gallery -->  
 	<!-- footer -->
@@ -267,12 +302,18 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	});
 	</script>
 
-	
+	<script>
+	$(document).ready(function() {
+		$('#Example').multiselect();
+		});
+	</script>
 
 	<!-- //smooth-scrolling-of-move-up -->  		
 	<!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="js/bootstrap.js"></script>
+	
+	
 </body>
 </html>

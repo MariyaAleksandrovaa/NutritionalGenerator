@@ -2,7 +2,6 @@ package app.controller;
 
 import java.math.BigDecimal;
 
-
 import java.sql.ResultSet;
 
 import java.sql.SQLException;
@@ -40,6 +39,7 @@ import app.model.Menu;
 import app.model.Role;
 import app.model.TypeDish;
 import app.model.User;
+import app.objects.DishIngredients;
 import app.objects.DishObj;
 import app.objects.FoodAmountObj;
 import app.objects.GroupUnitObj;
@@ -149,9 +149,9 @@ public class ControllerMVC {
 
 		model.addAttribute("listMenus", listMenus);
 		model.addAttribute("listDish", listDish);
-		
+
 		Integer id = obtenerUsuario().getIdEmpresa();
-		if(id != null) {
+		if (id != null) {
 			String company = companyRepo.findById(id).get().getNombre();
 			model.addAttribute("company", company);
 		}
@@ -177,7 +177,7 @@ public class ControllerMVC {
 
 	private List<Menu> obtenerMenusUsuario(int id_empresa) {
 
-		List<Menu> listMenusAll = menuRepo.findAll();
+		List<Menu> listMenusAll = menuRepo.findAllOrderByDate();
 
 		List<Menu> listMenu = new ArrayList<Menu>();
 
@@ -207,13 +207,13 @@ public class ControllerMVC {
 		model.addAttribute("listCompanies", listCompanies);
 		model.addAttribute("listUsers", listUsers);
 		model.addAttribute("listLocals", listLocals);
-		
+
 		Integer id = obtenerUsuario().getIdEmpresa();
-		if(id != null) {
+		if (id != null) {
 			String company = companyRepo.findById(id).get().getNombre();
 			model.addAttribute("company", company);
 		}
-		
+
 		return "editor";
 	}
 
@@ -231,7 +231,7 @@ public class ControllerMVC {
 		model.addAttribute("listDish", listDish);
 
 		Integer id = obtenerUsuario().getIdEmpresa();
-		if(id != null) {
+		if (id != null) {
 			String company = companyRepo.findById(id).get().getNombre();
 			model.addAttribute("company", company);
 		}
@@ -261,9 +261,9 @@ public class ControllerMVC {
 
 		model.addObject("empresa", empresa);
 		model.setViewName("registrar_nueva_empresa");
-		
+
 		Integer id = obtenerUsuario().getIdEmpresa();
-		if(id != null) {
+		if (id != null) {
 			String company = companyRepo.findById(id).get().getNombre();
 			model.addObject("company", company);
 		}
@@ -291,9 +291,9 @@ public class ControllerMVC {
 		model.addObject("empresa", empresa);
 
 		model.setViewName("registrar_empresa_exito");
-		
+
 		Integer id = obtenerUsuario().getIdEmpresa();
-		if(id != null) {
+		if (id != null) {
 			String company = companyRepo.findById(id).get().getNombre();
 			model.addObject("company", company);
 		}
@@ -314,7 +314,7 @@ public class ControllerMVC {
 			e.printStackTrace();
 		}
 		Integer idComp = obtenerUsuario().getIdEmpresa();
-		if(idComp != null) {
+		if (idComp != null) {
 			String company = companyRepo.findById(idComp).get().getNombre();
 			model.addObject("company", company);
 		}
@@ -358,9 +358,9 @@ public class ControllerMVC {
 		model.addObject("listCompanies", listCompanies);
 		model.addObject("local", local);
 		model.addObject("select", select);
-		
+
 		Integer id = obtenerUsuario().getIdEmpresa();
-		if(id != null) {
+		if (id != null) {
 			String company = companyRepo.findById(id).get().getNombre();
 			model.addObject("company", company);
 		}
@@ -380,9 +380,9 @@ public class ControllerMVC {
 
 		model.addObject("listGroupFood", listGroupFood);
 		model.addObject("foodView", foodView);
-		
+
 		Integer id = obtenerUsuario().getIdEmpresa();
-		if(id != null) {
+		if (id != null) {
 			String company = companyRepo.findById(id).get().getNombre();
 			model.addObject("company", company);
 		}
@@ -426,13 +426,12 @@ public class ControllerMVC {
 		List<AlergensFood> listaAlergenos = obtenerBDalergenosAlimento(food.getIdAlimento());
 
 		model.addObject("listaAlergenos", listaAlergenos);
-		
+
 		Integer id = obtenerUsuario().getIdEmpresa();
-		if(id != null) {
+		if (id != null) {
 			String company = companyRepo.findById(id).get().getNombre();
 			model.addObject("company", company);
 		}
-
 
 		return model;
 	}
@@ -474,13 +473,12 @@ public class ControllerMVC {
 		List<ComponentsFood> listaComponentes = obtenerBDcomponentesAlimento(food.getIdAlimento());
 
 		model.addObject("listaComponentes", listaComponentes);
-		
+
 		Integer id = obtenerUsuario().getIdEmpresa();
-		if(id != null) {
+		if (id != null) {
 			String company = companyRepo.findById(id).get().getNombre();
 			model.addObject("company", company);
 		}
-
 
 		return model;
 	}
@@ -534,9 +532,9 @@ public class ControllerMVC {
 		}
 
 		userRepo.save(user);
-		
+
 		Integer id = obtenerUsuario().getIdEmpresa();
-		if(id != null) {
+		if (id != null) {
 			String company = companyRepo.findById(id).get().getNombre();
 			model.addObject("company", company);
 		}
@@ -567,11 +565,11 @@ public class ControllerMVC {
 		model.addObject("role", role);
 
 		Integer id = obtenerUsuario().getIdEmpresa();
-		if(id != null) {
+		if (id != null) {
 			String company = companyRepo.findById(id).get().getNombre();
 			model.addObject("company", company);
 		}
-		
+
 		return model;
 	}
 
@@ -600,9 +598,9 @@ public class ControllerMVC {
 		model.addObject("user", user.get());
 		model.addObject("empresa", user.get().getNombre());
 		model.addObject("select", -1);
-		
+
 		Integer id = obtenerUsuario().getIdEmpresa();
-		if(id != null) {
+		if (id != null) {
 			String company = companyRepo.findById(id).get().getNombre();
 			model.addObject("company", company);
 		}
@@ -688,7 +686,7 @@ public class ControllerMVC {
 
 		localRepo.save(local);
 		Integer id = obtenerUsuario().getIdEmpresa();
-		if(id != null) {
+		if (id != null) {
 			String company = companyRepo.findById(id).get().getNombre();
 			model.addObject("company", company);
 		}
@@ -723,9 +721,9 @@ public class ControllerMVC {
 
 		model.addObject("listCompanies", listCompanies);
 		model.addObject("select", select);
-		
+
 		Integer id = obtenerUsuario().getIdEmpresa();
-		if(id != null) {
+		if (id != null) {
 			String company = companyRepo.findById(id).get().getNombre();
 			model.addObject("company", company);
 		}
@@ -809,9 +807,9 @@ public class ControllerMVC {
 
 		model.addObject("listTypeDishes", listTypeDishes);
 		model.addObject("dishObj", dishObj);
-		
+
 		Integer id = obtenerUsuario().getIdEmpresa();
-		if(id != null) {
+		if (id != null) {
 			String company = companyRepo.findById(id).get().getNombre();
 			model.addObject("company", company);
 		}
@@ -829,9 +827,9 @@ public class ControllerMVC {
 		List<FoodView> listFood = foodViewRepo.findAll();
 
 		model.addObject("listFood", listFood);
-		
+
 		Integer id = obtenerUsuario().getIdEmpresa();
-		if(id != null) {
+		if (id != null) {
 			String company = companyRepo.findById(id).get().getNombre();
 			model.addObject("company", company);
 		}
@@ -855,9 +853,9 @@ public class ControllerMVC {
 
 		model.addObject("listFood", listFood);
 		model.addObject("foodAmountObj", foodAmountObj);
-		
+
 		Integer id = obtenerUsuario().getIdEmpresa();
-		if(id != null) {
+		if (id != null) {
 			String company = companyRepo.findById(id).get().getNombre();
 			model.addObject("company", company);
 		}
@@ -886,9 +884,9 @@ public class ControllerMVC {
 
 		model.addObject("listIngredientes", ingredientes);
 		ingredientes = new HashMap<String, BigDecimal>();
-		
+
 		Integer id = obtenerUsuario().getIdEmpresa();
-		if(id != null) {
+		if (id != null) {
 			String company = companyRepo.findById(id).get().getNombre();
 			model.addObject("company", company);
 		}
@@ -942,12 +940,36 @@ public class ControllerMVC {
 
 		model.addObject("dish", dish);
 		model.addObject("listTypeDish", listTypeDish);
-		
+
 		Integer id = obtenerUsuario().getIdEmpresa();
-		if(id != null) {
+		if (id != null) {
 			String company = companyRepo.findById(id).get().getNombre();
 			model.addObject("company", company);
 		}
+		
+		List<DishIngredients> listDishIngredients  = new ArrayList<DishIngredients>();
+		
+		ResultSet rs;
+		try {
+			Statement st = Application.con.createStatement();
+			rs = st.executeQuery("select a.nombre, pa.idAlimento , pa.cantidad \r\n"
+					+ "from alimentos as a left join platos_alimentos as pa on a.id_alimento = pa.idAlimento \r\n"
+					+ "where pa.idPlato = " + id_plato +  ";");
+			
+			while (rs.next()) {
+				String nombre_alimento = rs.getString(1);
+				Integer id_alimento = rs.getInt(2);
+				BigDecimal cantidad = rs.getBigDecimal(3);
+				
+				DishIngredients dishIngredients = new DishIngredients(nombre_alimento, id_alimento, cantidad);
+				listDishIngredients.add(dishIngredients);
+
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		model.addObject("listDishIngredients", listDishIngredients);
 
 		return model;
 	}
@@ -960,9 +982,9 @@ public class ControllerMVC {
 		Menu menu = menuRepo.findById(id_menu).get();
 
 		model.addObject("menu", menu);
-		
+
 		Integer id = obtenerUsuario().getIdEmpresa();
-		if(id != null) {
+		if (id != null) {
 			String company = companyRepo.findById(id).get().getNombre();
 			model.addObject("company", company);
 		}
@@ -970,17 +992,17 @@ public class ControllerMVC {
 		return model;
 	}
 
-	@RequestMapping({"/user/editMenu/{id_menu}"})
+	@RequestMapping({ "/user/editMenu/{id_menu}" })
 	public ModelAndView editarMenu_user(@PathVariable("id_menu") int id_menu) {
 
 		ModelAndView model = new ModelAndView("editar_menu_user");
-		
+
 		Menu menu = menuRepo.findById(id_menu).get();
 
 		model.addObject("menu", menu);
-		
+
 		Integer id = obtenerUsuario().getIdEmpresa();
-		if(id != null) {
+		if (id != null) {
 			String company = companyRepo.findById(id).get().getNombre();
 			model.addObject("company", company);
 		}
@@ -999,17 +1021,17 @@ public class ControllerMVC {
 		return "redirect:/admin";
 	}
 
-	@PostMapping({"/user/saveMenu/{id_menu}"})
+	@PostMapping({ "/user/saveMenu/{id_menu}" })
 	public String guardarMenu_user(Menu menu) {
-		
+
 		Menu menuObj = menuRepo.findById(menu.getId_menu()).get();
 		menuObj.setNombre_menu(menu.getNombre_menu());
-		
+
 		menuRepo.save(menuObj);
 
 		return "redirect:/user";
 	}
-	
+
 	@PostMapping("/admin/saveDish/{id_plato}")
 	public String guardarPlato(Dish dish) {
 
@@ -1028,11 +1050,10 @@ public class ControllerMVC {
 
 		model.addObject("listComponentsDish", listComponentsDish);
 		Integer id = obtenerUsuario().getIdEmpresa();
-		if(id != null) {
+		if (id != null) {
 			String company = companyRepo.findById(id).get().getNombre();
 			model.addObject("company", company);
 		}
-
 
 		return model;
 	}
@@ -1071,7 +1092,7 @@ public class ControllerMVC {
 			// Almacenar el grupo y unidad de los componentess
 			Map<String, GroupUnitObj> mapComponentUnit = new HashMap<String, GroupUnitObj>();
 
-			for (Entry<Integer, BigDecimal>  ingrediente : mapIngredientAmount.entrySet()) {
+			for (Entry<Integer, BigDecimal> ingrediente : mapIngredientAmount.entrySet()) {
 				ResultSet rs2 = st2.executeQuery(
 						"SELECT g.nombre, ac.c_ori_name, ac.best_location, ac.v_unit, ac.mu_descripcion  \r\n"
 								+ "FROM nutri_db.alimentos_componentesquimicos as ac left join componentesquimicos as c on ac.c_ori_name = c.c_ori_name \r\n"
@@ -1109,7 +1130,7 @@ public class ControllerMVC {
 
 			Map<String, Float> mapComponentsDish2 = new HashMap<String, Float>();
 
-			for (Entry<Integer, List<ComponentsFood>>  ingrediente : mapComponentsDish.entrySet()) {
+			for (Entry<Integer, List<ComponentsFood>> ingrediente : mapComponentsDish.entrySet()) {
 
 				ingrediente.getKey();
 				List<ComponentsFood> listaCompon = ingrediente.getValue();
@@ -1201,13 +1222,12 @@ public class ControllerMVC {
 
 //		4º Enviar alérgenos a la página			
 		model.addObject("mapAlergensDish", mapAlergensDish);
-		
+
 		Integer id = obtenerUsuario().getIdEmpresa();
-		if(id != null) {
+		if (id != null) {
 			String company = companyRepo.findById(id).get().getNombre();
 			model.addObject("company", company);
 		}
-
 
 		return model;
 	}
@@ -1284,13 +1304,13 @@ public class ControllerMVC {
 		model.addObject("listDishCompany1", listDishCompany1);
 		model.addObject("listDishCompany2", listDishCompany2);
 		model.addObject("listDishCompany3", listDishCompany3);
-		
+
 		model.addObject("menuObj", menuObj);
 		model.addObject("select", select);
 		model.addObject("listLocals", listLocals);
-		
+
 		Integer id = obtenerUsuario().getIdEmpresa();
-		if(id != null) {
+		if (id != null) {
 			String company = companyRepo.findById(id).get().getNombre();
 			model.addObject("company", company);
 		}
@@ -1298,7 +1318,7 @@ public class ControllerMVC {
 		return model;
 	}
 
-	@RequestMapping({"/user/crear_menu_individual"})
+	@RequestMapping({ "/user/crear_menu_individual" })
 	public ModelAndView crearMenuIndividual_user() {
 
 		ModelAndView model = new ModelAndView("crear_menu_individual_user");
@@ -1332,17 +1352,16 @@ public class ControllerMVC {
 		model.addObject("listDishCompany1", listDishCompany1);
 		model.addObject("listDishCompany2", listDishCompany2);
 		model.addObject("listDishCompany3", listDishCompany3);
-		
+
 		model.addObject("menuObj", menuObj);
 		model.addObject("select", select);
 		model.addObject("listLocals", listLocals);
-		
+
 		Integer id = obtenerUsuario().getIdEmpresa();
-		if(id != null) {
+		if (id != null) {
 			String company = companyRepo.findById(id).get().getNombre();
 			model.addObject("company", company);
 		}
-
 
 		return model;
 	}
@@ -1453,22 +1472,21 @@ public class ControllerMVC {
 		MenuLocalObj menuLocal = new MenuLocalObj();
 		List<Local> listLocals = localRepo.findByIdEmpresa(obtenerUsuario().getIdEmpresa());
 		int select = 0;
-		
+
 		model.addObject("menuLocal", menuLocal);
 		model.addObject("listLocals", listLocals);
 		model.addObject("select", select);
-		
+
 		Integer id = obtenerUsuario().getIdEmpresa();
-		if(id != null) {
+		if (id != null) {
 			String company = companyRepo.findById(id).get().getNombre();
 			model.addObject("company", company);
 		}
 
-		
 		return model;
 	}
 
-	@RequestMapping({"/user/crear_menu_grupal"})
+	@RequestMapping({ "/user/crear_menu_grupal" })
 	public ModelAndView crearMenuGrupal_user() {
 
 		ModelAndView model = new ModelAndView("crear_menu_grupal_user");
@@ -1478,18 +1496,17 @@ public class ControllerMVC {
 		MenuLocalObj menuLocal = new MenuLocalObj();
 		List<Local> listLocals = localRepo.findByIdEmpresa(obtenerUsuario().getIdEmpresa());
 		int select = 0;
-		
+
 		model.addObject("menuLocal", menuLocal);
 		model.addObject("listLocals", listLocals);
 		model.addObject("select", select);
-		
+
 		Integer id = obtenerUsuario().getIdEmpresa();
-		if(id != null) {
+		if (id != null) {
 			String company = companyRepo.findById(id).get().getNombre();
 			model.addObject("company", company);
 		}
 
-		
 		return model;
 	}
 
@@ -1497,21 +1514,21 @@ public class ControllerMVC {
 
 	@PostMapping("/admin/crear_menu_grupal/guardar")
 	public String crearMenuGrupalGuardar(MenuLocalObj menuLocalObj) {
-		
+
 		Menu menu = new Menu();
-		
+
 		menu.setNombre_menu(menuLocalObj.getNombre_menu());
 		menu.setDescripcion("Menú grupal");
 		menu.setFecha_creacion(new java.sql.Timestamp(Calendar.getInstance().getTime().getTime()));
 		menu.setId_empresa(obtenerUsuario().getIdEmpresa());
 
 		menu_grupal = menuRepo.save(menu);
-		
+
 		try {
 			Statement st2 = Application.con.createStatement();
 
-			String query = "insert into locales_menus values(" + menuLocalObj.getId_local() + "," + menu_grupal.getId_menu()
-					+ ");";
+			String query = "insert into locales_menus values(" + menuLocalObj.getId_local() + ","
+					+ menu_grupal.getId_menu() + ");";
 			st2.execute(query);
 
 			st2.close();
@@ -1524,21 +1541,21 @@ public class ControllerMVC {
 
 	@PostMapping("/user/crear_menu_grupal/guardar")
 	public String crearMenuGrupalGuardar_user(MenuLocalObj menuLocalObj) {
-		
+
 		Menu menu = new Menu();
-		
+
 		menu.setNombre_menu(menuLocalObj.getNombre_menu());
 		menu.setDescripcion("Menú grupal");
 		menu.setFecha_creacion(new java.sql.Timestamp(Calendar.getInstance().getTime().getTime()));
 		menu.setId_empresa(obtenerUsuario().getIdEmpresa());
 
 		menu_grupal = menuRepo.save(menu);
-		
+
 		try {
 			Statement st2 = Application.con.createStatement();
 
-			String query = "insert into locales_menus values(" + menuLocalObj.getId_local() + "," + menu_grupal.getId_menu()
-					+ ");";
+			String query = "insert into locales_menus values(" + menuLocalObj.getId_local() + ","
+					+ menu_grupal.getId_menu() + ");";
 			st2.execute(query);
 
 			st2.close();
@@ -1561,11 +1578,11 @@ public class ControllerMVC {
 		model.addObject("listDish", listDish);
 
 		Integer id = obtenerUsuario().getIdEmpresa();
-		if(id != null) {
+		if (id != null) {
 			String company = companyRepo.findById(id).get().getNombre();
 			model.addObject("company", company);
 		}
-		
+
 		return model;
 	}
 
@@ -1579,9 +1596,9 @@ public class ControllerMVC {
 		model.addObject("groupalDish", groupalDish);
 		model.addObject("select", select);
 		model.addObject("listDish", listDish);
-		
+
 		Integer id = obtenerUsuario().getIdEmpresa();
-		if(id != null) {
+		if (id != null) {
 			String company = companyRepo.findById(id).get().getNombre();
 			model.addObject("company", company);
 		}
@@ -1653,9 +1670,9 @@ public class ControllerMVC {
 		}
 
 		model.addObject("mapDishesMenu", mapDishesMenu);
-		
+
 		Integer id = obtenerUsuario().getIdEmpresa();
-		if(id != null) {
+		if (id != null) {
 			String company = companyRepo.findById(id).get().getNombre();
 			model.addObject("company", company);
 		}
@@ -1675,9 +1692,9 @@ public class ControllerMVC {
 		}
 
 		model.addObject("mapDishesMenu", mapDishesMenu);
-		
+
 		Integer id = obtenerUsuario().getIdEmpresa();
-		if(id != null) {
+		if (id != null) {
 			String company = companyRepo.findById(id).get().getNombre();
 			model.addObject("company", company);
 		}
@@ -1705,7 +1722,7 @@ public class ControllerMVC {
 		return "redirect:/admin";
 	}
 
-	@RequestMapping({"/user/deleteMenu/{id_menu}"})
+	@RequestMapping({ "/user/deleteMenu/{id_menu}" })
 	public String eliminarMenu_user(@PathVariable("id_menu") int id_menu) {
 
 		menuRepo.delete(menuRepo.findById(id_menu).get());
@@ -1727,7 +1744,7 @@ public class ControllerMVC {
 		return null;
 
 	}
-	
+
 	@GetMapping({ "/user/AlergenosMenu/{id_menu}" })
 	public String obtenerAlergenosMenuIndividual_user(@PathVariable("id_menu") int id_menu) {
 
@@ -1743,23 +1760,22 @@ public class ControllerMVC {
 
 	}
 
-	@GetMapping({"/admin/alergenos_menu_individual/{id_menu}", "/user/alergenos_menu_individual/{id_menu}"})
+	@GetMapping({ "/admin/alergenos_menu_individual/{id_menu}", "/user/alergenos_menu_individual/{id_menu}" })
 	public ModelAndView alergenosMenusIndividuales(@PathVariable("id_menu") int id_menu) {
 		ModelAndView model = new ModelAndView("alergenos_menu");
 		Map<String, String> mapAlergensMenu = obtenerAlergenosMenu(id_menu);
 		model.addObject("mapAlergensMenu", mapAlergensMenu);
-		
+
 		Integer id = obtenerUsuario().getIdEmpresa();
-		if(id != null) {
+		if (id != null) {
 			String company = companyRepo.findById(id).get().getNombre();
 			model.addObject("company", company);
 		}
 
-
 		return model;
 	}
 
-	@RequestMapping({"/admin/alergenos_menu_colectivo", "/user/alergenos_menu_colectivo"})
+	@RequestMapping({ "/admin/alergenos_menu_colectivo", "/user/alergenos_menu_colectivo" })
 	public ModelAndView alergenosMenusColectivos(MenuObj menuObj) {
 		ModelAndView model = new ModelAndView("alergenos_menu");
 
@@ -1768,7 +1784,7 @@ public class ControllerMVC {
 		if (menuObj.getFirst_dish() != 0) {
 			Map<String, String> mapFirstDish = obtenerAlergenosPlato(menuObj.getFirst_dish());
 
-			for (Entry<String, String>  alergen : mapFirstDish.entrySet()) {
+			for (Entry<String, String> alergen : mapFirstDish.entrySet()) {
 				mapAlergensMenu.put(alergen.getKey(), alergen.getValue());
 			}
 
@@ -1776,7 +1792,7 @@ public class ControllerMVC {
 		if (menuObj.getSecond_dish() != 0) {
 			Map<String, String> mapSecondDish = obtenerAlergenosPlato(menuObj.getSecond_dish());
 
-			for (Entry<String, String>  alergen : mapSecondDish.entrySet()) {
+			for (Entry<String, String> alergen : mapSecondDish.entrySet()) {
 				mapAlergensMenu.put(alergen.getKey(), alergen.getValue());
 			}
 
@@ -1784,7 +1800,7 @@ public class ControllerMVC {
 		if (menuObj.getThird_dish() != 0) {
 			Map<String, String> mapThirdDish = obtenerAlergenosPlato(menuObj.getThird_dish());
 
-			for (Entry<String, String>  alergen : mapThirdDish.entrySet()) {
+			for (Entry<String, String> alergen : mapThirdDish.entrySet()) {
 				mapAlergensMenu.put(alergen.getKey(), alergen.getValue());
 			}
 
@@ -1826,16 +1842,16 @@ public class ControllerMVC {
 
 		int select = 0;
 		model.addObject("select", select);
-		
+
 		Integer id = obtenerUsuario().getIdEmpresa();
-		if(id != null) {
+		if (id != null) {
 			String company = companyRepo.findById(id).get().getNombre();
 			model.addObject("company", company);
 		}
 
 		return model;
 	}
-	
+
 //	Permite escoger los platos del menú que se van a consumir para proceder a calcular los alérgeno del mismo
 	@GetMapping("/user/escoger_platos_menu_grupal_alergenos/{id_menu}")
 	public ModelAndView escogerPlatosMenuGrupalAlergenos_user(@PathVariable("id_menu") int id_menu) {
@@ -1867,9 +1883,9 @@ public class ControllerMVC {
 
 		int select = 0;
 		model.addObject("select", select);
-		
+
 		Integer id = obtenerUsuario().getIdEmpresa();
-		if(id != null) {
+		if (id != null) {
 			String company = companyRepo.findById(id).get().getNombre();
 			model.addObject("company", company);
 		}
@@ -1978,7 +1994,7 @@ public class ControllerMVC {
 
 		return null;
 	}
-	
+
 	@RequestMapping({ "/user/ComponentesMenu/{id_menu}" })
 	public String mostrarComponentesMenu_user(@PathVariable("id_menu") int id_menu) {
 
@@ -1993,7 +2009,6 @@ public class ControllerMVC {
 
 		return null;
 	}
-	
 
 //	Permite escoger los platos del menú que se van a consumir para proceder a calcular los alérgeno del mismo
 	@GetMapping("/admin/escoger_platos_menu_grupal_componentes/{id_menu}")
@@ -2026,9 +2041,9 @@ public class ControllerMVC {
 
 		int select = 0;
 		model.addObject("select", select);
-		
+
 		Integer id = obtenerUsuario().getIdEmpresa();
-		if(id != null) {
+		if (id != null) {
 			String company = companyRepo.findById(id).get().getNombre();
 			model.addObject("company", company);
 		}
@@ -2067,16 +2082,15 @@ public class ControllerMVC {
 
 		int select = 0;
 		model.addObject("select", select);
-		
+
 		Integer id = obtenerUsuario().getIdEmpresa();
-		if(id != null) {
+		if (id != null) {
 			String company = companyRepo.findById(id).get().getNombre();
 			model.addObject("company", company);
 		}
 
 		return model;
 	}
-
 
 	@RequestMapping("/admin/componentes_menu_colectivo")
 	public ModelAndView componentesMenuColectivo(MenuObj menuObj) {
@@ -2140,7 +2154,7 @@ public class ControllerMVC {
 
 		return model;
 	}
-	
+
 	@RequestMapping("/user/componentes_menu_colectivo")
 	public ModelAndView componentesMenuColectivo_user(MenuObj menuObj) {
 
@@ -2204,24 +2218,22 @@ public class ControllerMVC {
 		return model;
 	}
 
-	@GetMapping({"/admin/componentes_menu_individual/{id_menu}", "/user/componentes_menu_individual/{id_menu}"})
+	@GetMapping({ "/admin/componentes_menu_individual/{id_menu}", "/user/componentes_menu_individual/{id_menu}" })
 	public ModelAndView componentesMenuIndividual(@PathVariable("id_menu") int id_menu) {
 
 		ModelAndView model = new ModelAndView("componentes_plato");
 
 		List<ComponentsDishTable> listComponentsDish = obtenerComponentesMenu(id_menu);
 		model.addObject("listComponentsDish", listComponentsDish);
-		
+
 		Integer id = obtenerUsuario().getIdEmpresa();
-		if(id != null) {
+		if (id != null) {
 			String company = companyRepo.findById(id).get().getNombre();
 			model.addObject("company", company);
 		}
 
 		return model;
 	}
-	
-	
 
 	public List<ComponentsDishTable> obtenerComponentesMenu(int id_menu) {
 		List<ComponentsDishTable> listListComponentsDish = new ArrayList<ComponentsDishTable>();
@@ -2292,5 +2304,27 @@ public class ControllerMVC {
 		return listListComponentsDish;
 
 	}
+	
+//	'/admin/deleteIngredientDish/' + ${id_plato} + '/' + ${ingredient.id_ingrediente}
+	
+	@GetMapping({ "/admin/deleteIngredientDish/{id_plato}/{id_ingrediente}" })
+	public String eliminarIngredientePlato(@PathVariable("id_plato") Integer id_plato, @PathVariable("id_ingrediente") Integer id_ingrediente) {
+
+		
+		try {
+			Statement st = Application.con.createStatement();
+			
+			st.execute("delete from platos_alimentos where idPlato=" + id_plato.toString() + " and idAlimento = " + id_ingrediente.toString() + ";");
+			st.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		
+		
+		return "redirect:/admin/editDish/{id_plato}";
+	}
+	
 
 }

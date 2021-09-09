@@ -63,18 +63,18 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	<div class="about gallery">
 		<div class="container">
 			<div role="tabpanel">
-				<form th:action="@{'/admin/saveDish/' + ${id_plato}}" th:object="${dish}" method="post" style="width:60%;margin-left:41%;">
+				<form th:action="@{'/admin/saveDish/' + ${id_plato}}" th:object="${dish}" method="post" style="width:100%;">
 					  <div class="form-group">
 					    <label for="exampleInputEmail1">Nombre del plato</label>
-					    <input type="text" class="form-control"  th:field="*{nombre_plato}" style="margin-top:8px;width:40%;"  aria-describedby="emailHelp" placeholder="Introduce nombre de empresa" required>
+					    <input type="text" class="form-control"  th:field="*{nombre_plato}" style="margin-top:8px;"  aria-describedby="emailHelp" placeholder="Introduce nombre de empresa" required>
 					  </div>
 					  <div class="form-group">
 					    <label for="exampleInputEmail1">Descripción del plato</label>
-					    <input type="text" class="form-control"  th:field="*{descripcion}"  style="margin-top:8px;width:40%;"  aria-describedby="emailHelp" placeholder="Introduce correo electrónico">
+					    <input type="text" class="form-control"  th:field="*{descripcion}"  style="margin-top:8px;"  aria-describedby="emailHelp" placeholder="Introduce correo electrónico">
 					  </div>					  
 					  <div class="form-group" style="margin-top:25px;">
 					    <label for="exampleInputEmail1" >Tipo de plato</label>
-					    	<select class="form-select" th:field="*{id_tipo_platos}" aria-label="Default select example" style="margin-top:10px;width:40%">
+					    	<select class="form-select" th:field="*{id_tipo_platos}" aria-label="Default select example" style="margin-top:10px;">
 <!-- 										<option th:selected="*{grupo}"></option> -->
 
 								<option th:each="typeDish:${listTypeDish}"
@@ -83,7 +83,36 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 								/>
 							</select>
 					  </div>
-				  	<button type="submit" class="btn btn-primary">Aceptar</button>
+					<a th:href="@{'/admin/editMenu/' }" class="btn btn-info btn-lg" style="background-color: #6c757d;border-color: #6c757d;color:#ffffff;;font-size:0.9rem;margin-left: 44%;
+    margin-top: 2%;
+    margin-bottom: 1%;">Añadir nuevo ingrediente</a>
+
+<!-- 					#6c757d -->
+					
+					  <div class ="row">
+						<table class="table">
+						  <thead>
+						    <tr >
+							  <th scope="col">Ingrediente</th>
+						      <th scope="col">Cantidad (g/ml)</th>
+						      <th scope="col" data-field="action" style="margin-left:30%;width:15%;">Operacion</th>
+						    </tr>
+						  </thead>
+						  <tbody id="myTable">
+						    <tr th:each="ingredient: ${listDishIngredients}">
+			                    <td th:text="${ingredient.ingrediente}"></td>
+			                    <td th:text="${ingredient.cantidad}"></td>
+		                    	<td >
+									 <div class="botonesEdicion" >
+									 	<a th:href="@{'/admin/editIngredientDish/' + ${id_plato} + '/' + ${ingredient.id_ingrediente}}" class="btn btn-info btn-lg" style="background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;;font-size:0.9rem;">Editar</a>
+							        	<a th:href="@{'/admin/deleteIngredientDish/' + ${id_plato} + '/' + ${ingredient.id_ingrediente}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color:#FF3333;border-color:#FF3333;;color:#ffffff;font-size:0.9rem; " >Eliminar</a>
+									 </div>     	                    	
+			                    </td>
+						    </tr>
+						  </tbody>
+						</table>
+					</div>	
+				  	<button type="submit" class="btn btn-primary" style="font-size:1.5em;margin-top:3%;">Guardar cambios</button>
 				</form>
 			</div>
 		</div>
