@@ -64,27 +64,198 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	<!-- gallery -->
 	<div class="about gallery">
 		<div class="container">  
-			<div class ="row">
-				<table class="table" style = "margin-top:30px">
+				<ul class="nav nav-tabs" role="tablist" id="myTab">
+				  <li role ="presentation"  class="nav-item" >
+				    <a href="#seccion1" data-toggle="tab" role="tab" class="nav-link active">Gráfico</a>
+				  </li>
+				  <li role ="presentation" class="nav-item">
+				  	<a href="#seccion2" data-toggle="tab" role="tab"class="nav-link">Componentes alimenticios por categorías</a>
+				  </li>
+				  <li role ="presentation" class="nav-item">
+				  	<a href="#seccion3" data-toggle="tab" role="tab"class="nav-link">Tabla de componentes alimenticios</a>
+				  </li>
+				</ul>	
+				<div class="tab-content">
+					<div role="tabpanel" class="tab-pane active" id="seccion1">
+						<label for="exampleInputEmail1" th:text="${name_menu}" style="font-size: 2em;margin-bottom: 30px;margin-top: 30px;"></label>
 					
-				  <thead>
-				    <tr >
-					  <th scope="col">Grupo componente</th>
-				      <th scope="col">Nombre componente</th>
-				      <th scope="col">Cantidad </th>
-				      <th scope="col">Unidad</th>
-				    </tr>
-				  </thead>
-				  <tbody id="myTable">
-				    <tr th:each="componente: ${listComponentsDish}">
-	                    <td th:text="${componente.groupComponent}">Grupo componente</td>
-	                    <td th:text="${componente.nameComponent}">Nombre componente</td>
-	                    <td th:text="${componente.amount}">Cantidad</td>
-	                    <td th:text="${componente.unit}">Unidad</td>
-				    </tr>
-				  </tbody>
-				</table>
+					
+					
+					</div>
+					<div role="tabpanel" class="tab-pane " id="seccion2">
+						<label for="exampleInputEmail1" th:text="${name_menu}" style="font-size: 2em;margin-bottom: 30px;margin-top: 30px;"></label>
+						
+						
+						<div class ="row">
+							<h4 style="margin-top:20px;">Proximales</h4>
+							<table class="table" style = "margin-top:30px">
+								
+							  <thead>
+							    <tr >
+								  <th scope="col">Grupo componente</th>
+							      <th scope="col">Nombre componente</th>
+							      <th scope="col">Cantidad </th>
+							      <th scope="col">Unidad</th>
+							    </tr>
+							  </thead>
+							  <tbody id="myTable">
+							    <tr th:each="componente: ${componentsDishTableProximal}">
+				                    <td th:text="${componente.groupComponent}">Grupo componente</td>
+				                    <td th:text="${componente.nameComponent}">Nombre componente</td>
+				                    <td th:text="${componente.amount}">Cantidad</td>
+				                    <td th:text="${componente.unit}">Unidad</td>
+							    </tr>
+							  </tbody>
+							</table>
+						</div>		
+						
+						<div class ="row">
+						<h4 style="margin-top:20px;">Hidratos de carbono</h4>
+							<table class="table" style = "margin-top:30px">
+								
+							  <thead>
+							    <tr >
+								  <th scope="col">Grupo componente</th>
+							      <th scope="col">Nombre componente</th>
+							      <th scope="col">Cantidad </th>
+							      <th scope="col">Unidad</th>
+							    </tr>
+							  </thead>
+							  <tbody id="myTable">
+							    <tr th:each="componente: ${componentsDishTableHcarbono}">
+				                    <td th:text="${componente.groupComponent}">Grupo componente</td>
+				                    <td th:text="${componente.nameComponent}">Nombre componente</td>
+				                    <td th:text="${componente.amount}">Cantidad</td>
+				                    <td th:text="${componente.unit}">Unidad</td>
+							    </tr>
+							  </tbody>
+							</table>
+						</div>
+						
+						<div class ="row">
+						<h4 style="margin-top:20px;">Grasas</h4>
+							<table class="table" style = "margin-top:30px">
+								
+							  <thead>
+							    <tr >
+								  <th scope="col">Grupo componente</th>
+							      <th scope="col">Nombre componente</th>
+							      <th scope="col">Cantidad </th>
+							      <th scope="col">Unidad</th>
+							    </tr>
+							  </thead>
+							  <tbody id="myTable">
+							    <tr th:each="componente: ${componentsDishTableGrasa}">
+				                    <td th:text="${componente.groupComponent}">Grupo componente</td>
+				                    <td th:text="${componente.nameComponent}">Nombre componente</td>
+				                    <td th:text="${componente.amount}">Cantidad</td>
+				                    <td th:text="${componente.unit}">Unidad</td>
+							    </tr>
+							  </tbody>
+							</table>
+						</div>
+						
+						<div class ="row">
+						<h4 style="margin-top:20px;">Vitaminas</h4>
+							<table class="table" style = "margin-top:30px">
+								
+							  <thead>
+							    <tr >
+								  <th scope="col">Grupo componente</th>
+							      <th scope="col">Nombre componente</th>
+							      <th scope="col">Cantidad </th>
+							      <th scope="col">Unidad</th>
+							    </tr>
+							  </thead>
+							  <tbody id="myTable">
+							    <tr th:each="componente: ${componentsDishTableVitaminas}">
+				                    <td th:text="${componente.groupComponent}">Grupo componente</td>
+				                    <td th:text="${componente.nameComponent}">Nombre componente</td>
+				                    <td th:text="${componente.amount}">Cantidad</td>
+				                    <td th:text="${componente.unit}">Unidad</td>
+							    </tr>
+							  </tbody>
+							</table>
+						</div>
+						
+						<div class ="row">
+						<h4 style="margin-top:20px;">Minerales</h4>
+							<table class="table" style = "margin-top:30px">
+								
+							  <thead>
+							    <tr >
+								  <th scope="col">Grupo componente</th>
+							      <th scope="col">Nombre componente</th>
+							      <th scope="col">Cantidad </th>
+							      <th scope="col">Unidad</th>
+							    </tr>
+							  </thead>
+							  <tbody id="myTable">
+							    <tr th:each="componente: ${componentsDishTableMinerales}">
+				                    <td th:text="${componente.groupComponent}">Grupo componente</td>
+				                    <td th:text="${componente.nameComponent}">Nombre componente</td>
+				                    <td th:text="${componente.amount}">Cantidad</td>
+				                    <td th:text="${componente.unit}">Unidad</td>
+							    </tr>
+							  </tbody>
+							</table>
+						</div>
+						
+						<div class ="row">
+						<h4 style="margin-top:20px;">Otros</h4>
+							<table class="table" style = "margin-top:30px">
+								
+							  <thead>
+							    <tr >
+								  <th scope="col">Grupo componente</th>
+							      <th scope="col">Nombre componente</th>
+							      <th scope="col">Cantidad </th>
+							      <th scope="col">Unidad</th>
+							    </tr>
+							  </thead>
+							  <tbody id="myTable">
+							    <tr th:each="componente: ${componentsDishTableOtros}">
+				                    <td th:text="${componente.groupComponent}">Grupo componente</td>
+				                    <td th:text="${componente.nameComponent}">Nombre componente</td>
+				                    <td th:text="${componente.amount}">Cantidad</td>
+				                    <td th:text="${componente.unit}">Unidad</td>
+							    </tr>
+							  </tbody>
+							</table>
+						</div>			
+					
+					
+					</div>
+					<div role="tabpanel" class="tab-pane " id="seccion3">
+						<label for="exampleInputEmail1" th:text="${name_menu}" style="font-size: 2em;margin-bottom: 30px;margin-top: 30px;"></label>
+					
+						<div class ="row">
+							<table class="table" style = "margin-top:30px">
+								
+							  <thead>
+							    <tr >
+								  <th scope="col">Grupo componente</th>
+							      <th scope="col">Nombre componente</th>
+							      <th scope="col">Cantidad </th>
+							      <th scope="col">Unidad</th>
+							    </tr>
+							  </thead>
+							  <tbody id="myTable">
+							    <tr th:each="componente: ${listComponentsDish}">
+				                    <td th:text="${componente.groupComponent}">Grupo componente</td>
+				                    <td th:text="${componente.nameComponent}">Nombre componente</td>
+				                    <td th:text="${componente.amount}">Cantidad</td>
+				                    <td th:text="${componente.unit}">Unidad</td>
+							    </tr>
+							  </tbody>
+							</table>
+						</div>
+					</div>
+				
 			</div>
+				
+					
+
 		</div>
 	</div>
 	<!-- //gallery -->  
@@ -104,6 +275,31 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 		  $('.toggle').toggleClass('toggle--active');
 		});
 	</script> 
+	<script>
+	$(document).ready(function(){
+	    $('a[data-toggle="tab"]').on('show.bs.tab', function(e) {
+	        localStorage.setItem('activeTab', $(e.target).attr('href'));
+	    });
+	    var activeTab = localStorage.getItem('activeTab');
+	    if(activeTab){
+	        $('#myTab a[href="' + activeTab + '"]').tab('show');
+	    }
+	});
+	</script>
+	<script>
+	$(document).ready(function() {
+	    if (location.hash) {
+	        $("a[href='" + location.hash + "']").tab("show");
+	    }
+	    $(document.body).on("click", "a[data-toggle='tab']", function(event) {
+	        location.hash = this.getAttribute("href");
+	    });
+	});
+	$(window).on("popstate", function() {
+	    var anchor = location.hash || $("a[data-toggle='tab']").first().attr("href");
+	    $("a[href='" + anchor + "']").tab("show");
+	});
+	</script>
 	<!-- //menu-js -->
 	<!-- jarallax -->  
 	<script src="js/SmoothScroll.min.js"></script> 

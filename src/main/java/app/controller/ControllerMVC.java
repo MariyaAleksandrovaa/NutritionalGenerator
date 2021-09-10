@@ -1052,6 +1052,7 @@ public class ControllerMVC {
 		List<ComponentsDishTable> listComponentsDish = obtenerBDcomponentesPlato(id_plato);
 
 		model.addObject("listComponentsDish", listComponentsDish);
+		
 		Integer id = obtenerUsuario().getIdEmpresa();
 		if (id != null) {
 			String company = companyRepo.findById(id).get().getNombre();
@@ -2231,6 +2232,46 @@ public class ControllerMVC {
 
 		List<ComponentsDishTable> listComponentsDish = obtenerComponentesMenu(id_menu);
 		model.addObject("listComponentsDish", listComponentsDish);
+		model.addObject("name_menu", menuRepo.findById(id_menu).get().getNombre_menu());
+		
+		List<ComponentsDishTable> componentsDishTableProximal = new ArrayList<ComponentsDishTable>();
+		List<ComponentsDishTable> componentsDishTableHcarbono = new ArrayList<ComponentsDishTable>();
+		List<ComponentsDishTable> componentsDishTableGrasa = new ArrayList<ComponentsDishTable>();
+
+		List<ComponentsDishTable> componentsDishTableVitaminas = new ArrayList<ComponentsDishTable>();
+		List<ComponentsDishTable> componentsDishTableMinerales = new ArrayList<ComponentsDishTable>();
+		List<ComponentsDishTable> componentsDishTableOtros = new ArrayList<ComponentsDishTable>();
+		
+		for (int i = 0; i < listComponentsDish.size(); i++) {
+			ComponentsDishTable componentsDishTable = listComponentsDish.get(i);
+
+			if (componentsDishTable.getGroupComponent().equals("Proximales")) {
+				componentsDishTableProximal.add(componentsDishTable);
+				
+			} else if (componentsDishTable.getGroupComponent().equals("Hidratos de Carbono")) {
+				componentsDishTableHcarbono.add(componentsDishTable);
+				
+			} else if (componentsDishTable.getGroupComponent().equals("Grasas")) {
+				componentsDishTableGrasa.add(componentsDishTable);
+
+			} else if (componentsDishTable.getGroupComponent().equals("Vitaminas")) {
+				componentsDishTableVitaminas.add(componentsDishTable);
+
+			} else if (componentsDishTable.getGroupComponent().equals("Minerales")) {
+				componentsDishTableMinerales.add(componentsDishTable);
+
+			} else {
+				componentsDishTableOtros.add(componentsDishTable);
+
+			}
+		}
+		
+		model.addObject("componentsDishTableProximal", componentsDishTableProximal);
+		model.addObject("componentsDishTableHcarbono", componentsDishTableHcarbono);
+		model.addObject("componentsDishTableGrasa", componentsDishTableGrasa);
+		model.addObject("componentsDishTableVitaminas", componentsDishTableVitaminas);
+		model.addObject("componentsDishTableMinerales", componentsDishTableMinerales);
+		model.addObject("componentsDishTableOtros", componentsDishTableOtros);
 
 		Integer id = obtenerUsuario().getIdEmpresa();
 		if (id != null) {
