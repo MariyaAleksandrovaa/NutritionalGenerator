@@ -2335,7 +2335,6 @@ public class ControllerMVC {
 		DishIngredient dishIngredient = new DishIngredient(id_plato, id_ingrediente,
 				foodRepo.findByIdAlimento(id_ingrediente).getNombre(), cantidad);
 
-//		DishIngredient dishIngredient = new DishIngredient();
 		model.addObject("dishIngredient", dishIngredient);
 
 		return model;
@@ -2343,8 +2342,8 @@ public class ControllerMVC {
 
 	@RequestMapping(value = {
 			"/admin/saveEditIngredientDish/{id_plato}/{id_ingrediente}" }, method = RequestMethod.POST)
-	public String editarCantidadIngredientePlato(@PathVariable("id_plato") Integer id_plato, @PathVariable("id_ingrediente") Integer id_ingrediente,
-			DishIngredient dishIngredient) {
+	public String editarCantidadIngredientePlato(@PathVariable("id_plato") Integer id_plato,
+			@PathVariable("id_ingrediente") Integer id_ingrediente, DishIngredient dishIngredient) {
 
 		try {
 			Statement st = Application.con.createStatement();
@@ -2359,5 +2358,73 @@ public class ControllerMVC {
 
 		return "redirect:/admin/editDish/{id_plato}";
 	}
+
+//	'/admin/addDish/' + ${id_plato}
+
+	@RequestMapping(value = { "/admin/addDish/{id_plato}" })
+	public ModelAndView añadirIngredientePlato(@PathVariable("id_plato") Integer id_plato) {
+
+		ModelAndView model = new ModelAndView("añadir_ingrediente_plato");
+
+		List<FoodView> listFood = foodViewRepo.findAll();
+
+		model.addObject("id_plato", id_plato);
+		model.addObject("listFood", listFood);
+
+		return model;
+	}
+
+	@RequestMapping(value = { "/admin/addIngredient/{id_plato}/{id_alimento}" })
+	public ModelAndView añadirCantidadIngredientePlato(@PathVariable("id_plato") Integer id_plato,
+			@PathVariable("id_alimento") Integer id_ingredient) {
+
+		ModelAndView model = new ModelAndView("opciones_ingrediente_plato");
+
+		List<FoodView> listFood = foodViewRepo.findAll();
+
+		model.addObject("id_plato", id_plato);
+		model.addObject("listFood", listFood);
+
+		Food food = foodRepo.findByIdAlimento(id_ingredient);
+
+		FoodAmountObj foodAmountObj = new FoodAmountObj();
+		foodAmountObj.setFood(food.getNombre());
+
+		model.addObject("foodAmountObj", foodAmountObj);
+
+		Integer id = obtenerUsuario().getIdEmpresa();
+		if (id != null) {
+			String company = companyRepo.findById(id).get().getNombre();
+			model.addObject("company", company);
+		}
+
+		return model;
+	}
+
+	@RequestMapping(value = { "/admin/addIngredient/{id_plato}" })
+	public String guardarIngredientePlato(@PathVariable("id_plato") Integer id_plato, FoodAmountObj foodAmountObj) {
+
+		try {
+			Statement st = Application.con.createStatement();
+
+			st.execute("insert into platos_alimentos (idPlato, idAlimento, cantidad) values( " + id_plato + ", "
+					+ foodRepo.findByNameAlimento(foodAmountObj.getFood()).getIdAlimento() + ","
+					+ foodAmountObj.getAmount() + ");");
+			st.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		Integer id = obtenerUsuario().getIdEmpresa();
+		if (id != null) {
+//			String company = companyRepo.findById(id).get().getNombre();
+//			model.addObject("company", company);
+		}
+
+		return "redirect:/admin/editDish/{id_plato}";
+	}
+
+//	/admin/addIngredient/' + ${id_plato}
 
 }

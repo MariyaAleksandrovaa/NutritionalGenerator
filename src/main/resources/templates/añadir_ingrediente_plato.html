@@ -8,12 +8,11 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 <html lang="en">
 
 <head>
-<title>EditorNutriApp</title>
+<title>AdminNutriApp</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>	
+	
 <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
 <!-- Custom Theme files -->
 <link href="../../css/bootstrap.css" type="text/css" rel="stylesheet" media="all">
@@ -25,7 +24,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 
 <link href="../../css/style.css" type="text/css" rel="stylesheet" media="all">   
 <link href="../../css/font-awesome.css" rel="stylesheet"> <!-- font-awesome icons --> 
-<link rel="stylesheet" href="../css/smoothbox.css" type='text/css' media="all" /> 
+<link rel="stylesheet" href="../../css/smoothbox.css" type='text/css' media="all" /> 
 <!-- //Custom Theme files --> 
 
 <!-- js -->
@@ -54,67 +53,45 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 					<h1>NutriApp</h1>
 				</div> 
 				<div class="banner-text w3labout-bnr" > 
-						<h2 >Cuenta de editor</h2>   
+						<h2 >Cuenta de administrador</h2>   
 				</div>
 			</div>
 		</div>
 		<b th:text="${company}" style="margin-left:20px;color:#000000;font-size:2em;"></b>
 	</div>
 	<div class="about gallery">
-		<div class="container">
-			<div role="tabpanel">
-				<form th:action="@{'/admin/saveDish/' + ${id_plato}}" th:object="${dish}" method="post" style="width:100%;">
-					  <div class="form-group">
-					    <label for="exampleInputEmail1">Nombre del plato</label>
-					    <input type="text" class="form-control"  th:field="*{nombre_plato}" style="margin-top:8px;"  aria-describedby="emailHelp" placeholder="Introduce nombre de empresa" required>
-					  </div>
-					  <div class="form-group">
-					    <label for="exampleInputEmail1">Descripción del plato</label>
-					    <input type="text" class="form-control"  th:field="*{descripcion}"  style="margin-top:8px;"  aria-describedby="emailHelp" placeholder="Introduce correo electrónico">
-					  </div>					  
-					  <div class="form-group" style="margin-top:25px;">
-					    <label for="exampleInputEmail1" >Tipo de plato</label>
-					    	<select class="form-select" th:field="*{id_tipo_platos}" aria-label="Default select example" style="margin-top:10px;">
-<!-- 										<option th:selected="*{grupo}"></option> -->
-
-								<option th:each="typeDish:${listTypeDish}"
-									th:value="${typeDish.id_tipos_platos}"
-									th:text="${typeDish.descripcion}"
-								/>
-							</select>
-					  </div>
-					<a th:href="@{'/admin/addDish/' + ${id_plato}}" class="btn btn-info btn-lg" style="background-color: #6c757d;border-color: #6c757d;color:#ffffff;;font-size:0.9rem;margin-left: 44%;
-    margin-top: 2%;
-    margin-bottom: 1%;">Añadir nuevo ingrediente</a>
-
-<!-- 					#6c757d -->
-					
-					  <div class ="row">
-						<table class="table">
-						  <thead>
-						    <tr >
-							  <th scope="col">Ingrediente</th>
-						      <th scope="col">Cantidad (g/ml)</th>
-						      <th scope="col" data-field="action" style="margin-left:30%;width:15%;">Operación</th>
-						    </tr>
-						  </thead>
-						  <tbody id="myTable">
-						    <tr th:each="ingredient: ${listDishIngredients}">
-			                    <td th:text="${ingredient.ingrediente}"></td>
-			                    <td th:text="${ingredient.cantidad}"></td>
-		                    	<td >
-									 <div class="botonesEdicion" >
-									 	<a th:href="@{'/admin/editIngredientDish/' + ${id_plato} + '/' + ${ingredient.id_ingrediente} + '/' + ${ingredient.cantidad}}" class="btn btn-info btn-lg" style="background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;;font-size:0.9rem;">Editar</a>
-							        	<a th:href="@{'/admin/deleteIngredientDish/' + ${id_plato} + '/' + ${ingredient.id_ingrediente}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color:#FF3333;border-color:#FF3333;;color:#ffffff;font-size:0.9rem; " >Eliminar</a>
-									 </div>     	                    	
-			                    </td>
-						    </tr>
-						  </tbody>
-						</table>
-					</div>	
-				  	<button type="submit" class="btn btn-primary" style="font-size:1.5em;margin-top:3%;">Guardar cambios</button>
-				</form>
-			</div>
+		<div class="container">  
+						<div class="row justify-content-start">
+							<div class="col-12">
+								<input class="form-control" id="myInput" type="text" placeholder="Busca alimento">
+							</div>
+						</div>
+						<div class ="row">
+							<table class="table">
+							  <thead>
+							    <tr >
+								  <th scope="col">Grupo</th>
+							      <th scope="col">Nombre</th>
+							      <th scope="col">Nombre en inglés</th>
+							      <th scope="col">Operacion</th>
+							      
+							    </tr>
+							  </thead>
+							  <tbody id="myTable">
+							    <tr th:each="food: ${listFood}">
+				                    <td th:text="${food.grupo}">Grupo</td>
+				                    <td th:text="${food.nombre}">Nombre</td>
+				                    <td th:text="${food.ingles}">Nombre en inglés</td>
+				                    <td >
+										 <div class="botonesEdicion" style="margin-right:-140px">
+										 	<a th:href="@{'/admin/addIngredient/' + ${id_plato} + '/' + ${food.id_alimento}}" class="btn btn-info btn-lg" style="background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;;font-size:0.9rem;">Añadir al plato</a>
+										 </div>     	                    	
+					                 </td>
+							    </tr>
+							  </tbody>
+							</table>
+						</div>
+						
 		</div>
 	</div>
 	<!-- //gallery -->  
@@ -128,8 +105,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 		</div>
 	</div>
 	<!-- //footer -->
-  
-	<!-- menu-js -->
+
 	<script>
 		$('.navicon').on('click', function (e) {
 		  e.preventDefault();
@@ -197,64 +173,16 @@ License URL: http://creativecommons.org/licenses/by/3.0/
         $(".btn").click(function(){
             $("#modal1").modal('hide');
         });
+    	$("#myTable").on("click","tr",function(e){
+    		console.log(e.currentTarget);
+    	})
     });
 	</script>
 	<script>
-	$(function(){
-	    $('#orderModal').modal({
-	        keyboard: true,
-	        backdrop: "static",
-	        show:false,
-
-	    }).on('show', function(){ //subscribe to show method
-	          var getIdFromRow = $(event.target).closest('tr').data('id'); //get the id from tr
-	        //make your ajax call populate items or what even you need
-	        $(this).find('#orderDetails').html($('<b> Order Id selected: ' + getIdFromRow  + '</b>'))
-	    });
-	});
+	$("#myTable").on("click","tr",function(e){
+		console.log(e.currentTarget);
+	})
 	</script>
-	<script>
-	var globalModal = $('.global-modal');
-    $( ".btn-green-flat-trigger" ).on( "click", function(e) {
-      e.preventDefault();
-      $( globalModal ).toggleClass('global-modal-show');
-    });
-    $( ".overlay" ).on( "click", function() {
-      $( globalModal ).toggleClass('global-modal-show');
-    });
-    $( ".global-modal_close" ).on( "click", function() {
-      $( globalModal ).toggleClass('global-modal-show');
-    });
-    $(".mobile-close").on("click", function(){
-      $( globalModal ).toggleClass('global-modal-show');
-    });
-	</script>
-	<script>
-	$('#myTable').bootstrapTable({
-	    onClickRow: function (row, $element) {
-	        // row: the record corresponding to the clicked row, 
-	        // $element: the tr element.
-	        
-	        var address = [];
-	        $(this).closest('tr').find('td').not(':last').each(function() {
-	            var textval = $(this).text(); // this will be the text of each <td>
-	           address.push(textval);
-	       });
-	        alert(address.join('\n'));
-	    }
-	});
-	</script>
-	
-	<script>
-	// jQuery version
-	$("input[type='number']").each(function(i, el) {
-	    el.type = "text";
-	    el.onfocus = function(){this.type="number";};
-	    el.onblur = function(){this.type="text";};
-	});
-	</script>
-
-	
 
 	<!-- //smooth-scrolling-of-move-up -->  		
 	<!-- Bootstrap core JavaScript
