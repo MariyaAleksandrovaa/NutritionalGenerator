@@ -1101,7 +1101,7 @@ public class ControllerMVC {
 								+ "FROM nutri_db.alimentos_componentesquimicos as ac left join componentesquimicos as c on ac.c_ori_name = c.c_ori_name \r\n"
 								+ "left join gruposcomponentes as g on c.componentgroup_id = g.idGruposComponentes\r\n"
 								+ "where idAlimento = " + ingrediente.getKey() + "\r\n" + "and ac.best_location > 0\r\n"
-								+ "order by best_location desc;");
+								+ "order by g.idGruposComponentes, v_unit asc;");
 
 				while (rs2.next()) {
 					String nombreComponente = rs2.getString(1);
@@ -1359,6 +1359,8 @@ public class ControllerMVC {
 		model.addObject("menuObj", menuObj);
 		model.addObject("select", select);
 		model.addObject("listLocals", listLocals);
+		model.addObject("selectedLocals", new ArrayList<Local>());
+		model.addObject("first_select", "Escoge primer plato");
 
 		Integer id = obtenerUsuario().getIdEmpresa();
 		if (id != null) {
@@ -1390,9 +1392,9 @@ public class ControllerMVC {
 
 		Menu menuDb = menuRepo.save(menu);
 
-		if (menuObj.getThird_dish() == 0) {
-			menuObj.setThird_dish(null);
-		}
+//		if (menuObj.getThird_dish() == 0) {
+//			menuObj.setThird_dish(null);
+//		}
 
 		try {
 			Statement st = Application.con.createStatement();
@@ -1409,8 +1411,9 @@ public class ControllerMVC {
 
 			Statement st2 = Application.con.createStatement();
 
-			String query = "insert into locales_menus values(" + menuObj.getId_local() + "," + menuDb.getId_menu()
-					+ ");";
+			String query = "";
+//					"insert into locales_menus values(" + menuObj.getId_local() + "," + menuDb.getId_menu()
+//					+ ");";
 			st2.execute(query);
 
 			st2.close();
@@ -1441,10 +1444,10 @@ public class ControllerMVC {
 		menu.setFecha_creacion(new java.sql.Timestamp(Calendar.getInstance().getTime().getTime()));
 
 		Menu menuDb = menuRepo.save(menu);
-
-		if (menuObj.getThird_dish() == 0) {
-			menuObj.setThird_dish(null);
-		}
+//
+//		if (menuObj.getThird_dish() == 0) {
+//			menuObj.setThird_dish(null);
+//		}
 
 		try {
 			Statement st = Application.con.createStatement();
@@ -2240,6 +2243,7 @@ public class ControllerMVC {
 
 	public List<ComponentsDishTable> obtenerComponentesMenu(int id_menu) {
 		List<ComponentsDishTable> listListComponentsDish = new ArrayList<ComponentsDishTable>();
+		List<ComponentsDishTable> listComponentsDishOrdered = new ArrayList<ComponentsDishTable>();
 		List<ComponentsDishTable> listComponentsDish;
 		Map<String, Float> mapComponentsMenu = new HashMap<String, Float>();
 
@@ -2304,8 +2308,82 @@ public class ControllerMVC {
 					.setAmount(mapComponentsMenu.get(listListComponentsDish.get(i).getNameComponent()));
 		}
 
-		return listListComponentsDish;
+		List<ComponentsDishTable> componentsDishTableProximal = new ArrayList<ComponentsDishTable>();
+		List<ComponentsDishTable> componentsDishTableHcarbono = new ArrayList<ComponentsDishTable>();
+		List<ComponentsDishTable> componentsDishTableGrasa = new ArrayList<ComponentsDishTable>();
 
+		List<ComponentsDishTable> componentsDishTableVitaminas = new ArrayList<ComponentsDishTable>();
+		List<ComponentsDishTable> componentsDishTableMinerales = new ArrayList<ComponentsDishTable>();
+		List<ComponentsDishTable> componentsDishTableOtros = new ArrayList<ComponentsDishTable>();
+
+		for (int i = 0; i < listListComponentsDish.size(); i++) {
+			ComponentsDishTable componentsDishTable = listListComponentsDish.get(i);
+
+			if (componentsDishTable.getGroupComponent().equals("Proximales")) {
+				componentsDishTableProximal.add(componentsDishTable);
+				
+			} else if (componentsDishTable.getGroupComponent().equals("Hidratos de Carbono")) {
+				componentsDishTableHcarbono.add(componentsDishTable);
+				
+			} else if (componentsDishTable.getGroupComponent().equals("Grasas")) {
+				componentsDishTableGrasa.add(componentsDishTable);
+
+			} else if (componentsDishTable.getGroupComponent().equals("Vitaminas")) {
+				componentsDishTableVitaminas.add(componentsDishTable);
+
+			} else if (componentsDishTable.getGroupComponent().equals("Minerales")) {
+				componentsDishTableMinerales.add(componentsDishTable);
+
+			} else {
+				componentsDishTableOtros.add(componentsDishTable);
+
+			}
+		}
+		listComponentsDishOrdered.addAll(ordenarComponentesPorUnidadCantidad(componentsDishTableProximal));
+		listComponentsDishOrdered.addAll(ordenarComponentesPorUnidadCantidad(componentsDishTableHcarbono));
+		listComponentsDishOrdered.addAll(ordenarComponentesPorUnidadCantidad(componentsDishTableGrasa));
+		
+		listComponentsDishOrdered.addAll(ordenarComponentesPorUnidadCantidad(componentsDishTableVitaminas));
+		listComponentsDishOrdered.addAll(ordenarComponentesPorUnidadCantidad(componentsDishTableMinerales));
+		listComponentsDishOrdered.addAll(ordenarComponentesPorUnidadCantidad(componentsDishTableOtros));
+
+		return listComponentsDishOrdered;
+
+	}
+	
+	
+	public List<ComponentsDishTable> ordenarComponentesPorUnidadCantidad(List<ComponentsDishTable> componentsDishTableVitaminas) {
+		
+		List<ComponentsDishTable> listComponentsDishTable = new ArrayList<ComponentsDishTable>();
+		
+		List<ComponentsDishTable> componentsDishTableKcal = new ArrayList<ComponentsDishTable>();
+		List<ComponentsDishTable> componentsDishTableG = new ArrayList<ComponentsDishTable>();
+		List<ComponentsDishTable> componentsDishTableMG = new ArrayList<ComponentsDishTable>();
+		List<ComponentsDishTable> componentsDishTableUG = new ArrayList<ComponentsDishTable>();
+		
+		
+		for(ComponentsDishTable componentsDishTable: componentsDishTableVitaminas) {
+			if(componentsDishTable.getUnit().equals("kcal") || componentsDishTable.getUnit().equals("kj(kcal)")) {
+				componentsDishTableKcal.add(componentsDishTable);
+				
+			}else if(componentsDishTable.getUnit().equals("g")) {
+				componentsDishTableG.add(componentsDishTable);
+				
+			}else if(componentsDishTable.getUnit().equals("mg")) {
+				componentsDishTableMG.add(componentsDishTable);
+				
+			}else if(componentsDishTable.getUnit().equals("ug")) {
+				componentsDishTableUG.add(componentsDishTable);
+				
+			}
+		}
+		listComponentsDishTable.addAll(componentsDishTableKcal);
+		listComponentsDishTable.addAll(componentsDishTableG);
+		listComponentsDishTable.addAll(componentsDishTableMG);
+		listComponentsDishTable.addAll(componentsDishTableUG);
+
+		return listComponentsDishTable;
+		
 	}
 
 	@GetMapping({ "/admin/deleteIngredientDish/{id_plato}/{id_ingrediente}" })
@@ -2426,12 +2504,12 @@ public class ControllerMVC {
 	}
 
 //	'/admin/IngredientesDish/' + ${dish.id_plato}
-	
+
 	@RequestMapping(value = { "/admin/IngredientesDish/{id_plato}" })
 	public ModelAndView verIngredientePlato(@PathVariable("id_plato") Integer id_plato) {
 
 		ModelAndView model = new ModelAndView("ver_ingredientes_plato");
-		
+
 		List<DishIngredients> listDishIngredients = new ArrayList<DishIngredients>();
 		ResultSet rs;
 		try {
@@ -2449,7 +2527,7 @@ public class ControllerMVC {
 				listDishIngredients.add(dishIngredients);
 
 			}
-			
+
 			model.addObject("listDishIngredients", listDishIngredients);
 			model.addObject("nameDish", dishRepo.findById(id_plato).get().getNombre_plato());
 		} catch (SQLException e) {
@@ -2463,6 +2541,16 @@ public class ControllerMVC {
 		}
 
 		return model;
+	}
+
+//	/userFile
+
+	@PostMapping("/userFile")
+	public String postDrinks(List<Local> listLocales) {
+
+		int a = 0;
+
+		return "";
 	}
 
 }

@@ -12,7 +12,7 @@ import javax.persistence.Table;
 public class Dish {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	public int id_plato;
+	public Integer id_plato;
 
 	@Column(nullable = false)
 	public int id_tipo_platos;
@@ -25,7 +25,7 @@ public class Dish {
 
 	public Integer id_empresa;
 
-	public Dish(int id_plato, int id_tipo_platos, String nombre_plato, String descripcion, Integer id_empresa) {
+	public Dish(Integer id_plato, int id_tipo_platos, String nombre_plato, String descripcion, Integer id_empresa) {
 		this.id_plato = id_plato;
 		this.id_tipo_platos = id_tipo_platos;
 		this.nombre_plato = nombre_plato;
@@ -38,11 +38,11 @@ public class Dish {
 
 	}
 
-	public int getId_plato() {
+	public Integer getId_plato() {
 		return id_plato;
 	}
 
-	public void setId_plato(int id_plato) {
+	public void setId_plato(Integer id_plato) {
 		this.id_plato = id_plato;
 	}
 

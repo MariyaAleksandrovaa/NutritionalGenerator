@@ -25,16 +25,6 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 
 <link href="../css/style.css" type="text/css" rel="stylesheet" media="all">   
 <link href="../css/font-awesome.css" rel="stylesheet"> <!-- font-awesome icons --> 
-
-<link href="../css/bootstrap-multiselect.css" rel="stylesheet" type="text/css"> 
-<link href="../css/bootstrap-multiselect.min.css" rel="stylesheet" type="text/css">
-
-<script src="../js/bootstrap-multiselect.js" rel="stylesheet" type="text/javascript"></script>
-<script src="../js/bootstrap-multiselect.min.js" rel="stylesheet" type="text/javascript"></script>
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
-
 <link rel="stylesheet" href="../css/smoothbox.css" type='text/css' media="all" /> 
 <!-- //Custom Theme files --> 
 
@@ -50,30 +40,27 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 </head>
 
 <body> 
-
+	<!-- banner -->
 	<div class="banner">
-		<p style="float: left;margin-top:10px;font-size:1.5em;margin-left:20px;">
-			Bienvenido <b>[[${#request.userPrincipal.principal.username}]]</b> 
-		</p>
-		<form th:action="@{/logout}" method="post" style="font-size:1.5em;margin-left:93%;">
-			<input type="submit" style="margin-top:10px;float: left;" value="Cerrar sesión" />					
-		</form>		
 		<!-- header -->
 		<div class="header">
 			<div class="container">
 				<div class="logo">
-					<h1>NutriApp</h1>
+					<h1><a href="index.html">NutriApp</a></h1>
 				</div> 
-				<div class="banner-text w3labout-bnr" > 
-						<h2 >Cuenta de editor</h2>   
-				</div>
 			</div>
 		</div>
-		<b th:text="${company}" style="margin-left:20px;color:#000000;font-size:2em;"></b>
+		<!-- //header --> 
+		<!-- banner-text -->
+		<div class="banner-text w3labout-bnr"> 
+			<div class="container">  
+				<h2>Cuenta de editor</h2>   
+			</div>
+		</div>
+		<!-- //banner-text -->
 	</div>
 	<!-- //banner -->   
 	<!-- gallery -->
-	<div id="wrapper">
 	<div class="about gallery">
 		<div class="container">
 			<div role="tabpanel">
@@ -86,76 +73,47 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 							
 						    <div class="form-group" style="margin-top:25px;">
 						    	<label for="exampleInputEmail1" >Nombre del menú</label>
-						    	<input type="text" class="form-control"  th:field="*{name_menu}"  style="margin-top:8px;width:60%;" aria-describedby="emailHelp" placeholder="Introduce nombre del menú">
+						    	<input type="text" class="form-control"  th:field="*{name_menu}"  style="margin-top:8px;width:60%;" aria-describedby="emailHelp" placeholder="Introduce nombre del menú" required>
 						    </div>
-						    
-						    <div class="form-group" style="margin-top:30px;">
-								<label for="exampleInputEmail1" class="form-label select-label">Escoge el local al que pertenece menú</label> 
-								<select class="select" th:field="*{id_local}" aria-label="Default select example" style="margin-top:10px;width:60%" >
-									<option selected th:value="${select}">Escoge el local al que va a pertenecer este menú</option>
-									<option th:each="local:${listLocals}"
-										th:value="${local.id_local}"
-										th:text="${local.nombre}"
-									/>
-								</select>
-								<select class="select" multiple data-mdb-placeholder="Example placeholder">
-								  <option value="1">One</option>
-								  <option value="2">Two</option>
-								  <option value="3">Three</option>
-								  <option value="4">Four</option>
-								  <option value="5">Five</option>
-								</select>
-							</div>
-						    <div class="row">
-							  <div class="col-md-12">
-								
-								    <select id="Example" multiple="multiple" searchable="Search here..">
-								      <option value="" disabled selected>Choose your country</option>
-								      <option value="1">USA</option>
-								      <option value="2">Germany</option>
-								      <option value="3">France</option>
-								      <option value="4">Poland</option>
-								      <option value="5">Japan</option>
-								    </select>
-								    <label class="mdb-main-label">Label example</label>
-								    <button class="btn-save btn btn-primary btn-sm">Save</button>
-								
-								  </div>
-								</div>
-						    
+						    <div  class="checkbox-group required" style="margin-top:30px;" >
+								<label for="exampleInputEmail1" class="form-label select-label">Escoge local/es al que pertenece menú</label> 
+								    <ul style="margin-left:20px;" >
+								        <li th:each="local : ${listLocals}">
+								            <input type="checkbox" name="searchValues" th:value="${local.id_local}" th:field="*{list_id_local}"/>
+								            <label th:text="${local.nombre}"></label>
+								        </li>
+								    </ul>
+						    </div>
 							<div class="form-group" style="margin-top:30px;">
 								<label for="exampleInputEmail1">Escoge el primer plato del menú</label> 
-								<select class="form-select" th:field="*{first_dish}" aria-label="Default select example" style="margin-top:10px;width:60%">
-									<option selected th:value="${select}">Primer plato</option>
+								<select class="form-select" th:field="*{first_dish}" aria-label="Default select example" style="margin-top:10px;width:60%" required>
+									<option selected value="">Primer plato</option>
 									<option th:each="dish:${listDishCompany1}"
 										th:value="${dish.id_plato}"
 										th:text="${dish.nombre_plato}"
 									/>
 								</select>
 							</div>
-							
 							<div class="form-group" style="margin-top:30px;">
-								<label for="exampleInputEmail1">Escoge el segundo plato del menú</label> 
-								<select class="form-select" th:field="*{second_dish}" aria-label="Default select example" style="margin-top:10px;width:60%">
-									<option selected th:value="${select}" >Segundo plato</option>
+								<label for="exampleInputEmail1">Escoge el primer plato del menú</label> 
+								<select class="form-select" th:field="*{second_dish}" aria-label="Default select example" style="margin-top:10px;width:60%" required>
+									<option selected value="">Segundo plato</option>
 									<option th:each="dish:${listDishCompany2}"
 										th:value="${dish.id_plato}"
 										th:text="${dish.nombre_plato}"
 									/>
 								</select>
 							</div>
-							
 							<div class="form-group" style="margin-top:30px;">
-								<label for="exampleInputEmail1">Escoge el postre del menú (opcional)</label> 
+								<label for="exampleInputEmail1">Escoge el postre del menú (Opcional)</label> 
 								<select class="form-select" th:field="*{third_dish}" aria-label="Default select example" style="margin-top:10px;width:60%">
-									<option selected th:value="${select}">Postre</option>
+									<option selected value="">Postre (Opcional)</option>
 									<option th:each="dish:${listDishCompany3}"
 										th:value="${dish.id_plato}"
 										th:text="${dish.nombre_plato}"
 									/>
 								</select>
 							</div>
-	
 							<button type="submit" class="btn btn-primary">Confirmar menú</button>
 						</form>
 					</div>
@@ -163,7 +121,6 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 				</div>
 			</div>
 		</div>
-	</div>
 	</div>
 	<!-- //gallery -->  
 	<!-- footer -->
@@ -301,19 +258,15 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	    el.onblur = function(){this.type="text";};
 	});
 	</script>
-
 	<script>
-	$(document).ready(function() {
-		$('#Example').multiselect();
-		});
+	$('div.checkbox-group.required :checkbox:checked').length > 0
 	</script>
+	
 
 	<!-- //smooth-scrolling-of-move-up -->  		
 	<!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="js/bootstrap.js"></script>
-	
-	
 </body>
 </html>
