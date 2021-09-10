@@ -15,6 +15,7 @@ import java.util.Map.Entry;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.source.ConfigurationPropertyName.Form;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import app.Application;
@@ -39,6 +41,7 @@ import app.model.Menu;
 import app.model.Role;
 import app.model.TypeDish;
 import app.model.User;
+import app.objects.DishIngredient;
 import app.objects.DishIngredients;
 import app.objects.DishObj;
 import app.objects.FoodAmountObj;
@@ -946,21 +949,21 @@ public class ControllerMVC {
 			String company = companyRepo.findById(id).get().getNombre();
 			model.addObject("company", company);
 		}
-		
-		List<DishIngredients> listDishIngredients  = new ArrayList<DishIngredients>();
-		
+
+		List<DishIngredients> listDishIngredients = new ArrayList<DishIngredients>();
+
 		ResultSet rs;
 		try {
 			Statement st = Application.con.createStatement();
 			rs = st.executeQuery("select a.nombre, pa.idAlimento , pa.cantidad \r\n"
 					+ "from alimentos as a left join platos_alimentos as pa on a.id_alimento = pa.idAlimento \r\n"
-					+ "where pa.idPlato = " + id_plato +  ";");
-			
+					+ "where pa.idPlato = " + id_plato + ";");
+
 			while (rs.next()) {
 				String nombre_alimento = rs.getString(1);
 				Integer id_alimento = rs.getInt(2);
 				BigDecimal cantidad = rs.getBigDecimal(3);
-				
+
 				DishIngredients dishIngredients = new DishIngredients(nombre_alimento, id_alimento, cantidad);
 				listDishIngredients.add(dishIngredients);
 
@@ -2304,27 +2307,57 @@ public class ControllerMVC {
 		return listListComponentsDish;
 
 	}
-	
-//	'/admin/deleteIngredientDish/' + ${id_plato} + '/' + ${ingredient.id_ingrediente}
-	
-	@GetMapping({ "/admin/deleteIngredientDish/{id_plato}/{id_ingrediente}" })
-	public String eliminarIngredientePlato(@PathVariable("id_plato") Integer id_plato, @PathVariable("id_ingrediente") Integer id_ingrediente) {
 
-		
+	@GetMapping({ "/admin/deleteIngredientDish/{id_plato}/{id_ingrediente}" })
+	public String eliminarIngredientePlato(@PathVariable("id_plato") Integer id_plato,
+			@PathVariable("id_ingrediente") Integer id_ingrediente) {
+
 		try {
 			Statement st = Application.con.createStatement();
-			
-			st.execute("delete from platos_alimentos where idPlato=" + id_plato.toString() + " and idAlimento = " + id_ingrediente.toString() + ";");
+
+			st.execute("delete from platos_alimentos where idPlato=" + id_plato.toString() + " and idAlimento = "
+					+ id_ingrediente.toString() + ";");
 			st.close();
-			
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
-		
-		
 		return "redirect:/admin/editDish/{id_plato}";
 	}
-	
+
+	@GetMapping({ "/admin/editIngredientDish/{id_plato}/{id_ingrediente}/{cantidad}" })
+	public ModelAndView editarIngredientePlato(@PathVariable("id_plato") Integer id_plato,
+			@PathVariable("id_ingrediente") Integer id_ingrediente, @PathVariable("cantidad") BigDecimal cantidad) {
+
+		ModelAndView model = new ModelAndView("editar_ingrediente_plato");
+
+		DishIngredient dishIngredient = new DishIngredient(id_plato, id_ingrediente,
+				foodRepo.findByIdAlimento(id_ingrediente).getNombre(), cantidad);
+
+//		DishIngredient dishIngredient = new DishIngredient();
+		model.addObject("dishIngredient", dishIngredient);
+
+		return model;
+	}
+
+	@RequestMapping(value = {
+			"/admin/saveEditIngredientDish/{id_plato}/{id_ingrediente}" }, method = RequestMethod.POST)
+	public String editarCantidadIngredientePlato(@PathVariable("id_plato") Integer id_plato, @PathVariable("id_ingrediente") Integer id_ingrediente,
+			DishIngredient dishIngredient) {
+
+		try {
+			Statement st = Application.con.createStatement();
+
+			st.execute("update platos_alimentos set cantidad = " + dishIngredient.getCantidad() + " where idPlato =  "
+					+ id_plato + " and idAlimento = " + id_ingrediente + ";");
+			st.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return "redirect:/admin/editDish/{id_plato}";
+	}
 
 }
