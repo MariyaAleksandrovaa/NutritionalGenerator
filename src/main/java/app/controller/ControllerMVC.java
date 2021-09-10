@@ -2425,6 +2425,44 @@ public class ControllerMVC {
 		return "redirect:/admin/editDish/{id_plato}";
 	}
 
-//	/admin/addIngredient/' + ${id_plato}
+//	'/admin/IngredientesDish/' + ${dish.id_plato}
+	
+	@RequestMapping(value = { "/admin/IngredientesDish/{id_plato}" })
+	public ModelAndView verIngredientePlato(@PathVariable("id_plato") Integer id_plato) {
+
+		ModelAndView model = new ModelAndView("ver_ingredientes_plato");
+		
+		List<DishIngredients> listDishIngredients = new ArrayList<DishIngredients>();
+		ResultSet rs;
+		try {
+			Statement st = Application.con.createStatement();
+			rs = st.executeQuery("select a.nombre, pa.idAlimento , pa.cantidad \r\n"
+					+ "from alimentos as a left join platos_alimentos as pa on a.id_alimento = pa.idAlimento \r\n"
+					+ "where pa.idPlato = " + id_plato + ";");
+
+			while (rs.next()) {
+				String nombre_alimento = rs.getString(1);
+				Integer id_alimento = rs.getInt(2);
+				BigDecimal cantidad = rs.getBigDecimal(3);
+
+				DishIngredients dishIngredients = new DishIngredients(nombre_alimento, id_alimento, cantidad);
+				listDishIngredients.add(dishIngredients);
+
+			}
+			
+			model.addObject("listDishIngredients", listDishIngredients);
+			model.addObject("nameDish", dishRepo.findById(id_plato).get().getNombre_plato());
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		Integer id = obtenerUsuario().getIdEmpresa();
+		if (id != null) {
+			String company = companyRepo.findById(id).get().getNombre();
+			model.addObject("company", company);
+		}
+
+		return model;
+	}
 
 }
