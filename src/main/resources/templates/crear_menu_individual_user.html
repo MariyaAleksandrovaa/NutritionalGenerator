@@ -114,7 +114,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 									/>
 								</select>
 							</div>
-							<button type="submit" class="btn btn-primary">Confirmar menú</button>
+							<button type="submit" class="btn btn-primary" id="elID">Confirmar menú</button>
 						</form>
 					</div>
 
@@ -260,6 +260,15 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	</script>
 	<script>
 	$('div.checkbox-group.required :checkbox:checked').length > 0
+ 	</script>
+	<script>
+	$("#elID").click( e => {
+	    const activos = $("[type='checkbox']:checked").length
+	    if( activos == 0 ){
+	       e.preventDefault();
+	       alert("Tienes que escoger al menos un local al que pertenezca el menú") 
+	    }
+	})
 	</script>
 	
 
