@@ -1,37 +1,35 @@
-package app.model;
+package app.objects;
 
+public class LocalEnable {
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
-@Entity
-@Table(name = "locales")
-public class Local {
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	public int id_local;
 
 	public int id_empresa;
 
 	public String nombre;
 	public String direccion;
-	
 
+	public boolean enable;
 
-	public Local(String nombre, String direccion, int id_local, int id_empresa) {
+	public LocalEnable(String nombre, String direccion, int id_local, int id_empresa, boolean enable) {
 
 		this.nombre = nombre;
 		this.direccion = direccion;
 		this.id_local = id_local;
 		this.id_empresa = id_empresa;
+		this.enable = enable;
 	}
 
-	public Local() {
+	public LocalEnable() {
 
+	}
+
+	public boolean isEnable() {
+		return enable;
+	}
+
+	public void setEnable(boolean enable) {
+		this.enable = enable;
 	}
 
 	public int getIdLocal() {

@@ -46,6 +46,7 @@ import app.objects.DishObj;
 import app.objects.FoodAmountObj;
 import app.objects.GroupUnitObj;
 import app.objects.GroupalDish;
+import app.objects.LocalEnable;
 import app.objects.MenuDishObj;
 import app.objects.MenuLocalObj;
 import app.objects.MenuObj;
@@ -997,114 +998,225 @@ public class ControllerMVC {
 
 	@RequestMapping({ "/user/editMenu/{id_menu}" })
 	public ModelAndView editarMenu_user(@PathVariable("id_menu") int id_menu) {
+		ModelAndView model = new ModelAndView();
+		if (menuRepo.findById(id_menu).get().getDescripcion().equals("Menú individual")) {
 
-		ModelAndView model = new ModelAndView("editar_menu_user");
+			model.setViewName("editar_menu_user");
 
-		Menu menu = menuRepo.findById(id_menu).get();
-		MenuObj menuObj = new MenuObj();
-		menuObj.setName_menu(menu.getNombre_menu());
-		try {
-			Statement st1 = Application.con.createStatement();
-			ResultSet rs1;
+			Menu menu = menuRepo.findById(id_menu).get();
+			MenuObj menuObj = new MenuObj();
+			menuObj.setName_menu(menu.getNombre_menu());
+			try {
+				Statement st1 = Application.con.createStatement();
+				ResultSet rs1;
 
-			rs1 = st1.executeQuery("select mp.idPlato, p.nombre_plato, tp.id_tipos_platos \r\n"
-					+ "from menus_platos as mp join platos as p on mp.idPlato=p.id_plato\r\n"
-					+ "left join tiposplatos as tp on  p.id_tipo_platos= tp.id_tipos_platos \r\n" + "where idMenu = "
-					+ id_menu + ";");
+				rs1 = st1.executeQuery("select mp.idPlato, p.nombre_plato, tp.id_tipos_platos \r\n"
+						+ "from menus_platos as mp join platos as p on mp.idPlato=p.id_plato\r\n"
+						+ "left join tiposplatos as tp on  p.id_tipo_platos= tp.id_tipos_platos \r\n"
+						+ "where idMenu = " + id_menu + ";");
 
-			while (rs1.next()) {
-				Integer id_plato = rs1.getInt(1);
-				String nombre_plato = rs1.getString(2);
-				Integer id_tipo_plato = rs1.getInt(3);
+				while (rs1.next()) {
+					Integer id_plato = rs1.getInt(1);
+					String nombre_plato = rs1.getString(2);
+					Integer id_tipo_plato = rs1.getInt(3);
 
-				if (id_tipo_plato == 1) {
-					menuObj.setFirst_dish(id_plato);
-				} else if (id_tipo_plato == 2) {
-					menuObj.setSecond_dish(id_plato);
-				} else if (id_tipo_plato == 3) {
-					menuObj.setThird_dish(id_plato);
+					if (id_tipo_plato == 1) {
+						menuObj.setFirst_dish(id_plato);
+					} else if (id_tipo_plato == 2) {
+						menuObj.setSecond_dish(id_plato);
+					} else if (id_tipo_plato == 3) {
+						menuObj.setThird_dish(id_plato);
+					}
+
+				}
+				rs1.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+
+			List<Local> listLocals = localRepo.findByIdEmpresa(obtenerUsuario().getIdEmpresa());
+			List<LocalEnable> listLocalsEnable = new ArrayList<LocalEnable>();
+			boolean enable = true;
+			for (Local local : listLocals) {
+
+				try {
+					Statement st2 = Application.con.createStatement();
+					ResultSet rs2;
+
+//					Ver que locales estan asociados a ese menu
+					rs2 = st2.executeQuery("select * from locales_menus where idLocal=" + local.getIdLocal()
+							+ " and idMenu=" + id_menu + ";");
+					while (rs2.next()) {
+						Integer id_local = rs2.getInt(1);
+
+//						Cuando existe local asociado a menu lo guardo como enable
+						if (id_local == null) {
+							enable = false;
+						} else {
+							enable = true;
+						}
+						LocalEnable localEnable = new LocalEnable(local.getNombre(), local.getDireccion(),
+								local.getIdLocal(), local.getIdEmpresa(), enable);
+
+						listLocalsEnable.add(localEnable);
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
 				}
 
 			}
-			rs1.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
 
-		List<Local> listLocals = localRepo.findByIdEmpresa(obtenerUsuario().getIdEmpresa());
+			model.addObject("listLocals", listLocalsEnable);
+			model.addObject("menuObj", menuObj);
+			model.addObject("name_menu", menu.getNombre_menu());
 
-		model.addObject("listLocals", listLocals);
-		model.addObject("menuObj", menuObj);
-		model.addObject("name_menu", menu.getNombre_menu());
-
-		Integer id = obtenerUsuario().getIdEmpresa();
-		if (id != null) {
-			String company = companyRepo.findById(id).get().getNombre();
-			model.addObject("company", company);
-		}
-
-		try {
-			Statement st1 = Application.con.createStatement();
-			ResultSet rs1;
-
-			rs1 = st1.executeQuery("select tp.plato, p.id_plato, p.nombre_plato \r\n"
-					+ "from tiposplatos as tp left join platos as p on tp.id_tipos_platos = p.id_tipo_platos\r\n"
-					+ "left join menus_platos as mp \r\n" + "on p.id_plato = mp.idPlato \r\n" + "where mp.idMenu="
-					+ id_menu + ";");
-
-			List<Dish> listDish2 = new ArrayList<Dish>();
-			while (rs1.next()) {
-				String tipo_plato = rs1.getString(1);
-				Integer id_plato = rs1.getInt(2);
-				String nombre_plato = rs1.getString(3);
-				Dish dish = new Dish(tipo_plato, id_plato, nombre_plato);
-				listDish2.add(dish);
+			Integer id = obtenerUsuario().getIdEmpresa();
+			if (id != null) {
+				String company = companyRepo.findById(id).get().getNombre();
+				model.addObject("company", company);
 			}
-			model.addObject("listDish2", listDish2);
-			rs1.close();
 
-			Statement st = Application.con.createStatement();
-			ResultSet rs = st
-					.executeQuery("select * from platos where id_empresa = " + obtenerUsuario().getIdEmpresa() + ";");
+			try {
+				Statement st1 = Application.con.createStatement();
+				ResultSet rs1;
 
-			List<Dish> listDish = new ArrayList<Dish>();
-			while (rs.next()) {
-				Integer id_plato = rs.getInt(1);
-				String nombre_plato = rs.getString(3);
-				Dish dish = new Dish(id_plato, nombre_plato);
-				listDish.add(dish);
-			}
-			model.addObject("listDish", listDish);
-			rs.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+				rs1 = st1.executeQuery("select tp.plato, p.id_plato, p.nombre_plato \r\n"
+						+ "from tiposplatos as tp left join platos as p on tp.id_tipos_platos = p.id_tipo_platos\r\n"
+						+ "left join menus_platos as mp \r\n" + "on p.id_plato = mp.idPlato \r\n" + "where mp.idMenu="
+						+ id_menu + ";");
 
-		List<Dish> listDish = dishRepo.findAll();
-		int id_company = obtenerUsuario().getIdEmpresa();
-
-		List<Dish> listDishCompany1 = new ArrayList<Dish>();
-		List<Dish> listDishCompany2 = new ArrayList<Dish>();
-		List<Dish> listDishCompany3 = new ArrayList<Dish>();
-
-		for (int i = 0; i < listDish.size(); i++) {
-			Integer id_empresa = listDish.get(i).getId_empresa();
-			if (id_empresa != null && id_empresa == id_company) {
-
-				if (listDish.get(i).getId_tipo_platos() == 1) {
-					listDishCompany1.add(listDish.get(i));
-				} else if (listDish.get(i).getId_tipo_platos() == 2) {
-					listDishCompany2.add(listDish.get(i));
-				} else if (listDish.get(i).getId_tipo_platos() == 3) {
-					listDishCompany3.add(listDish.get(i));
+				List<Dish> listDish2 = new ArrayList<Dish>();
+				while (rs1.next()) {
+					String tipo_plato = rs1.getString(1);
+					Integer id_plato = rs1.getInt(2);
+					String nombre_plato = rs1.getString(3);
+					Dish dish = new Dish(tipo_plato, id_plato, nombre_plato);
+					listDish2.add(dish);
 				}
+				model.addObject("listDish2", listDish2);
+				rs1.close();
 
+				Statement st = Application.con.createStatement();
+				ResultSet rs = st.executeQuery(
+						"select * from platos where id_empresa = " + obtenerUsuario().getIdEmpresa() + ";");
+
+				List<Dish> listDish = new ArrayList<Dish>();
+				while (rs.next()) {
+					Integer id_plato = rs.getInt(1);
+					String nombre_plato = rs.getString(3);
+					Dish dish = new Dish(id_plato, nombre_plato);
+					listDish.add(dish);
+				}
+				model.addObject("listDish", listDish);
+				rs.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
 			}
-		}
 
-		model.addObject("listDishCompany1", listDishCompany1);
-		model.addObject("listDishCompany2", listDishCompany2);
-		model.addObject("listDishCompany3", listDishCompany3);
+			List<Dish> listDish = dishRepo.findAll();
+			int id_company = obtenerUsuario().getIdEmpresa();
+
+			List<Dish> listDishCompany1 = new ArrayList<Dish>();
+			List<Dish> listDishCompany2 = new ArrayList<Dish>();
+			List<Dish> listDishCompany3 = new ArrayList<Dish>();
+
+			for (int i = 0; i < listDish.size(); i++) {
+				Integer id_empresa = listDish.get(i).getId_empresa();
+				if (id_empresa != null && id_empresa == id_company) {
+
+					if (listDish.get(i).getId_tipo_platos() == 1) {
+						listDishCompany1.add(listDish.get(i));
+					} else if (listDish.get(i).getId_tipo_platos() == 2) {
+						listDishCompany2.add(listDish.get(i));
+					} else if (listDish.get(i).getId_tipo_platos() == 3) {
+						listDishCompany3.add(listDish.get(i));
+					}
+
+				}
+			}
+
+			model.addObject("listDishCompany1", listDishCompany1);
+			model.addObject("listDishCompany2", listDishCompany2);
+			model.addObject("listDishCompany3", listDishCompany3);
+		} else {
+			model.setViewName("editar_menu_grupal_user");
+			
+			Menu menu = menuRepo.findById(id_menu).get();
+			MenuObj menuObj = new MenuObj();
+			menuObj.setName_menu(menu.getNombre_menu());
+			model.addObject("menuObj", menuObj);
+			try {
+				Statement st1 = Application.con.createStatement();
+				ResultSet rs1 = st1.executeQuery("select tp.plato, p.id_plato, p.nombre_plato \r\n"
+						+ "from tiposplatos as tp left join platos as p on tp.id_tipos_platos = p.id_tipo_platos\r\n"
+						+ "left join menus_platos as mp \r\n" + "on p.id_plato = mp.idPlato \r\n" + "where mp.idMenu="
+						+ id_menu + ";");
+
+				List<Dish> listDish2 = new ArrayList<Dish>();
+				while (rs1.next()) {
+					String tipo_plato = rs1.getString(1);
+					Integer id_plato = rs1.getInt(2);
+					String nombre_plato = rs1.getString(3);
+					Dish dish = new Dish(tipo_plato, id_plato, nombre_plato);
+					listDish2.add(dish);
+				}
+				model.addObject("listDish2", listDish2);
+				rs1.close();
+				
+				
+				Statement st = Application.con.createStatement();
+				ResultSet rs = st
+						.executeQuery("select * from platos where id_empresa = " + obtenerUsuario().getIdEmpresa() + ";");
+
+				List<Dish> listDish = new ArrayList<Dish>();
+				while (rs.next()) {
+					Integer id_plato = rs.getInt(1);
+					String nombre_plato = rs.getString(3);
+					Dish dish = new Dish(id_plato, nombre_plato);
+					listDish.add(dish);
+				}
+				model.addObject("listDish", listDish);
+				rs.close();
+				
+				GroupalDish groupalDish = new GroupalDish();
+				groupalDish.setName_menu(menu.getNombre_menu());
+//				groupalDish.setId_menu(menu.getId_menu());
+				
+				int select = 0;
+				model.addObject("id_menu", id_menu);
+				model.addObject("select", select);
+				model.addObject("groupalDish", groupalDish);
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+
+			
+			
+
+//			<div class ="row">
+//			<table class="table" style="margin-top:40px;">
+//			  <thead>
+//			    <tr >
+//				  <th scope="col">Tipo de plato</th>
+//			      <th scope="col">Nombre de plato</th>
+//			      <th scope="col" data-field="action" style="margin-left:10%;margin-right:10%;width:15%;">Operación</th>
+//			    </tr>
+//			  </thead>
+//			  <tbody id="myTable">
+//			    <tr th:each="dish: ${listDish2}">
+//                    <td th:text="${dish.tipo_plato}"></td>
+//                    <td th:text="${dish.nombre_plato}"></td>
+//                	<td >
+//						 <div class="botonesEdicion" >
+//				        	<a th:href="@{'/user/eliminarPlato_menu_grupal/' + ${id_menu} + '/' + ${dish.id_plato}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color:#FF3333;border-color:#FF3333;;color:#ffffff;font-size:0.9rem; " >Eliminar</a>
+//						 </div>     	                    	
+//                    </td>
+//			    </tr>
+//			  </tbody>
+//			</table>
+//		</div>
+		}
 
 		return model;
 	}
@@ -1153,14 +1265,14 @@ public class ControllerMVC {
 					+ ");";
 			st.execute(query);
 
-			query = "delete from locales_menus\r\n" + "where idMenu = " + id_menu + ";";
-			st.execute(query);
-
-			for (int i = 0; i < menuObj.getList_id_local().size(); i++) {
-				String query2 = "insert into locales_menus values(" + menuObj.getList_id_local().get(i) + ", " + id_menu
-						+ ");";
-				st.execute(query2);
-			}
+//			query = "delete from locales_menus\r\n" + "where idMenu = " + id_menu + ";";
+//			st.execute(query);
+//
+//			for (int i = 0; i < menuObj.getList_id_local().size(); i++) {
+//				String query2 = "insert into locales_menus values(" + menuObj.getList_id_local().get(i) + ", " + id_menu
+//						+ ");";
+//				st.execute(query2);
+//			}
 
 			st.close();
 
@@ -1833,6 +1945,31 @@ public class ControllerMVC {
 
 		return "redirect:/admin/crear_menu_grupal/platos";
 	}
+	
+	@RequestMapping("/user/crear_menu_grupal/guardarPlato_editar/{id_menu}")
+	public String añadirPlatoMenuGrupal_userEditar(GroupalDish groupalDish, @PathVariable("id_menu") int id_menu, RedirectAttributes redirectAttributes) {
+
+		Menu menu = menuRepo.findById(id_menu).get();
+
+		if (groupalDish.getId_dish() != 0) {
+			try {
+				Statement st = Application.con.createStatement();
+
+				String query = "insert into menus_platos values(" + id_menu + "," + groupalDish.getId_dish() + ",'"
+						+ menu.getNombre_menu() + "','" + menu.getDescripcion() + "'," + menu.getId_empresa() + ");";
+				st.execute(query);
+
+				st.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		redirectAttributes.addAttribute("id_menu", id_menu);
+		
+		menu.setNombre_menu(groupalDish.getName_menu());
+		menuRepo.save(menu);
+		return "redirect:/user/editMenu/{id_menu}";
+	}
 
 	@RequestMapping("/user/crear_menu_grupal/guardarPlato/{id_menu}")
 	public ModelAndView añadirPlatoMenuGrupal_user(GroupalDish groupalDish, @PathVariable("id_menu") int id_menu) {
@@ -1906,7 +2043,7 @@ public class ControllerMVC {
 		return model;
 	}
 
-	@RequestMapping("/user/eliminarPlato_menu_grupal/{id_menu}/{id_plato}")
+	@RequestMapping(value={"/user/eliminarPlato_menu_grupal/{id_menu}/{id_plato}"})
 //	/user/eliminarPlato_menu_grupal/' + ${id_menu} + '/' + ${dish.id_plato}
 	public String eliminarPlatoMenuGrupal(@PathVariable("id_menu") int id_menu, @PathVariable("id_plato") int id_plato,
 			RedirectAttributes redirectAttributes) {
@@ -1924,6 +2061,97 @@ public class ControllerMVC {
 		redirectAttributes.addAttribute("id_menu", id_menu);
 
 		return "redirect:/user/crear_menu_grupal/guardarPlato/{id_menu}";
+	}
+	
+	@RequestMapping(value={"/user/eliminarPlato_menu_grupal_edicion/{id_menu}/{id_plato}"})
+//	/user/eliminarPlato_menu_grupal/' + ${id_menu} + '/' + ${dish.id_plato}
+	public String eliminarPlatoMenuGrupalEdicion(@PathVariable("id_menu") int id_menu, @PathVariable("id_plato") int id_plato,
+			RedirectAttributes redirectAttributes) {
+
+		try {
+			Statement st = Application.con.createStatement();
+
+			String query = "delete from menus_platos where idMenu=" + id_menu + " and idPlato=" + id_plato + " ;";
+			st.execute(query);
+
+			st.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		redirectAttributes.addAttribute("id_menu", id_menu);
+
+		return "redirect:/user/editMenu/{id_menu}";
+	}
+	@RequestMapping("/user/crear_menu_grupal/guardarPlato_edicion/{id_menu}")
+	public ModelAndView añadirPlatoMenuGrupal_userEdicion(GroupalDish groupalDish, @PathVariable("id_menu") int id_menu) {
+
+		ModelAndView model = new ModelAndView("editar_menu_grupal_user");
+
+//		Menu menu = menuRepo.findById(id_menu).get();
+//
+//		if (groupalDish.getId_dish() != 0) {
+//			try {
+//				Statement st = Application.con.createStatement();
+//
+//				String query = "insert into menus_platos values(" + id_menu + "," + groupalDish.getId_dish() + ",'"
+//						+ menu.getNombre_menu() + "','" + menu.getDescripcion() + "'," + menu.getId_empresa() + ");";
+//				st.execute(query);
+//
+//				st.close();
+//			} catch (SQLException e) {
+//				e.printStackTrace();
+//			}
+//		}
+//
+//		try {
+//			Statement st = Application.con.createStatement();
+//			ResultSet rs = st
+//					.executeQuery("select * from platos where id_empresa = " + obtenerUsuario().getIdEmpresa() + ";");
+//
+//			List<Dish> listDish = new ArrayList<Dish>();
+//			while (rs.next()) {
+//				Integer id_plato = rs.getInt(1);
+//				String nombre_plato = rs.getString(3);
+//				Dish dish = new Dish(id_plato, nombre_plato);
+//				listDish.add(dish);
+//			}
+//			model.addObject("listDish", listDish);
+//			rs.close();
+//
+//			Statement st1 = Application.con.createStatement();
+//			ResultSet rs1 = st1.executeQuery("select tp.plato, p.id_plato, p.nombre_plato \r\n"
+//					+ "from tiposplatos as tp left join platos as p on tp.id_tipos_platos = p.id_tipo_platos\r\n"
+//					+ "left join menus_platos as mp \r\n" + "on p.id_plato = mp.idPlato \r\n" + "where mp.idMenu="
+//					+ menu_grupal.getId_menu() + ";");
+//
+//			List<Dish> listDish2 = new ArrayList<Dish>();
+//			while (rs1.next()) {
+//				String tipo_plato = rs1.getString(1);
+//				Integer id_plato = rs1.getInt(2);
+//				String nombre_plato = rs1.getString(3);
+//				Dish dish = new Dish(tipo_plato, id_plato, nombre_plato);
+//				listDish2.add(dish);
+//			}
+//			model.addObject("listDish2", listDish2);
+//			rs1.close();
+//
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+//
+//		groupalDish = new GroupalDish();
+//		int select = 0;
+//		model.addObject("groupalDish", groupalDish);
+//		model.addObject("select", select);
+//
+//		Integer id = obtenerUsuario().getIdEmpresa();
+//		if (id != null) {
+//			String company = companyRepo.findById(id).get().getNombre();
+//			model.addObject("company", company);
+//		}
+//
+//		model.addObject("id_menu", menu_grupal.getId_menu());
+		return model;
 	}
 
 	@RequestMapping("/admin/crear_nuevo_plato/terminarMenu")

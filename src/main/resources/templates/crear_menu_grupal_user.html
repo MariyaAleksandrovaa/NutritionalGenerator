@@ -84,17 +84,6 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 						    	<label for="exampleInputEmail1" >Nombre del menú</label>
 						    	<input type="text" class="form-control"  th:field="*{nombre_menu}"  style="margin-top:8px;width:60%;" aria-describedby="emailHelp" placeholder="Introduce nombre del menú" required>
 						    </div>
-						    
-						    <div  class="checkbox-group required" style="margin-top:30px;" >
-								<label for="exampleInputEmail1" class="form-label select-label">Escoge local/es al que pertenece menú</label> 
-								    <ul style="margin-left:20px;" >
-								        <li th:each="local : ${listLocals}">
-								            <input type="checkbox" name="searchValues" th:value="${local.id_local}" th:field="*{list_id_local}"/>
-								            <label th:text="${local.nombre}"></label>
-								        </li>
-								    </ul>
-						    </div>
-	
 							<button type="submit" class="btn btn-primary" id="elID" style="margin-top:30px;">Proceder a escoger platos</button>
 						</form>
 					</div>

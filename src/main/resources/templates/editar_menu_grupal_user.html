@@ -69,11 +69,11 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 			  </ol>
 			</nav>
 			<div role="tabpanel">
-				<form th:action="@{'/user/saveMenu/' + ${id_menu}}"  th:object="${menuObj}" method="post" style="width:60%;margin-left:41%;">
-					  <div class="form-group">
-					    <label for="exampleInputEmail1">Nombre del menú</label>
-					    <input type="text" class="form-control"  th:field="*{name_menu}" style="margin-top:8px;width:40%;"  aria-describedby="emailHelp" required>
-					  </div>
+<!-- 				<form th:action="@{'/user/saveMenu/' + ${id_menu}}"  th:object="${menuObj}" method="post" style="width:60%;margin-left:41%;"> -->
+<!-- 					  <div class="form-group"> -->
+<!-- 					    <label for="exampleInputEmail1">Nombre del menú</label> -->
+<!-- 					    <input type="text" class="form-control"  th:field="*{name_menu}" style="margin-top:8px;width:40%;"  aria-describedby="emailHelp" required> -->
+<!-- 					  </div> -->
 					  
 <!-- 						    <div  class="checkbox-group required" style="margin-top:30px;" > -->
 <!-- 								<label for="exampleInputEmail1" class="form-label select-label">Escoge local/es al que pertenece menú</label>  -->
@@ -85,38 +85,56 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 <!-- 								        </li> -->
 <!-- 								    </ul> -->
 <!-- 						    </div> -->
+
+<!-- 				  	<button type="submit" class="btn btn-primary">Guardar cambios</button> -->
+<!-- 				</form> -->
+				
+						<form
+							th:action="@{'/user/crear_menu_grupal/guardarPlato_editar/' + ${id_menu}}"
+							th:object="${groupalDish}" 
+							method="post" 
+							style="margin-left:38%;">	
+							<div class="form-group">
+							    <label for="exampleInputEmail1">Nombre del menú</label>
+							    <input type="text" class="form-control"  th:field="*{name_menu}" style="margin-top:8px;width:40%;"  aria-describedby="emailHelp" required>
+							  </div>						
 							<div class="form-group" style="margin-top:30px;">
-								<label for="exampleInputEmail1">Escoge el primer plato del menú</label> 
-								<select class="form-select" th:field="*{first_dish}" aria-label="Default select example" style="margin-top:10px;width:60%" required>
-									<option selected th:value="*{first_dish}">Primer plato</option>
-									<option th:each="dish:${listDishCompany1}"
+								<label for="exampleInputEmail1">Escoge plato para añadir a menú grupal</label> 
+								<select class="form-select" th:field="*{id_dish}" aria-label="Default select example" style="margin-top:10px;width:40%">
+									<option selected th:value="${select}">Escoge un plato</option>
+									<option th:each="dish:${listDish}"
 										th:value="${dish.id_plato}"
 										th:text="${dish.nombre_plato}"
+
 									/>
 								</select>
 							</div>
-							<div class="form-group" style="margin-top:30px;">
-								<label for="exampleInputEmail1">Escoge el segundo plato del menú</label> 
-								<select class="form-select" th:field="*{second_dish}" aria-label="Default select example" style="margin-top:10px;width:60%" required>
-									<option selected th:value="*{second_dish}">Segundo plato</option>
-									<option th:each="dish:${listDishCompany2}"
-										th:value="${dish.id_plato}"
-										th:text="${dish.nombre_plato}"
-									/>
-								</select>
-							</div>
-							<div class="form-group" style="margin-top:30px;">
-								<label for="exampleInputEmail1">Escoge el postre del menú (Opcional)</label> 
-								<select class="form-select" th:field="*{third_dish}" aria-label="Default select example" style="margin-top:10px;width:60%">
-									<option selected th:value="*{third_dish}">Postre (Opcional)</option>
-									<option th:each="dish:${listDishCompany3}"
-										th:value="${dish.id_plato}"
-										th:text="${dish.nombre_plato}"
-									/>
-								</select>
-							</div>
-				  	<button type="submit" class="btn btn-primary">Guardar cambios</button>
-				</form>
+
+							<button type="submit" class="btn btn-primary" >Añadir plato al menú y/o guardar nombre</button>
+						</form>
+				
+					<div class ="row">
+						<table class="table" style="margin-top:40px;">
+						  <thead>
+						    <tr >
+							  <th scope="col">Tipo de plato</th>
+						      <th scope="col">Nombre de plato</th>
+						      <th scope="col" data-field="action" style="margin-left:10%;margin-right:10%;width:15%;">Operación</th>
+						    </tr>
+						  </thead>
+						  <tbody id="myTable">
+						    <tr th:each="dish: ${listDish2}">
+			                    <td th:text="${dish.tipo_plato}"></td>
+			                    <td th:text="${dish.nombre_plato}"></td>
+		                    	<td >
+									 <div class="botonesEdicion" >
+							        	<a th:href="@{'/user/eliminarPlato_menu_grupal_edicion/' + ${id_menu} + '/' + ${dish.id_plato}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color:#FF3333;border-color:#FF3333;;color:#ffffff;font-size:0.9rem; " >Eliminar</a>
+									 </div>     	                    	
+			                    </td>
+						    </tr>
+						  </tbody>
+						</table>
+					</div>
 
 			</div>
 		</div>
