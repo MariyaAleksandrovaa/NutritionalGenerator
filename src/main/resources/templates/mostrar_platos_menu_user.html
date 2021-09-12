@@ -53,7 +53,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 					<h1>NutriApp</h1>
 				</div> 
 				<div class="banner-text w3labout-bnr" > 
-						<h2 >Cuenta de administrador</h2>   
+						<h2 >Cuenta de usuario</h2>   
 				</div>
 			</div>
 		</div>
@@ -61,17 +61,25 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	</div>
 	<div class="about gallery">
 		<div class="container">  
-			<a th:href="@{/user/crear_menu_grupal/terminar}" class="btn btn-info btn-lg" style="margin-bottom:35px;margin-left:91%;font-size:1.5rem;background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;">Publicar menú</a>
+			<nav aria-label="breadcrumb">
+			  <ol class="breadcrumb" style="background-color:#ffffff;font-size:1.5em;margin-bottom:40px;">
+			  	<li class="breadcrumb-item"><a th:href="@{/user}">Página principal</a></li>
+			    <li class="breadcrumb-item active">Platos del menú</li>
+			  </ol>
+			</nav>
+			<label for="exampleInputEmail1" th:text="${nombreMenu}" style="font-size: 2em;margin-bottom: 30px;margin-top: 30px;"></label>		
 			<div class ="row">
 				<table class="table" style="width:25%;margin-left:40%;">
 				  <thead>
 				    <tr >
-					  <th scope="col">Platos</th>
+				    	<th scope="col">Tipo platos</th>
+					  	<th scope="col">Nombre plato</th>
 				    </tr>
 				  </thead>
 				  <tbody id="myTable">
-				    <tr th:each="dish: ${mapDishesMenu}">
-	                    <td th:text="${dish.value}" th:value="${dish.key}">Plato</td>
+				    <tr th:each="dish: ${listDish2}">
+	                    <td th:text="${dish.tipo_plato}" th:value="${dish.tipo_plato}">Plato</td>
+	                    <td th:text="${dish.nombre_plato}" th:value="${dish.nombre_plato}">Plato</td>
 				    </tr>
 				  </tbody>
 				</table>

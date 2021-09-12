@@ -54,7 +54,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 					<h1>NutriApp</h1>
 				</div> 
 				<div class="banner-text w3labout-bnr" > 
-						<h2 >Cuenta de editor</h2>   
+						<h2 >Cuenta de usuario</h2>   
 				</div>
 			</div>
 		</div>
@@ -62,14 +62,61 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	</div>
 	<div class="about gallery">
 		<div class="container">
+			<nav aria-label="breadcrumb">
+			  <ol class="breadcrumb" style="background-color:#ffffff;font-size:1.5em;margin-bottom:40px;">
+			  	<li class="breadcrumb-item"><a th:href="@{/user}">Página principal</a></li>
+			    <li class="breadcrumb-item active">Editar menú</li>
+			  </ol>
+			</nav>
 			<div role="tabpanel">
-				<form th:action="@{'/user/saveMenu/' + ${id_menu}}"  th:object="${menu}" method="post" style="width:60%;margin-left:41%;">
+				<form th:action="@{'/user/saveMenu/' + ${id_menu}}"  th:object="${menuObj}" method="post" style="width:60%;margin-left:41%;">
 					  <div class="form-group">
 					    <label for="exampleInputEmail1">Nombre del menú</label>
-					    <input type="text" class="form-control"  th:field="*{nombre_menu}" style="margin-top:8px;width:40%;"  aria-describedby="emailHelp" placeholder="Introduce nombre del menú" required>
+					    <input type="text" class="form-control"  th:field="*{name_menu}" style="margin-top:8px;width:40%;"  aria-describedby="emailHelp" required>
 					  </div>
-				  	<button type="submit" class="btn btn-primary">Aceptar</button>
+					  
+						    <div  class="checkbox-group required" style="margin-top:30px;" >
+								<label for="exampleInputEmail1" class="form-label select-label">Escoge local/es al que pertenece menú</label> 
+								    <ul style="margin-left:20px;" >
+								        <li th:each="local : ${listLocals}">
+								            <input type="checkbox" name="searchValues" th:value="${local.id_local}" th:field="*{list_id_local}"/>
+								            <label th:text="${local.nombre}"></label>
+								        </li>
+								    </ul>
+						    </div>
+							<div class="form-group" style="margin-top:30px;">
+								<label for="exampleInputEmail1">Escoge el primer plato del menú</label> 
+								<select class="form-select" th:field="*{first_dish}" aria-label="Default select example" style="margin-top:10px;width:60%" required>
+									<option selected th:value="*{first_dish}">Primer plato</option>
+									<option th:each="dish:${listDishCompany1}"
+										th:value="${dish.id_plato}"
+										th:text="${dish.nombre_plato}"
+									/>
+								</select>
+							</div>
+							<div class="form-group" style="margin-top:30px;">
+								<label for="exampleInputEmail1">Escoge el segundo plato del menú</label> 
+								<select class="form-select" th:field="*{second_dish}" aria-label="Default select example" style="margin-top:10px;width:60%" required>
+									<option selected th:value="*{second_dish}">Segundo plato</option>
+									<option th:each="dish:${listDishCompany2}"
+										th:value="${dish.id_plato}"
+										th:text="${dish.nombre_plato}"
+									/>
+								</select>
+							</div>
+							<div class="form-group" style="margin-top:30px;">
+								<label for="exampleInputEmail1">Escoge el postre del menú (Opcional)</label> 
+								<select class="form-select" th:field="*{third_dish}" aria-label="Default select example" style="margin-top:10px;width:60%">
+									<option selected th:value="*{third_dish}">Postre (Opcional)</option>
+									<option th:each="dish:${listDishCompany3}"
+										th:value="${dish.id_plato}"
+										th:text="${dish.nombre_plato}"
+									/>
+								</select>
+							</div>
+				  	<button type="submit" class="btn btn-primary">Guardar cambios</button>
 				</form>
+
 			</div>
 		</div>
 	</div>

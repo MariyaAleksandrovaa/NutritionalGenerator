@@ -62,6 +62,11 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	<div id="wrapper">
 	<div class="about gallery">
 		<div class="container">  
+			<nav aria-label="breadcrumb">
+			  <ol class="breadcrumb" style="background-color:#ffffff;font-size:1.5em;margin-bottom:40px;">
+			    <li class="breadcrumb-item active">Página principal</li>
+			  </ol>
+			</nav>
 			<div role="tabpanel">
 				<ul class="nav nav-tabs" role="tablist" id="myTab">
 				  <li role ="presentation"  class="nav-item" >
@@ -85,26 +90,27 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 							  <thead>
 							    <tr >
 							      <th scope="col">Fecha Creación</th>
-							      <th scope="col" style="width:27%">Nombre del menú</th>
-							      <th scope="col" style="width:35%">Descripción</th>
-							      <th scope="col" data-field="action" style="margin-left:30%">Operacion</th>
-							      <th scope="col" style="margin-left:30%">Tablas</th>
+							      <th scope="col" style="width:10%">Nombre del menú</th>
+							      <th scope="col" style="width:10%">Descripción</th>
+							      <th scope="col" data-field="action" style="width:10%">Operacion</th>
+							      <th scope="col" style="width:10%">Tablas</th>
 							    </tr>
 							  </thead>
 							  <tbody>
 							    <tr th:each="menu: ${listMenus}">
-				                    <td th:text="${menu.fecha_creacion}">Fecha Creación</td>
-				                    <td th:text="${menu.nombre_menu}" style="width:27%">Nombre del menú</td>
-				                    <td th:text="${menu.descripcion}" style="width:35%">Descripción</td>
-			                    	<td >
+				                    <td th:text="${menu.fecha_creacion}" style="width:10%">Fecha Creación</td>
+				                    <td th:text="${menu.nombre_menu}" style="width:10%">Nombre del menú</td>
+				                    <td th:text="${menu.descripcion}" style="width:10%">Descripción</td>
+			                    	<td style="width:10%">
 										 <div class="botonesEdicion" >
 										 	<a th:href="@{'/user/editMenu/' + ${menu.id_menu}}" class="btn btn-info btn-lg" style="background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;;font-size:0.9rem;">Editar</a>
 								        	<a th:href="@{'/user/deleteMenu/' + ${menu.id_menu}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color:#FF3333;border-color:#FF3333;;color:#ffffff;font-size:0.9rem; " >Eliminar</a>
 										 </div>     	                    	
 				                    </td>
-				                    <td >
+				                    <td style="width:10%">
 		                    			<div class="botonesEdicion" >
-					                    	<a th:href="@{'/user/ComponentesMenu/' + ${menu.id_menu}}" class="btn btn-info btn-lg" style="background-color: #3c89d0;border-color:#3c89d0;color:#ffffff;font-size:0.9rem;">Componentes</a>
+		                    				<a th:href="@{'/user/PlatosMenu/' + ${menu.id_menu}}" class="btn btn-info btn-lg" style="background-color: #ffff00;border-color:#ffff00;color:#ffffff;font-size:0.9rem;">Platos</a>
+					                    	<a th:href="@{'/user/ComponentesMenu/' + ${menu.id_menu}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color: #3c89d0;border-color:#3c89d0;color:#ffffff;font-size:0.9rem;">Componentes</a>
 					                    	<a th:href="@{'/user/AlergenosMenu/' + ${menu.id_menu}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color: #c38452;border-color:#c38452;color:#ffffff;font-size:0.9rem;">Alérgenos</a>
 					                   	</div>
 				                    </td>

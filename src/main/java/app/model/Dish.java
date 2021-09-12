@@ -24,6 +24,8 @@ public class Dish {
 	public String descripcion;
 
 	public Integer id_empresa;
+	
+	public String tipo_plato;
 
 	public Dish(Integer id_plato, int id_tipo_platos, String nombre_plato, String descripcion, Integer id_empresa) {
 		this.id_plato = id_plato;
@@ -32,6 +34,18 @@ public class Dish {
 		this.descripcion = descripcion;
 		this.id_empresa = id_empresa;
 
+	}
+
+	public Dish(Integer id_plato, String nombre_plato) {
+		this.id_plato = id_plato;
+		this.nombre_plato = nombre_plato;
+
+	}
+
+	public Dish(String tipo_plato , Integer id_plato, String nombre_plato) {
+		this.tipo_plato = tipo_plato;
+		this.id_plato = id_plato;
+		this.nombre_plato = nombre_plato;
 	}
 
 	public Dish() {

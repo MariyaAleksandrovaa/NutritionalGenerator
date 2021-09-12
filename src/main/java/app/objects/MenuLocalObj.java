@@ -1,13 +1,16 @@
 package app.objects;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MenuLocalObj {
 	
 	public String nombre_menu;
-	public Integer id_local;
+	public List<Integer> list_id_local;
 	
-	public MenuLocalObj(String nombre_menu, Integer id_local ) {
+	public MenuLocalObj(String nombre_menu, ArrayList<Integer> list_id_local ) {
 		this.nombre_menu = nombre_menu;
-		this.id_local = id_local;
+		this.list_id_local = list_id_local;
 	}
 	
 	public MenuLocalObj() {
@@ -22,12 +25,12 @@ public class MenuLocalObj {
 		this.nombre_menu = nombre_menu;
 	}
 
-	public Integer getId_local() {
-		return id_local;
+	public List<Integer> getList_id_local() {
+		return list_id_local;
 	}
 
-	public void setId_local(Integer id_local) {
-		this.id_local = id_local;
+	public void setList_id_local(List<Integer> list_id_local) {
+		this.list_id_local = list_id_local;
 	}
 
 

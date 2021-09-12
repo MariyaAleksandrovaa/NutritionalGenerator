@@ -54,7 +54,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 					<h1>NutriApp</h1>
 				</div> 
 				<div class="banner-text w3labout-bnr" > 
-						<h2 >Cuenta de editor</h2>   
+						<h2 >Cuenta de usuario</h2>   
 				</div>
 			</div>
 		</div>
@@ -62,14 +62,25 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	</div>
 	<div class="about gallery">
 		<div class="container">
+			<nav aria-label="breadcrumb">
+			  <ol class="breadcrumb" style="background-color:#ffffff;font-size:1.5em;margin-bottom:40px;">
+			  	<li class="breadcrumb-item"><a th:href="@{/user}">Página principal</a></li>
+			  	<li class="breadcrumb-item active">Crear menú grupal</li>
+			    <li class="breadcrumb-item active">Escoger platos del menú</li>
+			  </ol>
+			</nav>
 			<div role="tabpanel">
-				<div class="tab-content" style="margin-left: 20%;">
-						<div role="tabpanel" class="tab-pane active" id="seccion1" style="width: 50%;margin: 0 auto;">
-						<a th:href="@{/user/crear_nuevo_plato/terminarMenu}" class="btn btn-info btn-lg" style="margin-bottom:35px;margin-left:91%;font-size:1.5rem;background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;">Terminar menú</a>
+				<a th:href="@{/user/crear_nuevo_plato/terminarMenu}" class="btn btn-info btn-lg" style="margin-bottom:35px;margin-left:91%;font-size:1.5rem;background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;">Terminar menú</a>
+				<a th:href="@{'/user/crear_nuevo_plato/cancelarMenu' + ${id_menu}}" class="btn btn-info btn-lg" style="margin-bottom:35px;margin-left:91%;font-size:1.5rem;background-color: #FF3333;border-color: #FF3333;color:#ffffff;">Cancelar menú</a>
+						
+				<div class="tab-content">
+						<div role="tabpanel" class="tab-pane active" id="seccion1" style="margin-left: 70%;width: 50%;margin: 0 auto;">
+
 						<form
-							th:action="@{/user/crear_menu_grupal/guardarPlato}"
+							th:action="@{'/user/crear_menu_grupal/guardarPlato/' + ${id_menu}}"
 							th:object="${groupalDish}" 
-							method="post" >							
+							method="post" 
+							style="margin-left:25%;">							
 							<div class="form-group" style="margin-top:30px;">
 								<label for="exampleInputEmail1">Escoge plato para añadir a menú grupal</label> 
 								<select class="form-select" th:field="*{id_dish}" aria-label="Default select example" style="margin-top:10px;width:60%">
@@ -84,6 +95,28 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 
 							<button type="submit" class="btn btn-primary" >Añadir plato al menú</button>
 						</form>
+					</div>
+					<div class ="row">
+						<table class="table" style="margin-top:40px;">
+						  <thead>
+						    <tr >
+							  <th scope="col">Tipo de plato</th>
+						      <th scope="col">Nombre de plato</th>
+						      <th scope="col" data-field="action" style="margin-left:10%;margin-right:10%;width:15%;">Operación</th>
+						    </tr>
+						  </thead>
+						  <tbody id="myTable">
+						    <tr th:each="dish: ${listDish2}">
+			                    <td th:text="${dish.tipo_plato}"></td>
+			                    <td th:text="${dish.nombre_plato}"></td>
+		                    	<td >
+									 <div class="botonesEdicion" >
+							        	<a th:href="@{'/user/eliminarPlato_menu_grupal/' + ${id_menu} + '/' + ${dish.id_plato}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color:#FF3333;border-color:#FF3333;;color:#ffffff;font-size:0.9rem; " >Eliminar</a>
+									 </div>     	                    	
+			                    </td>
+						    </tr>
+						  </tbody>
+						</table>
 					</div>
 
 				</div>
