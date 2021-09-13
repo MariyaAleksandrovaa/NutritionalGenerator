@@ -61,20 +61,21 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	</div>
 	<div class="about gallery">
 		<div class="container">  
+			<nav aria-label="breadcrumb">
+			  <ol class="breadcrumb" style="background-color:#ffffff;font-size:1.5em;margin-bottom:40px;">
+			  	<li class="breadcrumb-item"><a th:href="@{/editor}">Página principal</a></li>
+			    <li class="breadcrumb-item active">Registrar nuevo usuario</li>
+			  </ol>
+			</nav>
 			<div role="tabpanel">
-				<ul class="nav nav-tabs" role="tablist">
-				  <li role ="presentation" class="active" >
-				    <a href="#seccion1" data-toggle="tab" role="tab">Registrar nuevo usuario</a>
-				  </li>
-				</ul>
-				<div class="tab-content">
+
 				
 					<div role="tabpanel" class="tab-pane active" id="seccion1" style="width: 50%;margin: 0 auto;">
 						<form th:action="@{/editor/registrar_nuevo_usuario/exito}" th:object="${usuario}" method="post" style="margin-left:35%;">
 						
 							  <div class="form-group" style="margin-top:25px;">
 							    <label for="exampleInputEmail1" >Nombre de usuario*</label>
-							    <input type="text" class="form-control" id="id_cif" th:field="*{username}"  style="margin-top:8px;width:60%;" aria-describedby="emailHelp" placeholder="Introduce nombre de usuario ">
+							    <input type="text" class="form-control" id="id_cif" th:field="*{username}"  style="margin-top:8px;width:60%;" aria-describedby="emailHelp" placeholder="Introduce nombre de usuario " required>
 							  </div>
 							  <div class="form-group">
 							    <label for="exampleInputEmail1">Contraseña*</label>
@@ -89,9 +90,13 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 							    <input type="tel" class="form-control" id="id_telefono" th:field="*{surname}"  style="margin-top:8px;width:60%;"  aria-describedby="emailHelp" placeholder="Introduce apellidos">
 							  </div>
 							  <div class="form-group">
+							    <label for="exampleInputEmail1">Correo electrónico</label>
+							    <input type="tel" class="form-control" id="id_telefono" th:field="*{email}"  style="margin-top:8px;width:60%;"  aria-describedby="emailHelp" placeholder="Introduce correo electrónico">
+							  </div>
+							  <div class="form-group">
 								    <label for="exampleInputEmail1">Empresa</label>
-							    		<select class="form-select" th:field="*{idEmpresa}" aria-label="Default select example" style="margin-top:10px;width:60%">
-											<option selected th:value="${select}">Escoge una empresa</option>
+							    		<select class="form-select" th:field="*{idEmpresa}" aria-label="Default select example" style="margin-top:10px;width:60%" required>
+											<option selected value="">Escoge una empresa</option>
 											<option th:each="company:${listCompanies}"
 												th:value="${company.id_empresa}"
 												th:text="${company.nombre}"
@@ -100,8 +105,8 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 							  </div>
 							  <div class="form-group">
 							    	<label for="exampleInputEmail1">Rol*</label>
-							    		<select class="form-select" th:field="*{roles}" aria-label="Default select example" style="margin-top:10px;width:60%">
-											<option selected th:value="${select}">Escoge un rol</option>
+							    		<select class="form-select" th:field="*{roles}" aria-label="Default select example" style="margin-top:10px;width:60%" required>
+											<option selected value="">Escoge un rol</option>
 											<option th:each="rol:${listRoles}"
 												th:value="${rol.id}"
 												th:text="${rol.name}"
@@ -110,11 +115,11 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 
 							    
 							  	<small id="emailHelp" class="form-text text-muted">(*) Campos obligatorios</small>
+							  	
 							 
 							  </div>
 							  <button type="submit" class="btn btn-primary">Aceptar</button>
 						</form>
-					</div>
 				</div>
 			</div>
 		</div>

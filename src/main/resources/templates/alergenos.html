@@ -66,11 +66,12 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	<div class="about gallery">
 		<div class="container">  
 			<div role="tabpanel">
-				<ul class="nav nav-tabs" role="tablist">
-				  <li role ="presentation" class="active" >
-				    <a href="#seccion1" data-toggle="tab" role="tab">Alérgenos de ...</a>
-				  </li>
-				</ul>
+				<nav aria-label="breadcrumb">
+				  <ol class="breadcrumb" style="background-color:#ffffff;font-size:1.5em;margin-bottom:40px;">
+				  	<li class="breadcrumb-item"><a th:href="@{/editor}">Página principal</a></li>
+				  	<li class="breadcrumb-item active">Alérgenos de alimento</li>
+				  </ol>
+				</nav>
 				<div class="tab-content">
 					<div role="tabpanel" class="tab-pane active" id="seccion1" style="width: 50%;margin: 0 auto;">
 							<div class ="row">

@@ -12,7 +12,8 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	
+
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>	
 <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
 <!-- Custom Theme files -->
 <link href="../../css/bootstrap.css" type="text/css" rel="stylesheet" media="all">
@@ -24,7 +25,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 
 <link href="../../css/style.css" type="text/css" rel="stylesheet" media="all">   
 <link href="../../css/font-awesome.css" rel="stylesheet"> <!-- font-awesome icons --> 
-<link rel="stylesheet" href="../../css/smoothbox.css" type='text/css' media="all" /> 
+<link rel="stylesheet" href="../css/smoothbox.css" type='text/css' media="all" /> 
 <!-- //Custom Theme files --> 
 
 <!-- js -->
@@ -34,13 +35,11 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 <!-- //js -->
 
 <!-- web-fonts -->   
-<link href="//fonts.googleapis.com/css?family=Roboto+Condensed:300,300i,400,400i,700" rel="stylesheet">
 <link href="//fonts.googleapis.com/css?family=Playfair+Display:400,400i,700,700i,900,900i" rel="stylesheet">
 <!-- //web-fonts -->
 </head>
 
 <body> 
-	<!-- banner -->
 	<div class="banner">
 		<p style="float: left;margin-top:10px;font-size:1.5em;margin-left:20px;">
 			Bienvenido <b>[[${#request.userPrincipal.principal.username}]]</b> 
@@ -55,50 +54,88 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 					<h1>NutriApp</h1>
 				</div> 
 				<div class="banner-text w3labout-bnr" > 
-						<h2 >Cuenta de editor</h2>   
+						<h2 >Cuenta de administrador</h2>   
 				</div>
 			</div>
 		</div>
 		<b th:text="${company}" style="margin-left:20px;color:#000000;font-size:2em;"></b>
 	</div>
-	<!-- //banner -->   
-	<!-- gallery -->
 	<div class="about gallery">
-		<div class="container">  
+		<div class="container">
+			<nav aria-label="breadcrumb">
+			  <ol class="breadcrumb" style="background-color:#ffffff;font-size:1.5em;margin-bottom:40px;">
+			  	<li class="breadcrumb-item"><a th:href="@{/admin}">Página principal</a></li>
+			    <li class="breadcrumb-item active">Editar menú</li>
+			  </ol>
+			</nav>
 			<div role="tabpanel">
-				<nav aria-label="breadcrumb">
-				  <ol class="breadcrumb" style="background-color:#ffffff;font-size:1.5em;margin-bottom:40px;">
-				  	<li class="breadcrumb-item"><a th:href="@{/editor}">Página principal</a></li>
-				  	<li class="breadcrumb-item active">Componentes nutricionales alimento</li>
-				  </ol>
-				</nav>
-				<div class="tab-content">
-					<div role="tabpanel" class="tab-pane active" id="seccion1" style="width: 50%;margin: 0 auto;">
-						<div class ="row">
-							<table class="table" style = "margin-top:30px">
-								
-							  <thead>
-							    <tr >
-								  <th scope="col">Grupo</th>
-							      <th scope="col">Nombre</th>
-							      <th scope="col">Cantidad </th>
-							      <th scope="col">Unidad</th>
-							      <th scope="col" style="width:27%;">Proporción</th>
-							    </tr>
-							  </thead>
-							  <tbody id="myTable">
-							    <tr th:each="componente: ${listaComponentes}">
-				                    <td th:text="${componente.grupo}">Grupo</td>
-				                    <td th:text="${componente.c_ori_name}">Nombre</td>
-				                    <td th:text="${componente.best_location}">Cantidad</td>
-				                    <td th:text="${componente.v_unit}">Unidad</td>
-				                    <td th:text="${componente.descripcion}">Unidad</td>
-							    </tr>
-							  </tbody>
-							</table>
-						</div>
+<!-- 				<form th:action="@{'/user/saveMenu/' + ${id_menu}}"  th:object="${menuObj}" method="post" style="width:60%;margin-left:41%;"> -->
+<!-- 					  <div class="form-group"> -->
+<!-- 					    <label for="exampleInputEmail1">Nombre del menú</label> -->
+<!-- 					    <input type="text" class="form-control"  th:field="*{name_menu}" style="margin-top:8px;width:40%;"  aria-describedby="emailHelp" required> -->
+<!-- 					  </div> -->
+					  
+<!-- 						    <div  class="checkbox-group required" style="margin-top:30px;" > -->
+<!-- 								<label for="exampleInputEmail1" class="form-label select-label">Escoge local/es al que pertenece menú</label>  -->
+<!-- 								    <ul style="margin-left:20px;" > -->
+<!-- 								        <li th:each="local : ${listLocals}" th:field="*{list_id_local}"> -->
+<!-- 								            <input type="checkbox" name="searchValues" th:checked="${local.enable}"  th:value="${local.id_local}"  /> -->
+<!-- 								            <label th:text="${local.nombre}"></label> -->
+
+<!-- 								        </li> -->
+<!-- 								    </ul> -->
+<!-- 						    </div> -->
+
+<!-- 				  	<button type="submit" class="btn btn-primary">Guardar cambios</button> -->
+<!-- 				</form> -->
+				
+						<form
+							th:action="@{'/admin/crear_menu_grupal/guardarPlato_editar/' + ${id_menu}}"
+							th:object="${groupalDish}" 
+							method="post" 
+							style="margin-left:38%;">	
+							<div class="form-group">
+							    <label for="exampleInputEmail1">Nombre del menú</label>
+							    <input type="text" class="form-control"  th:field="*{name_menu}" style="margin-top:8px;width:40%;"  aria-describedby="emailHelp" required>
+							  </div>						
+							<div class="form-group" style="margin-top:30px;">
+								<label for="exampleInputEmail1">Escoge plato para añadir a menú grupal</label> 
+								<select class="form-select" th:field="*{id_dish}" aria-label="Default select example" style="margin-top:10px;width:40%">
+									<option selected th:value="${select}">Escoge un plato</option>
+									<option th:each="dish:${listDish}"
+										th:value="${dish.id_plato}"
+										th:text="${dish.nombre_plato}"
+
+									/>
+								</select>
+							</div>
+
+							<button type="submit" class="btn btn-primary" >Añadir plato al menú y/o guardar nombre</button>
+						</form>
+				
+					<div class ="row">
+						<table class="table" style="margin-top:40px;">
+						  <thead>
+						    <tr >
+							  <th scope="col">Tipo de plato</th>
+						      <th scope="col">Nombre de plato</th>
+						      <th scope="col" data-field="action" style="margin-left:10%;margin-right:10%;width:15%;">Operación</th>
+						    </tr>
+						  </thead>
+						  <tbody id="myTable">
+						    <tr th:each="dish: ${listDish2}">
+			                    <td th:text="${dish.tipo_plato}"></td>
+			                    <td th:text="${dish.nombre_plato}"></td>
+		                    	<td >
+									 <div class="botonesEdicion" >
+							        	<a th:href="@{'/admin/eliminarPlato_menu_grupal_edicion/' + ${id_menu} + '/' + ${dish.id_plato}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color:#FF3333;border-color:#FF3333;;color:#ffffff;font-size:0.9rem; " >Eliminar</a>
+									 </div>     	                    	
+			                    </td>
+						    </tr>
+						  </tbody>
+						</table>
 					</div>
-				</div>
+
 			</div>
 		</div>
 	</div>
@@ -112,6 +149,9 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 			</div>
 		</div>
 	</div>
+	<!-- //footer -->
+  
+	<!-- menu-js -->
 	<script>
 		$('.navicon').on('click', function (e) {
 		  e.preventDefault();
@@ -226,6 +266,17 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	    }
 	});
 	</script>
+	
+	<script>
+	// jQuery version
+	$("input[type='number']").each(function(i, el) {
+	    el.type = "text";
+	    el.onfocus = function(){this.type="number";};
+	    el.onblur = function(){this.type="text";};
+	});
+	</script>
+
+	
 
 	<!-- //smooth-scrolling-of-move-up -->  		
 	<!-- Bootstrap core JavaScript

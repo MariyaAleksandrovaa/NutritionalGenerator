@@ -55,7 +55,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 					<h1>NutriApp</h1>
 				</div> 
 				<div class="banner-text w3labout-bnr" > 
-						<h2 >Cuenta de editor</h2>   
+						<h2 >Cuenta de administrador</h2>   
 				</div>
 			</div>
 		</div>
@@ -63,6 +63,12 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	</div>
 	<div class="about gallery">
 		<div class="container">
+			<nav aria-label="breadcrumb">
+			  <ol class="breadcrumb" style="background-color:#ffffff;font-size:1.5em;margin-bottom:40px;">
+			  	<li class="breadcrumb-item"><a th:href="@{/admin}">Página principal</a></li>
+			    <li class="breadcrumb-item active">Crear menú individual</li>
+			  </ol>
+			</nav>
 			<div role="tabpanel">
 				<div class="tab-content" style="margin-left: 20%;">
 						<div role="tabpanel" class="tab-pane active" id="seccion1" style="width: 50%;margin: 0 auto;">
@@ -73,47 +79,41 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 							
 						    <div class="form-group" style="margin-top:25px;">
 						    	<label for="exampleInputEmail1" >Nombre del menú</label>
-						    	<input type="text" class="form-control"  th:field="*{name_menu}"  style="margin-top:8px;width:60%;" aria-describedby="emailHelp" placeholder="Introduce nombre del menú">
+						    	<input type="text" class="form-control"  th:field="*{name_menu}"  style="margin-top:8px;width:60%;" aria-describedby="emailHelp" placeholder="Introduce nombre del menú" required>
 						    </div>
-						    
-						    <div class="form-group" style="margin-top:30px;">
-								<label for="exampleInputEmail1">Escoge el local al que pertenece menú</label> 
-								<select class="form-select" th:field="*{id_local}" aria-label="Default select example" style="margin-top:10px;width:60%">
-									<option selected th:value="${select}">Escoge el local al que va a pertenecer este menú</option>
-									<option th:each="local:${listLocals}"
-										th:value="${local.id_local}"
-										th:text="${local.nombre}"
-									/>
-								</select>
-							</div>
-						    
-						    
+						    <div  class="checkbox-group required" style="margin-top:30px;" >
+								<label for="exampleInputEmail1" class="form-label select-label">Escoge local/es al que pertenece menú</label> 
+								    <ul style="margin-left:20px;" >
+								        <li th:each="local : ${listLocals}">
+								            <input type="checkbox" name="searchValues" th:value="${local.id_local}" th:field="*{list_id_local}"/>
+								            <label th:text="${local.nombre}"></label>
+								        </li>
+								    </ul>
+						    </div>
 							<div class="form-group" style="margin-top:30px;">
 								<label for="exampleInputEmail1">Escoge el primer plato del menú</label> 
-								<select class="form-select" th:field="*{first_dish}" aria-label="Default select example" style="margin-top:10px;width:60%">
-									<option selected th:value="${select}">Primer plato</option>
+								<select class="form-select" th:field="*{first_dish}" aria-label="Default select example" style="margin-top:10px;width:60%" required>
+									<option selected value="">Primer plato</option>
 									<option th:each="dish:${listDishCompany1}"
 										th:value="${dish.id_plato}"
 										th:text="${dish.nombre_plato}"
 									/>
 								</select>
 							</div>
-							
 							<div class="form-group" style="margin-top:30px;">
 								<label for="exampleInputEmail1">Escoge el segundo plato del menú</label> 
-								<select class="form-select" th:field="*{second_dish}" aria-label="Default select example" style="margin-top:10px;width:60%">
-									<option selected th:value="${select}" >Segundo plato</option>
+								<select class="form-select" th:field="*{second_dish}" aria-label="Default select example" style="margin-top:10px;width:60%" required>
+									<option selected value="">Segundo plato</option>
 									<option th:each="dish:${listDishCompany2}"
 										th:value="${dish.id_plato}"
 										th:text="${dish.nombre_plato}"
 									/>
 								</select>
 							</div>
-							
 							<div class="form-group" style="margin-top:30px;">
-								<label for="exampleInputEmail1">Escoge el postre del menú (opcional)</label> 
+								<label for="exampleInputEmail1">Escoge el postre del menú (Opcional)</label> 
 								<select class="form-select" th:field="*{third_dish}" aria-label="Default select example" style="margin-top:10px;width:60%">
-									<option selected th:value="${select}">Postre</option>
+									<option selected value="">Postre (Opcional)</option>
 									<option th:each="dish:${listDishCompany3}"
 										th:value="${dish.id_plato}"
 										th:text="${dish.nombre_plato}"
@@ -121,7 +121,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 								</select>
 							</div>
 	
-							<button type="submit" class="btn btn-primary">Confirmar menú</button>
+							<button type="submit" class="btn btn-primary"  id="elID">Confirmar menú</button>
 						</form>
 					</div>
 
@@ -264,6 +264,15 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	    el.onfocus = function(){this.type="number";};
 	    el.onblur = function(){this.type="text";};
 	});
+	</script>
+	<script>
+	$("#elID").click( e => {
+	    const activos = $("[type='checkbox']:checked").length
+	    if( activos == 0 ){
+	       e.preventDefault();
+	       alert("Tienes que escoger al menos un local al que pertenezca el menú") 
+	    }
+	})
 	</script>
 
 	

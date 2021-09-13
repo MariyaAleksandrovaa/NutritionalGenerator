@@ -79,11 +79,13 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	</div>
 	<div class="about gallery">
 		<div class="container">
+			<nav aria-label="breadcrumb">
+			  <ol class="breadcrumb" style="background-color:#ffffff;font-size:1.5em;margin-bottom:40px;">
+			  	<li class="breadcrumb-item"><a th:href="@{/editor}">Página principal</a></li>
+			  	<li class="breadcrumb-item active">Registrar nuevo local</li>
+			  </ol>
+			</nav>
 			<div role="tabpanel">
-				<ul class="nav nav-tabs" role="tablist">
-					<li role="presentation" class="active"><a href="#seccion1"
-						data-toggle="tab" role="tab">Registrar nuevo local</a></li>
-				</ul>
 				<div class="tab-content">
 					<div role="tabpanel" class="tab-pane active" id="seccion1"
 						style="width: 50%;margin: 0 auto;"></div>
@@ -96,7 +98,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 							<label for="exampleInputEmail1">Nombre del local</label> <input type="text"
 								class="form-control" id="id_cif" th:field="*{nombre}"
 								style="margin-top:8px;width:60%;"
-								aria-describedby="emailHelp" placeholder="Introduce nombre del local">
+								aria-describedby="emailHelp" placeholder="Introduce nombre del local" required>
 						</div>
 						
 						<div class="form-group">
@@ -109,13 +111,28 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 						
 						<div class="form-group">
 							<label for="exampleInputEmail1">Empresa a la que pertenece</label> 
-							<select class="form-select" th:field="*{idEmpresa}" aria-label="Default select example" style="margin-top:10px;width:60%">
-								<option selected th:value="${select}">Escoge una empresa</option>
-								<option th:each="company:${listCompanies}"
-									th:value="${company.id_empresa}"
-									th:text="${company.nombre}"
-								/>
-							</select>
+<!-- 							<select required class="form-select" th:field="*{idEmpresa}" aria-label="Default select example" style="margin-top:10px;width:60%" > -->
+<!-- 								<option selected th:value="${select}">Escoge una empresa</option> -->
+<!-- 								<option th:each="company:${listCompanies}" -->
+<!-- 									th:value="${company.id_empresa}" -->
+<!-- 									th:text="${company.nombre}"  -->
+<!-- 								/> -->
+<!-- 							</select> -->
+							
+								<select class="form-select" th:field="*{idEmpresa}" aria-label="Default select example" style="margin-top:10px;width:60%" required>
+									<option selected value="">Escoge una empresa</option>
+									<option th:each="company:${listCompanies}"
+										th:value="${company.id_empresa}"
+										th:text="${company.nombre}"
+									/>
+								</select>
+							
+<!-- 							    <select required class="form-select" th:value="*{idEmpresa}"> -->
+<!-- 							      <option th:each="company:${listCompanies}" -->
+<!-- 									th:value="${company.id_empresa}" -->
+<!-- 									th:text="${company.nombre}"  -->
+<!-- 								/> -->
+<!-- 							    </select> -->
 						</div>
 
 						<button type="submit" class="btn btn-primary">Aceptar</button>

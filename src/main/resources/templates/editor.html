@@ -78,9 +78,6 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 				  <li role ="presentation" class="nav-item">
 				  	<a href="#seccion3" data-toggle="tab" role="tab" class="nav-link" >Alimentos</a>
 				  </li>
-				  <li role ="presentation" class="nav-item">
-				  	<a href="#seccion2" data-toggle="tab" role="tab"class="nav-link" >Exportación/Importación de base de datos</a>
-				  </li>
 
 				</ul>
 
@@ -118,10 +115,6 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 								</table>
 							</div>
 
-					</div>
-					<div role="tabpanel" class="tab-pane" id="seccion2" style="width: 50%;margin: 0 auto;">
-						<button type="button" class="btn btn-secondary" style="margin-top:25px;width:200px;margin-left:35%;">Importar base de datos</button>
-						<button type="button" class="btn btn-secondary" style="margin-top:10px;width:200px;margin-left:35%;">Exportar base de datos</button>		
 					</div>
 					<div role="tabpanel" class="tab-pane" id="seccion4" style="width: 100%;margin: 0 auto;">
 						<button type="button" class="btn btn-secondary" style="margin-top:25px;width:200px;margin-left:43%;" onclick="window.location.href='/editor/registrar_nuevo_usuario'">Registrar nuevo usuario</button>									
@@ -193,24 +186,22 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 								</div>
 							</div>
 							<div class ="row">
-								<table class="table" style = "margin-top:10px">
+								<table class="table" style = "margin-top:10px" id="table">
 									
 								  <thead>
 								    <tr >
 									  <th scope="col">Grupo</th>
 								      <th scope="col">Nombre</th>
 								      <th scope="col">Nombre en inglés</th>
-								      <th scope="col">Porción comestible</th>
 								      <th scope="col">Operaciones</th>
 								      <th scope="col">Tablas</th>
 								    </tr>
 								  </thead>
-								  <tbody id="table">
+								  <tbody id="myTable">
 								    	<tr th:each="food: ${listFood}" style="cursor: pointer;" data-toggle="modal" data-target="#orderModal">
-						                    <td th:text="${food.grupo}">Grupo</td>
-						                    <td th:text="${food.nombre}">Nombre</td>
-						                    <td th:text="${food.ingles}">Nombre en inglés</td>
-						                    <td th:text="${food.edible_portion}">Porción comestible</td>
+						                    <td th:text="${food.grupo}" style="width:20%;">Grupo</td>
+						                    <td th:text="${food.nombre}" style="width:25%;">Nombre</td>
+						                    <td th:text="${food.ingles}" style="width:25%;">Nombre en inglés</td>
 						                    <td >
 							                    	<a th:href="@{'/editor/editFood/' + ${food.nombre}}" class="btn btn-info btn-lg" style="background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;font-size:0.9rem;">Editar</a>
 							                    	<a th:href="@{'/editor/deleteFood/' + ${food.nombre}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color: #FF3333;border-color:#FF3333;color:#ffffff;font-size:0.9rem;">Eliminar</a>
