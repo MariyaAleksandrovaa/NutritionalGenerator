@@ -15,20 +15,20 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	
 <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
 <!-- Custom Theme files -->
-<link href="../../../css/bootstrap.css" type="text/css" rel="stylesheet" media="all">
+<link href="../../../../css/bootstrap.css" type="text/css" rel="stylesheet" media="all">
 
 <!-- CSS only -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"/>
 <!-- JavaScript Bundle with Popper -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
-<link href="../../../css/style.css" type="text/css" rel="stylesheet" media="all">   
-<link href="../../../css/font-awesome.css" rel="stylesheet"> <!-- font-awesome icons --> 
-<link rel="stylesheet" href="../../../css/smoothbox.css" type='text/css' media="all" /> 
+<link href="../../../../css/style.css" type="text/css" rel="stylesheet" media="all">   
+<link href="../../../../css/font-awesome.css" rel="stylesheet"> <!-- font-awesome icons --> 
+<link rel="stylesheet" href="../../../../css/smoothbox.css" type='text/css' media="all" /> 
 <!-- //Custom Theme files --> 
 
 <!-- js -->
-<script src="../../../js/jquery-2.2.3.min.js"></script>  
+<script src="../../../../js/jquery-2.2.3.min.js"></script>  
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> -->
 <!-- //js -->
@@ -61,15 +61,19 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	</div>
 	<div class="about gallery">
 		<div class="container">
-			<form th:action="@{/admin/crear_nuevo_plato/ingrediente}" th:object="${foodAmountObj}" method="post" style ="margin-left:40%;">
+			<nav aria-label="breadcrumb">
+			  <ol class="breadcrumb" style="background-color:#ffffff;font-size:1.5em;margin-bottom:40px;">
+			  	<li class="breadcrumb-item"><a th:href="@{/editor}">Página principal</a></li>
+			  	<li class="breadcrumb-item"><a th:href="@{'/admin/crear_nuevo_plato/ingredientes' + ${id_plato}}">Escoger ingrediente</a></li>
+			    <li class="breadcrumb-item active">Establecer cantidad</li>
+			  </ol>
+			</nav>
+			<form th:action="@{'/admin/crear_nuevo_plato/ingredientes' + ${id_plato}}" th:object="${foodAmountObj}" method="post" style ="margin-left:40%;">
 				    <label for="exampleInputEmail1" >Nombre del ingrediente</label>
-			    	<select class="form-select" th:field="*{food}" aria-label="Default select example" style="margin-top:10px;width:40%">
-						<option
-							th:value="*{food}"
-							th:text="*{food}"
-						/>
+			    	<select class="form-select" th:field="*{id_alimento}" aria-label="Default select example" style="margin-top:10px;width:40%">
+						<option selected th:value="${id_alimento}" th:text="${name_food}">Ingrediente</option>
 						<option th:each="food:${listFood}"
-							th:value="${food.nombre}"
+							th:value="${food.id_alimento}"
 							th:text="${food.nombre}"
 						/>
 					</select>

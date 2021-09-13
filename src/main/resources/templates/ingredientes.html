@@ -60,8 +60,18 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 		<b th:text="${company}" style="margin-left:20px;color:#000000;font-size:2em;"></b>
 	</div>
 	<div class="about gallery">
-		<div class="container">  
-						<a th:href="@{/admin/crear_nuevo_plato/ingrediente/terminarPlato}" class="btn btn-info btn-lg" style="margin-bottom:35px;background-color: #6c757d;margin-left:91%;font-size:1.5rem;border-color: #6c757d;color:#ffffff;">Terminar plato</a>
+		<div class="container">
+				<nav aria-label="breadcrumb">
+				  <ol class="breadcrumb" style="background-color:#ffffff;font-size:1.5em;margin-bottom:40px;">
+				  	<li class="breadcrumb-item"><a th:href="@{/admin}">Página principal</a></li>
+				  	<li class="breadcrumb-item active">Crear nuevo plato</li>
+				    <li class="breadcrumb-item active">Escoger ingredientes plato</li>
+				  </ol>
+				</nav>		
+		  
+						<a th:href="@{/admin/terminarPlato}" class="btn btn-info btn-lg" style="margin-bottom:35px;background-color: #6c757d;margin-left:91%;font-size:1.5rem;border-color: #6c757d;color:#ffffff;">Terminar plato</a>
+						<a th:href="@{'/admin/cancelar_nuevo_plato/' + ${id_plato}}" class="btn btn-info btn-lg" style="margin-bottom:35px;margin-left:91%;font-size:1.5rem;background-color:#FF3333;border-color:#FF3333;color:#ffffff;">Cancelar plato</a>
+						<a th:href="@{'/admin/ver_ingredientes_plato/' + ${id_plato}}" class="btn btn-info btn-lg" style="margin-bottom:35px;margin-left:91%;font-size:0.9rem;background-color:#728FCE;border-color:#728FCE;color:#ffffff;">Ver ingredientes actuales</a>
 						<div class="row justify-content-start">
 							<div class="col-12">
 								<input class="form-control" id="myInput" type="text" placeholder="Busca alimento">
@@ -74,7 +84,6 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 								  <th scope="col">Grupo</th>
 							      <th scope="col">Nombre</th>
 							      <th scope="col">Nombre en inglés</th>
-							      <th scope="col">Porción comestible</th>
 							      <th scope="col">Operacion</th>
 							      
 							    </tr>
@@ -84,10 +93,9 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 				                    <td th:text="${food.grupo}">Grupo</td>
 				                    <td th:text="${food.nombre}">Nombre</td>
 				                    <td th:text="${food.ingles}">Nombre en inglés</td>
-				                    <td th:text="${food.edible_portion}">Porción comestible</td>
 				                    <td >
 										 <div class="botonesEdicion" style="margin-right:-140px">
-										 	<a th:href="@{'/admin/crear_nuevo_plato/ingredientes/' + ${food.id_alimento}}" class="btn btn-info btn-lg" style="background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;;font-size:0.9rem;">Añadir al plato</a>
+										 	<a th:href="@{'/admin/crear_nuevo_plato/ingredientes/' + ${food.id_alimento} + '/' + ${id_plato}}" class="btn btn-info btn-lg" style="background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;;font-size:0.9rem;">Añadir al plato</a>
 										 </div>     	                    	
 					                 </td>
 							    </tr>
