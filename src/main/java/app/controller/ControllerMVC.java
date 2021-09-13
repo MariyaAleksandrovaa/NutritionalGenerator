@@ -3199,11 +3199,12 @@ public class ControllerMVC {
 	}
 
 	@RequestMapping({ "/user/ComponentesMenu/{id_menu}" })
-	public String mostrarComponentesMenu_user(@PathVariable("id_menu") int id_menu) {
+	public String mostrarComponentesMenu_user(@PathVariable("id_menu") int id_menu, RedirectAttributes redirectAttributes) {
 
 		String type_menu = menuRepo.findById(id_menu).get().getDescripcion();
-
+		redirectAttributes.addAttribute("id_menu", id_menu);
 		if (type_menu.equals("Menú individual")) {
+			
 			return "redirect:/user/componentes_menu_individual/{id_menu}";
 
 		} else if (type_menu.equals("Menú grupal")) {
@@ -3212,6 +3213,23 @@ public class ControllerMVC {
 
 		return null;
 	}
+	
+
+//	@RequestMapping({ "/user/ComponentesMenu/{id_menu}" })
+//	public String mostrarComponentesMenu7(@PathVariable("id_menu") int id_menu) {
+//
+//		String type_menu = menuRepo.findById(id_menu).get().getDescripcion();
+//
+//		if (type_menu.equals("Menú individual")) {
+//			return "redirect:/user/componentes_menu_individual/{id_menu}";
+//
+//		} else if (type_menu.equals("Menú grupal")) {
+//			return "redirect:/user/escoger_platos_menu_grupal_componentes/{id_menu}";
+//		}
+//
+//		return null;
+//	}
+
 
 //	Permite escoger los platos del menú que se van a consumir para proceder a calcular los alérgeno del mismo
 	@GetMapping("/admin/escoger_platos_menu_grupal_componentes/{id_menu}")
@@ -4023,7 +4041,7 @@ public class ControllerMVC {
 		return model;
 	}
 
-	@GetMapping(value = { " /user/componentes_menu_individual/{id_menu}" })
+	@GetMapping(value = { "/user/componentes_menu_individual/{id_menu}" })
 	public ModelAndView componentesMenuIndividual(@PathVariable("id_menu") int id_menu) {
 
 		ModelAndView model = new ModelAndView("componentes_plato");
