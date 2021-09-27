@@ -86,18 +86,19 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 							<table class="table">
 							  <thead>
 							    <tr >
+							      <th scope="col" style="width:10%">Fecha Publicación</th>
 							      <th scope="col" style="width:10%">Fecha Creación</th>
-							      <th scope="col" style="width:10%">Nombre del menú</th>
+							      <th scope="col" style="width:20%">Nombre del menú</th>
 							      <th scope="col" style="width:10%">Descripción</th>
-							      <th scope="col" data-field="action" style="margin-left:30%;width:10%;">Operacion</th>
-							      <th scope="col" style="margin-left:30%; width:10%">Tablas</th>
+							      <th scope="col" data-field="action" style="margin-left:30%;width:10%;">Operación</th>
+							      <th scope="col" style="margin-left:30%; width:15%">Tablas</th>
 							    </tr>
 							  </thead>
 							  <tbody>
 							    <tr th:each="menu: ${listMenus}">
 							    	<td th:text="${menu.fecha_publicacion}" style="width:10%">Fecha Publicación</td>
 				                    <td th:text="${menu.fecha_creacion}" style="width:10%">Fecha Creación</td>
-				                    <td th:text="${menu.nombre_menu}" style="width:10%">Nombre del menú</td>
+				                    <td th:text="${menu.nombre_menu}" style="width:20%">Nombre del menú</td>
 				                    <td th:text="${menu.descripcion}" style="width:10%">Descripción</td>
 			                    	<td style="width:10%">
 										 <div class="botonesEdicion" >
@@ -105,7 +106,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 								        	<a th:href="@{'/editor/deleteMenu/' + ${menu.id_menu}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color:#FF3333;border-color:#FF3333;;color:#ffffff;font-size:0.9rem; " >Eliminar</a>
 										 </div>     	                    	
 				                    </td>
-				                    <td style="width:10%">
+				                    <td style="width:15%">
 		                    			<div class="botonesEdicion" >
 		                    				<a th:href="@{'/editor/PlatosMenu/' + ${menu.id_menu}}" class="btn btn-info btn-lg" style="background-color: #ffff00;border-color:#ffff00;color:#ffffff;font-size:0.9rem;">Platos</a>
 					                    	<a th:href="@{'/editor/ComponentesMenu/' + ${menu.id_menu}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color: #3c89d0;border-color:#3c89d0;color:#ffffff;font-size:0.9rem;">Componentes</a>
