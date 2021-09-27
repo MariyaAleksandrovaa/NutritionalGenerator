@@ -2,11 +2,11 @@ package app.controller;
 
 import java.math.BigDecimal;
 
+
 import java.sql.ResultSet;
 
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -149,8 +149,8 @@ public class ControllerMVC {
 
 	// NutriApp para administrador
 
-	@GetMapping("/admin")
-	public String viewAdminPage(Model model) {
+	@GetMapping("/editor")
+	public String viewEditorPage(Model model) {
 
 		int id_empresa = obtenerUsuario().getIdEmpresa();
 
@@ -166,7 +166,7 @@ public class ControllerMVC {
 			model.addAttribute("company", company);
 		}
 
-		return "admin";
+		return "editor";
 	}
 
 	private List<DishView> obtenerPlatosUsuario(int id_empresa) {
@@ -203,10 +203,10 @@ public class ControllerMVC {
 
 	}
 
-	// NutriApp para editor
+	// NutriApp para admin
 
-	@GetMapping("/editor")
-	public String viewEditorPage(Model model) {
+	@GetMapping("/admin")
+	public String viewadminPage(Model model) {
 
 		List<FoodView> listFood = foodViewRepo.findAll();
 		List<Empresa> listCompanies = companyRepo.findAll();
@@ -224,7 +224,7 @@ public class ControllerMVC {
 			model.addAttribute("company", company);
 		}
 
-		return "editor";
+		return "admin";
 	}
 
 	// NutriApp para usuario normal
@@ -261,9 +261,9 @@ public class ControllerMVC {
 		return "alergenos";
 	}
 
-	// Funciones para ventana empresa (EDITOR)
+	// Funciones para ventana empresa (admin)
 
-	@RequestMapping(value = "/editor/registrar_nueva_empresa", method = RequestMethod.GET)
+	@RequestMapping(value = "/admin/registrar_nueva_empresa", method = RequestMethod.GET)
 	public ModelAndView viewRegistrarNuevaEmpresaPage() {
 
 		ModelAndView model = new ModelAndView();
@@ -281,7 +281,7 @@ public class ControllerMVC {
 		return model;
 	}
 
-	@RequestMapping(value = "/editor/registrar_nueva_empresa/registrar_empresa_exito", method = RequestMethod.POST)
+	@RequestMapping(value = "/admin/registrar_nueva_empresa/registrar_empresa_exito", method = RequestMethod.POST)
 	public String viewRegistrarNuevaEmpresa2Page(@Valid Empresa empresa, BindingResult bindingResult,
 			ModelMap modelMap) {
 
@@ -319,7 +319,7 @@ public class ControllerMVC {
 				String cif = rs.getString(1);
 
 				if (cif != null) {
-					return "redirect:/editor";
+					return "redirect:/admin";
 
 				}
 			}
@@ -331,10 +331,10 @@ public class ControllerMVC {
 		}
 
 		companyRepo.save(empresa);
-		return "redirect:/editor";
+		return "redirect:/admin";
 	}
 
-	@RequestMapping("/editor/edit/{id_empresa}")
+	@RequestMapping("/admin/edit/{id_empresa}")
 	public ModelAndView editarEmpresa(@PathVariable("id_empresa") int id) {
 
 		ModelAndView model = new ModelAndView("editar_empresa");
@@ -355,16 +355,16 @@ public class ControllerMVC {
 		return model;
 	}
 
-	@PostMapping("/editor/guardar/{id_empresa}")
+	@PostMapping("/admin/guardar/{id_empresa}")
 	public String guardarEmpresa(@PathVariable("id_empresa") int id, Empresa empresa) {
 
 		empresa.setId_empresa(id);
 		companyService.saveCompany(empresa);
 
-		return "redirect:/editor";
+		return "redirect:/admin";
 	}
 
-	@RequestMapping("/editor/delete/{id_empresa}")
+	@RequestMapping("/admin/delete/{id_empresa}")
 	public String eliminarEmpresa(@PathVariable("id_empresa") int id) {
 
 		try {
@@ -374,12 +374,12 @@ public class ControllerMVC {
 			e.printStackTrace();
 		}
 
-		return "redirect:/editor";
+		return "redirect:/admin";
 	}
 
-	// Funciones para ventana local (EDITOR)
+	// Funciones para ventana local (admin)
 
-	@GetMapping("/editor/registrar_nuevo_local")
+	@GetMapping("/admin/registrar_nuevo_local")
 	public ModelAndView viewRegistrarNuevoLocalPage() {
 
 		ModelAndView model = new ModelAndView("registrar_nuevo_local");
@@ -401,9 +401,9 @@ public class ControllerMVC {
 		return model;
 	}
 
-	// Funciones para ventana alimento (EDITOR)
+	// Funciones para ventana alimento (admin)
 
-	@RequestMapping("/editor/editFood/{nombre}")
+	@RequestMapping("/admin/editFood/{nombre}")
 	public ModelAndView editarAlimento(@PathVariable("nombre") String nombre) {
 
 		FoodView foodView = foodViewRepo.findByNameAlimento(nombre);
@@ -423,7 +423,7 @@ public class ControllerMVC {
 		return model;
 	}
 
-	@PostMapping("/editor/guardarFood/{nombre}")
+	@PostMapping("/admin/guardarFood/{nombre}")
 	public String guardarAlimento(@PathVariable("nombre") String nombre, FoodView foodView) {
 
 		Food foodOld = foodRepo.findByNameAlimento(nombre);
@@ -436,20 +436,20 @@ public class ControllerMVC {
 
 		foodRepo.save(foodOld);
 
-		return "redirect:/editor";
+		return "redirect:/admin";
 	}
 
-	@RequestMapping("/editor/deleteFood/{nombre}")
+	@RequestMapping("/admin/deleteFood/{nombre}")
 	public String eliminarAlimento(@PathVariable("nombre") String nombre) {
 
 		Food food = foodRepo.findByNameAlimento(nombre);
 
 		foodRepo.delete(food);
 
-		return "redirect:/editor";
+		return "redirect:/admin";
 	}
 
-	@RequestMapping("/editor/AlergenosFood/{nombre}")
+	@RequestMapping("/admin/AlergenosFood/{nombre}")
 	public ModelAndView mostrarAlergenos(@PathVariable("nombre") String nombre) {
 
 		ModelAndView model = new ModelAndView("alergenos");
@@ -496,7 +496,7 @@ public class ControllerMVC {
 		return listaAlergenos;
 	}
 
-	@RequestMapping("/editor/ComponentesFood/{nombre}")
+	@RequestMapping("/admin/ComponentesFood/{nombre}")
 	public ModelAndView mostrarComponentes(@PathVariable("nombre") String nombre) {
 
 		ModelAndView model = new ModelAndView("componentes");
@@ -550,9 +550,9 @@ public class ControllerMVC {
 		return listaComponentes;
 	}
 
-	// Funciones para ventana usuario (EDITOR)
+	// Funciones para ventana usuario (admin)
 
-	@RequestMapping("/editor/registrar_nuevo_usuario/exito")
+	@RequestMapping("/admin/registrar_nuevo_usuario/exito")
 	public String viewRegistrarNuevoUsuario(User user, BindingResult bindingResult, ModelMap modelMap) {
 
 //		ModelAndView model = new ModelAndView("registrar_usuario_exito");
@@ -572,10 +572,10 @@ public class ControllerMVC {
 //			model.addObject("company", company);
 //		}
 
-		return "redirect:/editor";
+		return "redirect:/admin";
 	}
 
-	@GetMapping("/editor/registrar_nuevo_usuario")
+	@GetMapping("/admin/registrar_nuevo_usuario")
 	public ModelAndView viewRegistrarNuevoUsuarioPage() {
 
 		ModelAndView model = new ModelAndView("registrar_nuevo_usuario");
@@ -606,16 +606,16 @@ public class ControllerMVC {
 		return model;
 	}
 
-	@RequestMapping("/editor/deleteUser/{user_id}")
+	@RequestMapping("/admin/deleteUser/{user_id}")
 	public String eliminarUsuario(@PathVariable("user_id") int user_id) {
 
 		Optional<User> user = userRepo.findById(user_id);
 		userRepo.delete(user.get());
 
-		return "redirect:/editor";
+		return "redirect:/admin";
 	}
 
-	@RequestMapping("/editor/editUser/{user_id}")
+	@RequestMapping("/admin/editUser/{user_id}")
 	public ModelAndView editarUsuario(@PathVariable("user_id") int user_id) {
 
 		ModelAndView model = new ModelAndView("editar_usuario");
@@ -641,7 +641,7 @@ public class ControllerMVC {
 		return model;
 	}
 
-	@PostMapping("/editor/guardarUser/{user_id}/{rol}")
+	@PostMapping("/admin/guardarUser/{user_id}/{rol}")
 	public String guardarUsuario(@PathVariable("user_id") int user_id, @PathVariable("rol") String role,
 			UserView userView) {
 
@@ -679,7 +679,7 @@ public class ControllerMVC {
 			} else if (userView.getRol().equals("ADMIN")) {
 				rol = 2;
 
-			} else if (userView.getRol().equals("EDITOR")) {
+			} else if (userView.getRol().equals("admin")) {
 				rol = 3;
 
 			}
@@ -693,10 +693,10 @@ public class ControllerMVC {
 
 		userRepo.save(usr);
 
-		return "redirect:/editor";
+		return "redirect:/admin";
 	}
 
-	@RequestMapping("/editor/deleteLocal/{local}")
+	@RequestMapping("/admin/deleteLocal/{local}")
 	public String eliminarLocal(@PathVariable("local") String local) {
 
 		try {
@@ -709,10 +709,10 @@ public class ControllerMVC {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return "redirect:/editor";
+		return "redirect:/admin";
 	}
 
-	@RequestMapping("/editor/registrar_nuevo_local/exito")
+	@RequestMapping("/admin/registrar_nuevo_local/exito")
 	public String viewRegistrarNuevoLocal(Local local, BindingResult bindingResult, ModelMap modelMap) {
 
 //		ModelAndView model = new ModelAndView("registrar_local_exito");
@@ -724,10 +724,10 @@ public class ControllerMVC {
 ////			model.addObject("company", company);
 //		}
 
-		return "redirect:/editor";
+		return "redirect:/admin";
 	}
 
-	@RequestMapping("/editor/editLocal/{id_local}")
+	@RequestMapping("/admin/editLocal/{id_local}")
 	public ModelAndView editarLocal(@PathVariable("id_local") int id_local) {
 
 		ModelAndView model = new ModelAndView("editar_local");
@@ -764,7 +764,7 @@ public class ControllerMVC {
 		return model;
 	}
 
-	@RequestMapping("/editor/editar_local_exito/{id_local}")
+	@RequestMapping("/admin/editar_local_exito/{id_local}")
 	public String guardarLocal(LocalView localObj, @PathVariable("id_local") int id_local) {
 
 		try {
@@ -794,7 +794,7 @@ public class ControllerMVC {
 			e.printStackTrace();
 		}
 
-		return "redirect:/editor";
+		return "redirect:/admin";
 	}
 
 	@RequestMapping("/restablecer_contraseña")
@@ -830,7 +830,7 @@ public class ControllerMVC {
 
 	List<Food> listFoodDish = new ArrayList<Food>();
 
-	@RequestMapping(value = "/admin/crear_nuevo_plato", method = RequestMethod.GET)
+	@RequestMapping(value = "/editor/crear_nuevo_plato", method = RequestMethod.GET)
 	public ModelAndView crearNuevoPlato() {
 
 		ModelAndView model = new ModelAndView("crear_nuevo_plato");
@@ -850,7 +850,7 @@ public class ControllerMVC {
 		return model;
 	}
 
-	@PostMapping("/admin/crear_nuevo_plato/ingredientes")
+	@PostMapping("/editor/crear_nuevo_plato/ingredientes")
 	public String escogerIngredientes(DishObj dishObj, RedirectAttributes redirectAttributes) {
 
 //		ModelAndView model = new ModelAndView("ingredientes");
@@ -865,7 +865,7 @@ public class ControllerMVC {
 
 		redirectAttributes.addAttribute("id_plato", dish2.getId_plato());
 
-		return "redirect:/admin/crear_nuevo_plato/ingredientes{id_plato}";
+		return "redirect:/editor/crear_nuevo_plato/ingredientes{id_plato}";
 //		model.addObject("id_plato", dish2.getId_plato());
 //		List<FoodView> listFood = foodViewRepo.findAll();
 //		model.addObject("listFood", listFood);
@@ -879,7 +879,7 @@ public class ControllerMVC {
 //		return model;
 	}
 
-	@RequestMapping("/admin/crear_nuevo_plato/ingredientes{id_plato}")
+	@RequestMapping("/editor/crear_nuevo_plato/ingredientes{id_plato}")
 	public ModelAndView escogerIngredientes2(@PathVariable("id_plato") int id_plato, FoodAmountObj foodAmountObj) {
 
 		ModelAndView model = new ModelAndView("ingredientes");
@@ -913,7 +913,7 @@ public class ControllerMVC {
 
 //	/admin/ver_ingredientes_plato/' + ${id_plato}
 
-	@RequestMapping("/admin/ver_ingredientes_plato/{id_plato}")
+	@RequestMapping("/editor/ver_ingredientes_plato/{id_plato}")
 	public ModelAndView ver_ingredientes_plato(@PathVariable("id_plato") int id_plato) {
 
 		ModelAndView model = new ModelAndView("terminar_plato");
@@ -947,7 +947,7 @@ public class ControllerMVC {
 		return model;
 	}
 
-	@RequestMapping("/admin/crear_nuevo_plato/ingredientes/{id_alimento}/{id_plato}")
+	@RequestMapping("/editor/crear_nuevo_plato/ingredientes/{id_alimento}/{id_plato}")
 	public ModelAndView añadirIngrediente(@PathVariable("id_alimento") int id_alimento,
 			@PathVariable("id_plato") int id_plato) {
 
@@ -978,7 +978,7 @@ public class ControllerMVC {
 
 	public Map<String, BigDecimal> ingredientes = new HashMap<String, BigDecimal>();
 
-	@PostMapping("/admin/crear_nuevo_plato/ingrediente")
+	@PostMapping("/editor/crear_nuevo_plato/ingrediente")
 	public ModelAndView guardarIngrediente(FoodAmountObj foodAmountObj) {
 
 		ModelAndView model = new ModelAndView("ingredientes");
@@ -990,7 +990,7 @@ public class ControllerMVC {
 		return model;
 	}
 
-	@RequestMapping("/admin/crear_nuevo_plato/ingrediente/terminarPlato")
+	@RequestMapping("/editor/crear_nuevo_plato/ingrediente/terminarPlato")
 	public ModelAndView terminarPlato() {
 
 		ModelAndView model = new ModelAndView("terminar_plato");
@@ -1007,7 +1007,7 @@ public class ControllerMVC {
 		return model;
 	}
 
-	@RequestMapping("/admin/crear_nuevo_plato/terminarPlatoExito")
+	@RequestMapping("/editor/crear_nuevo_plato/terminarPlatoExito")
 	public String terminarPlatoExito() {
 
 		Dish dish = new Dish();
@@ -1032,18 +1032,18 @@ public class ControllerMVC {
 			}
 		}
 
-		return "redirect:/admin";
+		return "redirect:/editor";
 	}
 
-	@RequestMapping("/admin/deleteDish/{id_plato}")
+	@RequestMapping("/editor/deleteDish/{id_plato}")
 	public String eliminarPlato(@PathVariable("id_plato") int id_plato) {
 
 		dishRepo.deleteById(id_plato);
 
-		return "redirect:/admin";
+		return "redirect:/editor";
 	}
 
-	@RequestMapping("/admin/editDish/{id_plato}")
+	@RequestMapping("/editor/editDish/{id_plato}")
 	public ModelAndView editarPlato(@PathVariable("id_plato") int id_plato) {
 
 		ModelAndView model = new ModelAndView("editar_plato");
@@ -1087,7 +1087,7 @@ public class ControllerMVC {
 		return model;
 	}
 
-	@RequestMapping({ "/admin/editMenu/{id_menu}" })
+	@RequestMapping({ "/editor/editMenu/{id_menu}" })
 	public ModelAndView editarMenu(@PathVariable("id_menu") int id_menu) {
 
 		ModelAndView model = new ModelAndView("");
@@ -1121,7 +1121,6 @@ public class ControllerMVC {
 
 				while (rs1.next()) {
 					Integer id_plato = rs1.getInt(1);
-					String nombre_plato = rs1.getString(2);
 					Integer id_tipo_plato = rs1.getInt(3);
 
 					if (id_tipo_plato == 1) {
@@ -1492,35 +1491,12 @@ public class ControllerMVC {
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
-
-//			<div class ="row">
-//			<table class="table" style="margin-top:40px;">
-//			  <thead>
-//			    <tr >
-//				  <th scope="col">Tipo de plato</th>
-//			      <th scope="col">Nombre de plato</th>
-//			      <th scope="col" data-field="action" style="margin-left:10%;margin-right:10%;width:15%;">Operación</th>
-//			    </tr>
-//			  </thead>
-//			  <tbody id="myTable">
-//			    <tr th:each="dish: ${listDish2}">
-//                    <td th:text="${dish.tipo_plato}"></td>
-//                    <td th:text="${dish.nombre_plato}"></td>
-//                	<td >
-//						 <div class="botonesEdicion" >
-//				        	<a th:href="@{'/user/eliminarPlato_menu_grupal/' + ${id_menu} + '/' + ${dish.id_plato}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color:#FF3333;border-color:#FF3333;;color:#ffffff;font-size:0.9rem; " >Eliminar</a>
-//						 </div>     	                    	
-//                    </td>
-//			    </tr>
-//			  </tbody>
-//			</table>
-//		</div>
 		}
 
 		return model;
 	}
 
-	@PostMapping({ "/admin/saveMenu/{id_menu}" })
+	@PostMapping({ "/editor/saveMenu/{id_menu}" })
 	public String guardarMenu(MenuObj menuObj, @PathVariable("id_menu") int id_menu) {
 
 //		Menu menuObj = menuRepo.findById(menu.getId_menu()).get();
@@ -1579,7 +1555,7 @@ public class ControllerMVC {
 			e.printStackTrace();
 		}
 
-		return "redirect:/admin";
+		return "redirect:/editor";
 	}
 
 	@PostMapping({ "/user/saveMenu/{id_menu}" })
@@ -1637,13 +1613,13 @@ public class ControllerMVC {
 		return "redirect:/user";
 	}
 
-	@PostMapping("/admin/saveDish/{id_plato}")
+	@PostMapping("/editor/saveDish/{id_plato}")
 	public String guardarPlato(Dish dish) {
 
 		dish.setId_empresa(obtenerUsuario().getIdEmpresa());
 		dishRepo.save(dish);
 
-		return "redirect:/admin";
+		return "redirect:/editor";
 	}
 
 //	@RequestMapping("/admin/ComponentesDish/{id_plato}")
@@ -1828,7 +1804,7 @@ public class ControllerMVC {
 		return listComponentDishTable;
 	}
 
-	@RequestMapping("/admin/AlergenosDish/{id_plato}")
+	@RequestMapping("/editor/AlergenosDish/{id_plato}")
 	public ModelAndView mostrarAlergenosPlato(@PathVariable("id_plato") int id_plato) {
 
 		ModelAndView model = new ModelAndView("alergenos_plato");
@@ -1836,13 +1812,7 @@ public class ControllerMVC {
 		Map<String, String> mapAlergensDish = obtenerAlergenosPlato(id_plato);
 
 		model.addObject("mapAlergensDish", mapAlergensDish);
-
-		Integer id = obtenerUsuario().getIdEmpresa();
-		if (id != null) {
-			String company = companyRepo.findById(id).get().getNombre();
-			model.addObject("company", company);
-		}
-
+		mostrarEmpresa(model);
 		return model;
 	}
 
@@ -1884,7 +1854,7 @@ public class ControllerMVC {
 		return mapAlergensDish;
 	}
 
-	@RequestMapping({ "/admin/crear_menu_individual" })
+	@RequestMapping({ "/editor/crear_menu_individual" })
 	public ModelAndView crearMenuIndividual() {
 
 		ModelAndView model = new ModelAndView("crear_menu_individual");
@@ -1923,12 +1893,7 @@ public class ControllerMVC {
 		model.addObject("select", select);
 		model.addObject("listLocals", listLocals);
 
-		Integer id = obtenerUsuario().getIdEmpresa();
-		if (id != null) {
-			String company = companyRepo.findById(id).get().getNombre();
-			model.addObject("company", company);
-		}
-
+		mostrarEmpresa(model);
 		return model;
 	}
 
@@ -1982,14 +1947,17 @@ public class ControllerMVC {
 		return model;
 	}
 
-	@RequestMapping("/admin/crear_menu_individual/guardar")
+	@RequestMapping("/editor/crear_menu_individual/guardar")
 	public String guardarMenuIndividual(MenuObj menuObj) {
 
 		List<Integer> listDishes = new ArrayList<Integer>();
 
 		listDishes.add(menuObj.getFirst_dish());
 		listDishes.add(menuObj.getSecond_dish());
-		listDishes.add(menuObj.getThird_dish());
+		if(menuObj.getThird_dish()!=null) {
+			listDishes.add(menuObj.getThird_dish());
+		}
+		
 
 		Menu menu = new Menu();
 		String description = "Menú individual";
@@ -2000,7 +1968,8 @@ public class ControllerMVC {
 		menu.setId_empresa(id_company);
 
 		menu.setFecha_creacion(new java.sql.Timestamp(Calendar.getInstance().getTime().getTime()));
-
+		menu.setFecha_publicacion(menuObj.getDate_publish());
+		
 		Menu menuDb = menuRepo.save(menu);
 
 		try {
@@ -2030,7 +1999,7 @@ public class ControllerMVC {
 			e.printStackTrace();
 		}
 
-		return "redirect:/admin";
+		return "redirect:/editor";
 	}
 
 	@RequestMapping("/user/crear_menu_individual/guardar")
@@ -2083,7 +2052,7 @@ public class ControllerMVC {
 		return "redirect:/user";
 	}
 
-	@RequestMapping({ "/admin/crear_menu_grupal" })
+	@RequestMapping({ "/editor/crear_menu_grupal" })
 	public ModelAndView crearMenuGrupal() {
 
 		ModelAndView model = new ModelAndView("crear_menu_grupal");
@@ -2113,13 +2082,7 @@ public class ControllerMVC {
 		model.addObject("menuLocal", menuLocal);
 		model.addObject("listLocals", listLocals);
 		model.addObject("select", select);
-
-		Integer id = obtenerUsuario().getIdEmpresa();
-		if (id != null) {
-			String company = companyRepo.findById(id).get().getNombre();
-			model.addObject("company", company);
-		}
-
+		mostrarEmpresa(model);
 		return model;
 	}
 
@@ -2138,13 +2101,7 @@ public class ControllerMVC {
 		model.addObject("menuLocal", menuLocal);
 		model.addObject("listLocals", listLocals);
 		model.addObject("select", select);
-
-		Integer id = obtenerUsuario().getIdEmpresa();
-		if (id != null) {
-			String company = companyRepo.findById(id).get().getNombre();
-			model.addObject("company", company);
-		}
-
+		mostrarEmpresa(model);
 		return model;
 	}
 
@@ -2252,7 +2209,7 @@ public class ControllerMVC {
 		return model;
 	}
 
-	@PostMapping("/admin/crear_menu_grupal/guardar")
+	@PostMapping("/editor/crear_menu_grupal/guardar")
 	public ModelAndView crearMenuGrupalGuardar_admin(MenuLocalObj menuLocalObj) {
 
 		ModelAndView model = new ModelAndView("escoger_platos_menu_grupal_admin");
@@ -2327,7 +2284,7 @@ public class ControllerMVC {
 		return model;
 	}
 
-	@GetMapping("/admin/crear_menu_grupal/platos")
+	@GetMapping("/editor/crear_menu_grupal/platos")
 	public ModelAndView escogerPlatosMenuGrupal() {
 		ModelAndView model = new ModelAndView("escoger_platos_menu_grupal");
 
@@ -2370,7 +2327,7 @@ public class ControllerMVC {
 
 	public List<Integer> listDishesGroupalMenu;
 
-	@RequestMapping("/admin/crear_menu_grupal/guardarPlato")
+	@RequestMapping("/editor/crear_menu_grupal/guardarPlato")
 	public String añadirPlatoMenuGrupal(GroupalDish groupalDish) {
 
 		int id_menu = menu_grupal.getId_menu();
@@ -2392,7 +2349,7 @@ public class ControllerMVC {
 			e.printStackTrace();
 		}
 
-		return "redirect:/admin/crear_menu_grupal/platos";
+		return "redirect:/editor/crear_menu_grupal/platos";
 	}
 
 	@RequestMapping("/user/crear_menu_grupal/guardarPlato_editar/{id_menu}")
@@ -2421,7 +2378,7 @@ public class ControllerMVC {
 		return "redirect:/user/editMenu/{id_menu}";
 	}
 
-	@RequestMapping("/admin/crear_menu_grupal/guardarPlato_editar/{id_menu}")
+	@RequestMapping("/editor/crear_menu_grupal/guardarPlato_editar/{id_menu}")
 	public String añadirPlatoMenuGrupal_adminEditar(GroupalDish groupalDish, @PathVariable("id_menu") int id_menu,
 			RedirectAttributes redirectAttributes) {
 
@@ -2444,7 +2401,7 @@ public class ControllerMVC {
 
 		menu.setNombre_menu(groupalDish.getName_menu());
 		menuRepo.save(menu);
-		return "redirect:/admin/editMenu/{id_menu}";
+		return "redirect:/editor/editMenu/{id_menu}";
 	}
 
 	@RequestMapping("/user/crear_menu_grupal/guardarPlato/{id_menu}")
@@ -2519,7 +2476,7 @@ public class ControllerMVC {
 		return model;
 	}
 
-	@RequestMapping("/admin/crear_menu_grupal/guardarPlato/{id_menu}")
+	@RequestMapping("/editor/crear_menu_grupal/guardarPlato/{id_menu}")
 	public ModelAndView añadirPlatoMenuGrupal_admin(GroupalDish groupalDish, @PathVariable("id_menu") int id_menu) {
 
 		ModelAndView model = new ModelAndView("escoger_platos_menu_grupal_admin");
@@ -2611,7 +2568,7 @@ public class ControllerMVC {
 		return "redirect:/user/crear_menu_grupal/guardarPlato/{id_menu}";
 	}
 
-	@RequestMapping(value = { "/admin/eliminarPlato_menu_grupal/{id_menu}/{id_plato}" })
+	@RequestMapping(value = { "/editor/eliminarPlato_menu_grupal/{id_menu}/{id_plato}" })
 //	/user/eliminarPlato_menu_grupal/' + ${id_menu} + '/' + ${dish.id_plato}
 	public String eliminarPlatoMenuGrupalAdmin(@PathVariable("id_menu") int id_menu,
 			@PathVariable("id_plato") int id_plato, RedirectAttributes redirectAttributes) {
@@ -2628,7 +2585,7 @@ public class ControllerMVC {
 		}
 		redirectAttributes.addAttribute("id_menu", id_menu);
 
-		return "redirect:/admin/crear_menu_grupal/guardarPlato/{id_menu}";
+		return "redirect:/editor/crear_menu_grupal/guardarPlato/{id_menu}";
 	}
 
 	@RequestMapping(value = { "/user/eliminarPlato_menu_grupal_edicion/{id_menu}/{id_plato}" })
@@ -2651,8 +2608,7 @@ public class ControllerMVC {
 		return "redirect:/user/editMenu/{id_menu}";
 	}
 
-	@RequestMapping(value = { "/admin/eliminarPlato_menu_grupal_edicion/{id_menu}/{id_plato}" })
-//	/user/eliminarPlato_menu_grupal/' + ${id_menu} + '/' + ${dish.id_plato}
+	@RequestMapping(value = { "/editor/eliminarPlato_menu_grupal_edicion/{id_menu}/{id_plato}" })
 	public String eliminarPlatoMenuGrupalEdicionAdmin(@PathVariable("id_menu") int id_menu,
 			@PathVariable("id_plato") int id_plato, RedirectAttributes redirectAttributes) {
 
@@ -2668,7 +2624,7 @@ public class ControllerMVC {
 		}
 		redirectAttributes.addAttribute("id_menu", id_menu);
 
-		return "redirect:/admin/editMenu/{id_menu}";
+		return "redirect:/editor/editMenu/{id_menu}";
 	}
 
 	@RequestMapping("/user/crear_menu_grupal/guardarPlato_edicion/{id_menu}")
@@ -2744,29 +2700,7 @@ public class ControllerMVC {
 		return model;
 	}
 
-//	@RequestMapping("/admin/crear_nuevo_plato/terminarMenu")
-//	public ModelAndView terminarMenuGrupal() {
-//
-//		ModelAndView model = new ModelAndView("mostrar_platos_menu");
-//		Map<Integer, String> mapDishesMenu = new HashMap<Integer, String>();
-//
-//		for (int i = 0; i < listDishesGroupalMenu.size(); i++) {
-//			int id_dish = listDishesGroupalMenu.get(i);
-//			mapDishesMenu.put(id_dish, dishRepo.findById(id_dish).get().getNombre_plato());
-//		}
-//
-//		model.addObject("mapDishesMenu", mapDishesMenu);
-//
-//		Integer id = obtenerUsuario().getIdEmpresa();
-//		if (id != null) {
-//			String company = companyRepo.findById(id).get().getNombre();
-//			model.addObject("company", company);
-//		}
-//
-//		return model;
-//	}
 
-//	'/user/PlatosMenu/' + ${menu.id_menu}
 	@RequestMapping("/user/PlatosMenu/{id_menu}")
 	public ModelAndView mostrarPlatosMenu(@PathVariable("id_menu") int id_menu) {
 
@@ -2799,7 +2733,7 @@ public class ControllerMVC {
 
 	}
 
-	@RequestMapping("/admin/PlatosMenu/{id_menu}")
+	@RequestMapping("/editor/PlatosMenu/{id_menu}")
 	public ModelAndView mostrarPlatosMenuAdmin(@PathVariable("id_menu") int id_menu) {
 
 		ModelAndView model = new ModelAndView("mostrar_platos_menu");
@@ -2837,16 +2771,16 @@ public class ControllerMVC {
 		return "redirect:/user";
 	}
 
-	@RequestMapping("/admin/crear_nuevo_plato/terminarMenu")
+	@RequestMapping("/editor/crear_nuevo_plato/terminarMenu")
 	public String terminarMenuGrupal_admin() {
 
-		return "redirect:/admin";
+		return "redirect:/editor";
 	}
 
-	@RequestMapping("/admin/crear_menu_grupal/terminar")
+	@RequestMapping("/editor/crear_menu_grupal/terminar")
 	public String terminarMenuGrupalExito() {
 
-		return "redirect:/admin";
+		return "redirect:/editor";
 	}
 
 	@RequestMapping("/user/crear_nuevo_plato/cancelarMenu{id_menu}")
@@ -2857,12 +2791,12 @@ public class ControllerMVC {
 		return "redirect:/user";
 	}
 
-	@RequestMapping("/admin/crear_nuevo_plato/cancelarMenu{id_menu}")
+	@RequestMapping("/editor/crear_nuevo_plato/cancelarMenu{id_menu}")
 	public String cancelarMenuGrupalAdmin(@PathVariable("id_menu") int id_menu) {
 
 		menuRepo.delete(menuRepo.findById(id_menu).get());
 
-		return "redirect:/admin";
+		return "redirect:/editor";
 	}
 
 	@RequestMapping("/user/crear_menu_grupal/terminar")
@@ -2871,12 +2805,12 @@ public class ControllerMVC {
 		return "redirect:/user";
 	}
 
-	@RequestMapping({ "/admin/deleteMenu/{id_menu}" })
+	@RequestMapping({ "/editor/deleteMenu/{id_menu}" })
 	public String eliminarMenu(@PathVariable("id_menu") int id_menu) {
 
 		menuRepo.delete(menuRepo.findById(id_menu).get());
 
-		return "redirect:/admin";
+		return "redirect:/editor";
 	}
 
 	@RequestMapping({ "/user/deleteMenu/{id_menu}" })
@@ -2887,16 +2821,16 @@ public class ControllerMVC {
 		return "redirect:/user";
 	}
 
-	@GetMapping({ "/admin/AlergenosMenu/{id_menu}" })
+	@GetMapping({ "/editor/AlergenosMenu/{id_menu}" })
 	public String obtenerAlergenosMenuIndividual(@PathVariable("id_menu") int id_menu) {
 
 		String type_menu = menuRepo.findById(id_menu).get().getDescripcion();
 
 		if (type_menu.equals("Menú individual")) {
-			return "redirect:/admin/alergenos_menu_individual/{id_menu}";
+			return "redirect:/editor/alergenos_menu_individual/{id_menu}";
 
 		} else if (type_menu.equals("Menú grupal")) {
-			return "redirect:/admin/escoger_platos_menu_grupal_alergenos/{id_menu}";
+			return "redirect:/editor/escoger_platos_menu_grupal_alergenos/{id_menu}";
 		}
 		return null;
 
@@ -2917,18 +2851,13 @@ public class ControllerMVC {
 
 	}
 
-	@GetMapping({ "/admin/alergenos_menu_individual/{id_menu}" })
+	@GetMapping({ "/editor/alergenos_menu_individual/{id_menu}" })
 	public ModelAndView alergenosMenusIndividualesAdmin(@PathVariable("id_menu") int id_menu) {
 		ModelAndView model = new ModelAndView("alergenos_menu_admin");
 		Map<String, String> mapAlergensMenu = obtenerAlergenosMenu(id_menu);
 		model.addObject("mapAlergensMenu", mapAlergensMenu);
 		model.addObject("id_menu", id_menu);
-		Integer id = obtenerUsuario().getIdEmpresa();
-		if (id != null) {
-			String company = companyRepo.findById(id).get().getNombre();
-			model.addObject("company", company);
-		}
-
+		mostrarEmpresa(model);
 		return model;
 	}
 
@@ -2938,12 +2867,7 @@ public class ControllerMVC {
 		Map<String, String> mapAlergensMenu = obtenerAlergenosMenu(id_menu);
 		model.addObject("mapAlergensMenu", mapAlergensMenu);
 		model.addObject("id_menu", id_menu);
-		Integer id = obtenerUsuario().getIdEmpresa();
-		if (id != null) {
-			String company = companyRepo.findById(id).get().getNombre();
-			model.addObject("company", company);
-		}
-
+		mostrarEmpresa(model);
 		return model;
 	}
 
@@ -2985,7 +2909,7 @@ public class ControllerMVC {
 		return model;
 	}
 
-	@RequestMapping({ "/admin/alergenos_menu_colectivo/{id_menu}" })
+	@RequestMapping({ "/editor/alergenos_menu_colectivo/{id_menu}" })
 	public ModelAndView alergenosMenusColectivosAdmin(MenuObj menuObj, @PathVariable("id_menu") int id_menu) {
 		ModelAndView model = new ModelAndView("alergenos_menu_admin");
 
@@ -3022,7 +2946,7 @@ public class ControllerMVC {
 	}
 
 //	Permite escoger los platos del menú que se van a consumir para proceder a calcular los alérgeno del mismo
-	@GetMapping("/admin/escoger_platos_menu_grupal_alergenos/{id_menu}")
+	@GetMapping("/editor/escoger_platos_menu_grupal_alergenos/{id_menu}")
 	public ModelAndView escogerPlatosMenuGrupalAlergenos(@PathVariable("id_menu") int id_menu) {
 
 		ModelAndView model = new ModelAndView("escoger_platos_menu_grupal_alergenos");
@@ -3052,13 +2976,7 @@ public class ControllerMVC {
 
 		int select = 0;
 		model.addObject("select", select);
-
-		Integer id = obtenerUsuario().getIdEmpresa();
-		if (id != null) {
-			String company = companyRepo.findById(id).get().getNombre();
-			model.addObject("company", company);
-		}
-
+		mostrarEmpresa(model);
 		return model;
 	}
 
@@ -3094,13 +3012,7 @@ public class ControllerMVC {
 
 		int select = 0;
 		model.addObject("select", select);
-
-		Integer id = obtenerUsuario().getIdEmpresa();
-		if (id != null) {
-			String company = companyRepo.findById(id).get().getNombre();
-			model.addObject("company", company);
-		}
-
+		mostrarEmpresa(model);
 		return model;
 	}
 
@@ -3191,16 +3103,16 @@ public class ControllerMVC {
 
 	}
 
-	@RequestMapping({ "/admin/ComponentesMenu/{id_menu}" })
+	@RequestMapping({ "/editor/ComponentesMenu/{id_menu}" })
 	public String mostrarComponentesMenu(@PathVariable("id_menu") int id_menu) {
 
 		String type_menu = menuRepo.findById(id_menu).get().getDescripcion();
 
 		if (type_menu.equals("Menú individual")) {
-			return "redirect:/admin/componentes_menu_individual/{id_menu}";
+			return "redirect:/editor/componentes_menu_individual/{id_menu}";
 
 		} else if (type_menu.equals("Menú grupal")) {
-			return "redirect:/admin/escoger_platos_menu_grupal_componentes/{id_menu}";
+			return "redirect:/editor/escoger_platos_menu_grupal_componentes/{id_menu}";
 		}
 
 		return null;
@@ -3223,23 +3135,8 @@ public class ControllerMVC {
 		return null;
 	}
 
-//	@RequestMapping({ "/user/ComponentesMenu/{id_menu}" })
-//	public String mostrarComponentesMenu7(@PathVariable("id_menu") int id_menu) {
-//
-//		String type_menu = menuRepo.findById(id_menu).get().getDescripcion();
-//
-//		if (type_menu.equals("Menú individual")) {
-//			return "redirect:/user/componentes_menu_individual/{id_menu}";
-//
-//		} else if (type_menu.equals("Menú grupal")) {
-//			return "redirect:/user/escoger_platos_menu_grupal_componentes/{id_menu}";
-//		}
-//
-//		return null;
-//	}
-
 //	Permite escoger los platos del menú que se van a consumir para proceder a calcular los alérgeno del mismo
-	@GetMapping("/admin/escoger_platos_menu_grupal_componentes/{id_menu}")
+	@GetMapping("/editor/escoger_platos_menu_grupal_componentes/{id_menu}")
 	public ModelAndView escogerPlatosMenuGrupalComponentes(@PathVariable("id_menu") int id_menu) {
 
 		ModelAndView model = new ModelAndView("escoger_platos_menu_grupal_componentes");
@@ -3269,13 +3166,7 @@ public class ControllerMVC {
 
 		int select = 0;
 		model.addObject("select", select);
-
-		Integer id = obtenerUsuario().getIdEmpresa();
-		if (id != null) {
-			String company = companyRepo.findById(id).get().getNombre();
-			model.addObject("company", company);
-		}
-
+		mostrarEmpresa(model);
 		return model;
 	}
 
@@ -3310,13 +3201,8 @@ public class ControllerMVC {
 
 		int select = 0;
 		model.addObject("select", select);
-
-		Integer id = obtenerUsuario().getIdEmpresa();
-		if (id != null) {
-			String company = companyRepo.findById(id).get().getNombre();
-			model.addObject("company", company);
-		}
-
+		mostrarEmpresa(model);
+		
 		return model;
 	}
 
@@ -3437,7 +3323,7 @@ public class ControllerMVC {
 		return acGrasos;
 	}
 
-	@RequestMapping("/admin/ComponentesDish/{id_plato}")
+	@RequestMapping("/editor/ComponentesDish/{id_plato}")
 	public ModelAndView componentesPlato(@PathVariable("id_plato") int id_plato) {
 
 		ModelAndView model = new ModelAndView("componentes_plato_admin");
@@ -3610,7 +3496,7 @@ public class ControllerMVC {
 	}
 	
 	
-	@RequestMapping("/admin/componentes_menu_colectivo")
+	@RequestMapping("/editor/componentes_menu_colectivo")
 	public ModelAndView componentesMenuColectivo_admin(MenuObj menuObj) {
 
 		ModelAndView model = new ModelAndView("componentes_plato_admin");
@@ -3705,7 +3591,7 @@ public class ControllerMVC {
 
 	}
 
-	@GetMapping({ "/admin/componentes_menu_individual/{id_menu}" })
+	@GetMapping({ "/editor/componentes_menu_individual/{id_menu}" })
 	public ModelAndView componentesMenuIndividualAdmin(@PathVariable("id_menu") int id_menu) {
 
 		ModelAndView model = new ModelAndView("componentes_plato_admin");
@@ -3749,7 +3635,7 @@ public class ControllerMVC {
 
 	}
 
-	@GetMapping({ "/admin/deleteIngredientDish/{id_plato}/{id_ingrediente}" })
+	@GetMapping({ "/editor/deleteIngredientDish/{id_plato}/{id_ingrediente}" })
 	public String eliminarIngredientePlato(@PathVariable("id_plato") Integer id_plato,
 			@PathVariable("id_ingrediente") Integer id_ingrediente) {
 
@@ -3764,10 +3650,10 @@ public class ControllerMVC {
 			e.printStackTrace();
 		}
 
-		return "redirect:/admin/editDish/{id_plato}";
+		return "redirect:/editor/editDish/{id_plato}";
 	}
 
-	@GetMapping({ "/admin/editIngredientDish/{id_plato}/{id_ingrediente}/{cantidad}" })
+	@GetMapping({ "/editor/editIngredientDish/{id_plato}/{id_ingrediente}/{cantidad}" })
 	public ModelAndView editarIngredientePlato(@PathVariable("id_plato") Integer id_plato,
 			@PathVariable("id_ingrediente") Integer id_ingrediente, @PathVariable("cantidad") BigDecimal cantidad) {
 
@@ -3782,7 +3668,7 @@ public class ControllerMVC {
 	}
 
 	@RequestMapping(value = {
-			"/admin/saveEditIngredientDish/{id_plato}/{id_ingrediente}" }, method = RequestMethod.POST)
+			"/editor/saveEditIngredientDish/{id_plato}/{id_ingrediente}" }, method = RequestMethod.POST)
 	public String editarCantidadIngredientePlato(@PathVariable("id_plato") Integer id_plato,
 			@PathVariable("id_ingrediente") Integer id_ingrediente, DishIngredient dishIngredient) {
 
@@ -3797,10 +3683,10 @@ public class ControllerMVC {
 			e.printStackTrace();
 		}
 
-		return "redirect:/admin/editDish/{id_plato}";
+		return "redirect:/editor/editDish/{id_plato}";
 	}
 
-	@RequestMapping(value = { "/admin/addDish/{id_plato}" })
+	@RequestMapping(value = { "/editor/addDish/{id_plato}" })
 	public ModelAndView añadirIngredientePlato(@PathVariable("id_plato") Integer id_plato) {
 
 		ModelAndView model = new ModelAndView("añadir_ingrediente_plato");
@@ -3813,7 +3699,7 @@ public class ControllerMVC {
 		return model;
 	}
 
-	@RequestMapping(value = { "/admin/addIngredient/{id_plato}/{id_alimento}" })
+	@RequestMapping(value = { "/editor/addIngredient/{id_plato}/{id_alimento}" })
 	public ModelAndView añadirCantidadIngredientePlato(@PathVariable("id_plato") Integer id_plato,
 			@PathVariable("id_alimento") Integer id_ingredient) {
 
@@ -3830,17 +3716,12 @@ public class ControllerMVC {
 		foodAmountObj.setFood(food.getNombre());
 
 		model.addObject("foodAmountObj", foodAmountObj);
-//		model.addObject("id_plato", id_plato);
-		Integer id = obtenerUsuario().getIdEmpresa();
-		if (id != null) {
-			String company = companyRepo.findById(id).get().getNombre();
-			model.addObject("company", company);
-		}
+		mostrarEmpresa(model);
 
 		return model;
 	}
 
-	@RequestMapping(value = { "/admin/addIngredient/{id_plato}" })
+	@RequestMapping(value = { "/editor/addIngredient/{id_plato}" })
 	public String guardarIngredientePlato(@PathVariable("id_plato") Integer id_plato, FoodAmountObj foodAmountObj,
 			RedirectAttributes redirectAttributes) {
 
@@ -3857,15 +3738,12 @@ public class ControllerMVC {
 		}
 
 		Integer id = obtenerUsuario().getIdEmpresa();
-		if (id != null) {
-//			String company = companyRepo.findById(id).get().getNombre();
-//			model.addObject("company", company);
-		}
+
 		redirectAttributes.addAttribute("id_plato", id_plato);
-		return "redirect:/admin/editDish/{id_plato}";
+		return "redirect:/editor/editDish/{id_plato}";
 	}
 
-	@RequestMapping(value = { "/admin/IngredientesDish/{id_plato}" })
+	@RequestMapping(value = { "/editor/IngredientesDish/{id_plato}" })
 	public ModelAndView verIngredientePlato(@PathVariable("id_plato") Integer id_plato) {
 
 		ModelAndView model = new ModelAndView("ver_ingredientes_plato");
@@ -3894,33 +3772,28 @@ public class ControllerMVC {
 			e.printStackTrace();
 		}
 
-		Integer id = obtenerUsuario().getIdEmpresa();
-		if (id != null) {
-			String company = companyRepo.findById(id).get().getNombre();
-			model.addObject("company", company);
-		}
+		mostrarEmpresa(model);
 
 		return model;
 	}
 
-	@RequestMapping(value = { "/admin/seguir_anadiendo_ingredientes/{id_plato}" })
+	@RequestMapping(value = { "/editor/seguir_anadiendo_ingredientes/{id_plato}" })
 	public String seguir_anadiendo_ingredientes(@PathVariable("id_plato") Integer id_plato,
 			RedirectAttributes redirectAttributes) {
 
 		redirectAttributes.addAttribute("id_plato", id_plato);
-		return "redirect:/admin/crear_nuevo_plato/ingredientes{id_plato}";
+		return "redirect:/editor/crear_nuevo_plato/ingredientes{id_plato}";
 	}
 
-	@RequestMapping(value = { "/admin/terminarPlato" })
+	@RequestMapping(value = { "/editor/terminarPlato" })
 	public String terminarPlato2() {
 
-		return "redirect:/admin";
+		return "redirect:/editor";
 	}
 
 
-	@RequestMapping(value = { "/admin/cancelar_nuevo_plato/{id_plato}" })
+	@RequestMapping(value = { "/editor/cancelar_nuevo_plato/{id_plato}" })
 	public String cancelarPlato(@PathVariable("id_plato") Integer id_plato) {
-//		ModelAndView model = new ModelAndView("admin");
 		try {
 
 			Statement st = Application.con.createStatement();
@@ -3931,12 +3804,7 @@ public class ControllerMVC {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-//		Integer id = obtenerUsuario().getIdEmpresa();
-//		if (id != null) {
-//			String company = companyRepo.findById(id).get().getNombre();
-//			model.addObject("company", company);
-//		}
 
-		return "redirect:/admin";
+		return "redirect:/editor";
 	}
 }

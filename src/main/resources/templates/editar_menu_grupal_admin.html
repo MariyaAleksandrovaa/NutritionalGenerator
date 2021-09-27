@@ -54,7 +54,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 					<h1>NutriApp</h1>
 				</div> 
 				<div class="banner-text w3labout-bnr" > 
-						<h2 >Cuenta de administrador</h2>   
+						<h2 >Cuenta de editor</h2>   
 				</div>
 			</div>
 		</div>
@@ -64,7 +64,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 		<div class="container">
 			<nav aria-label="breadcrumb">
 			  <ol class="breadcrumb" style="background-color:#ffffff;font-size:1.5em;margin-bottom:40px;">
-			  	<li class="breadcrumb-item"><a th:href="@{/admin}">Página principal</a></li>
+			  	<li class="breadcrumb-item"><a th:href="@{/editor}">Página principal</a></li>
 			    <li class="breadcrumb-item active">Editar menú</li>
 			  </ol>
 			</nav>
@@ -90,7 +90,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 <!-- 				</form> -->
 				
 						<form
-							th:action="@{'/admin/crear_menu_grupal/guardarPlato_editar/' + ${id_menu}}"
+							th:action="@{'/editor/crear_menu_grupal/guardarPlato_editar/' + ${id_menu}}"
 							th:object="${groupalDish}" 
 							method="post" 
 							style="margin-left:38%;">	
@@ -128,7 +128,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 			                    <td th:text="${dish.nombre_plato}"></td>
 		                    	<td >
 									 <div class="botonesEdicion" >
-							        	<a th:href="@{'/admin/eliminarPlato_menu_grupal_edicion/' + ${id_menu} + '/' + ${dish.id_plato}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color:#FF3333;border-color:#FF3333;;color:#ffffff;font-size:0.9rem; " >Eliminar</a>
+							        	<a th:href="@{'/editor/eliminarPlato_menu_grupal_edicion/' + ${id_menu} + '/' + ${dish.id_plato}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color:#FF3333;border-color:#FF3333;;color:#ffffff;font-size:0.9rem; " >Eliminar</a>
 									 </div>     	                    	
 			                    </td>
 						    </tr>

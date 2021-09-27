@@ -63,7 +63,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	<div class="about gallery">
 		<div class="container">
 			<div role="tabpanel">
-				<form th:action="@{'/admin/saveEditIngredientDish/' + ${dishIngredient.id_plato} + '/' + ${dishIngredient.id_ingrediente}}" th:object="${dishIngredient}" method="POST" style="width:70%;margin-left:30%;">					  
+				<form th:action="@{'/editor/saveEditIngredientDish/' + ${dishIngredient.id_plato} + '/' + ${dishIngredient.id_ingrediente}}" th:object="${dishIngredient}" method="POST" style="width:70%;margin-left:30%;">					  
 					  <div class="form-group">
 					    <label for="exampleInputEmail1">Ingrediente</label>
 					    <input class="form-control" type="text" th:field="*{nombre_ingrediente}" th:placeholder="*{nombre_ingrediente}" style="margin-top:8px;width:70%;" readonly>

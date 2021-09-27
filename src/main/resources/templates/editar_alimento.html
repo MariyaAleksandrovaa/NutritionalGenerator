@@ -54,7 +54,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 					<h1>NutriApp</h1>
 				</div> 
 				<div class="banner-text w3labout-bnr" > 
-						<h2 >Cuenta de editor</h2>   
+						<h2 >Cuenta de administrador</h2>   
 				</div>
 			</div>
 		</div>
@@ -78,7 +78,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 					<div role="tabpanel" class="tab-pane active" id="seccion1" style="width: 50%;margin: 0 auto;">
 					</div>
 
-						<form th:action="@{'/editor/guardarFood/' + ${foodView.nombre}}" th:object="${foodView}" method="post">
+						<form th:action="@{'/admin/guardarFood/' + ${foodView.nombre}}" th:object="${foodView}" method="post">
 							  <div class="form-group" style="margin-top:25px;">
 							    <label for="exampleInputEmail1" >Grupo del alimento</label>
 							    

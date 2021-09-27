@@ -54,7 +54,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 					<h1>NutriApp</h1>
 				</div> 
 				<div class="banner-text w3labout-bnr" > 
-						<h2 >Cuenta de administrador</h2>   
+						<h2 >Cuenta de editor</h2>   
 				</div>
 			</div>
 		</div>
@@ -69,7 +69,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 			  </ol>
 			</nav>
 			<div role="tabpanel">
-				<form th:action="@{'/admin/saveDish/' + ${id_plato}}" th:object="${dish}" method="post" style="width:100%;">
+				<form th:action="@{'/editor/saveDish/' + ${id_plato}}" th:object="${dish}" method="post" style="width:100%;">
 					  <div class="form-group">
 					    <label for="exampleInputEmail1">Nombre del plato</label>
 					    <input type="text" class="form-control"  th:field="*{nombre_plato}" style="margin-top:8px;"  aria-describedby="emailHelp" placeholder="Introduce nombre de empresa" required>
@@ -91,7 +91,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 					  </div>
 					<button type="submit" class="btn btn-primary" style="font-size:1.5em;margin-top:3%;">Guardar cambios</button>
 				</form>
-					<a th:href="@{'/admin/addDish/' + ${id_plato}}" class="btn btn-info btn-lg" style="background-color: #6c757d;border-color: #6c757d;color:#ffffff;;font-size:0.9rem;margin-left: 44%;
+					<a th:href="@{'/editor/addDish/' + ${id_plato}}" class="btn btn-info btn-lg" style="background-color: #6c757d;border-color: #6c757d;color:#ffffff;;font-size:0.9rem;margin-left: 44%;
     margin-top: 2%;
     margin-bottom: 1%;">Añadir nuevo ingrediente</a>
 
@@ -112,8 +112,8 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 			                    <td th:text="${ingredient.cantidad}"></td>
 		                    	<td >
 									 <div class="botonesEdicion" >
-									 	<a th:href="@{'/admin/editIngredientDish/' + ${id_plato} + '/' + ${ingredient.id_ingrediente} + '/' + ${ingredient.cantidad}}" class="btn btn-info btn-lg" style="background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;;font-size:0.9rem;">Editar</a>
-							        	<a th:href="@{'/admin/deleteIngredientDish/' + ${id_plato} + '/' + ${ingredient.id_ingrediente}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color:#FF3333;border-color:#FF3333;;color:#ffffff;font-size:0.9rem; " >Eliminar</a>
+									 	<a th:href="@{'/editor/editIngredientDish/' + ${id_plato} + '/' + ${ingredient.id_ingrediente} + '/' + ${ingredient.cantidad}}" class="btn btn-info btn-lg" style="background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;;font-size:0.9rem;">Editar</a>
+							        	<a th:href="@{'/editor/deleteIngredientDish/' + ${id_plato} + '/' + ${ingredient.id_ingrediente}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color:#FF3333;border-color:#FF3333;;color:#ffffff;font-size:0.9rem; " >Eliminar</a>
 									 </div>     	                    	
 			                    </td>
 						    </tr>

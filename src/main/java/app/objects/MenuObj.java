@@ -1,6 +1,9 @@
 package app.objects;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class MenuObj {
@@ -10,18 +13,29 @@ public class MenuObj {
 	public Integer second_dish;
 	public Integer third_dish;
 	public List<Integer> list_id_local;
+	public String date_publish;
+
 
 	public MenuObj(String name_menu, Integer first_dish, Integer second_dish, Integer third_dish,
-			ArrayList<Integer> list_id_local) {
+			ArrayList<Integer> list_id_local, String date_publish) {
 		this.name_menu = name_menu;
 		this.first_dish = first_dish;
 		this.second_dish = second_dish;
 		this.third_dish = third_dish;
 		this.list_id_local = list_id_local;
+		this.date_publish = date_publish;
 	}
 
 	public MenuObj() {
 
+	}
+
+	public String getDate_publish() {
+		return date_publish;
+	}
+
+	public void setDate_publish(String date_publish) {
+		this.date_publish = date_publish;
 	}
 
 	public List<Integer> getList_id_local() {

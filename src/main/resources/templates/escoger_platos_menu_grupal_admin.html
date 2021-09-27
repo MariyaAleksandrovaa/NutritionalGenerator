@@ -54,7 +54,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 					<h1>NutriApp</h1>
 				</div> 
 				<div class="banner-text w3labout-bnr" > 
-						<h2 >Cuenta de administrador</h2>   
+						<h2 >Cuenta de editor</h2>   
 				</div>
 			</div>
 		</div>
@@ -70,14 +70,14 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 			  </ol>
 			</nav>
 			<div role="tabpanel">
-				<a th:href="@{/admin/crear_nuevo_plato/terminarMenu}" class="btn btn-info btn-lg" style="margin-bottom:35px;margin-left:91%;font-size:1.5rem;background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;">Terminar menú</a>
-				<a th:href="@{'/admin/crear_nuevo_plato/cancelarMenu' + ${id_menu}}" class="btn btn-info btn-lg" style="margin-bottom:35px;margin-left:91%;font-size:1.5rem;background-color: #FF3333;border-color: #FF3333;color:#ffffff;">Cancelar menú</a>
+				<a th:href="@{/editor/crear_nuevo_plato/terminarMenu}" class="btn btn-info btn-lg" style="margin-bottom:35px;margin-left:91%;font-size:1.5rem;background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;">Terminar menú</a>
+				<a th:href="@{'/editor/crear_nuevo_plato/cancelarMenu' + ${id_menu}}" class="btn btn-info btn-lg" style="margin-bottom:35px;margin-left:91%;font-size:1.5rem;background-color: #FF3333;border-color: #FF3333;color:#ffffff;">Cancelar menú</a>
 						
 				<div class="tab-content">
 						<div role="tabpanel" class="tab-pane active" id="seccion1" style="margin-left: 70%;width: 50%;margin: 0 auto;">
 
 						<form
-							th:action="@{'/admin/crear_menu_grupal/guardarPlato/' + ${id_menu}}"
+							th:action="@{'/editor/crear_menu_grupal/guardarPlato/' + ${id_menu}}"
 							th:object="${groupalDish}" 
 							method="post" 
 							style="margin-left:25%;">							
@@ -111,7 +111,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 			                    <td th:text="${dish.nombre_plato}"></td>
 		                    	<td >
 									 <div class="botonesEdicion" >
-							        	<a th:href="@{'/admin/eliminarPlato_menu_grupal/' + ${id_menu} + '/' + ${dish.id_plato}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color:#FF3333;border-color:#FF3333;;color:#ffffff;font-size:0.9rem; " >Eliminar</a>
+							        	<a th:href="@{'/editor/eliminarPlato_menu_grupal/' + ${id_menu} + '/' + ${dish.id_plato}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color:#FF3333;border-color:#FF3333;;color:#ffffff;font-size:0.9rem; " >Eliminar</a>
 									 </div>     	                    	
 			                    </td>
 						    </tr>
