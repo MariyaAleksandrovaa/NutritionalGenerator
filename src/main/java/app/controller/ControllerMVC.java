@@ -2,7 +2,6 @@ package app.controller;
 
 import java.math.BigDecimal;
 
-
 import java.sql.ResultSet;
 
 import java.sql.SQLException;
@@ -15,9 +14,14 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.WebAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -139,6 +143,26 @@ public class ControllerMVC {
 		model.setViewName("inicio_sesion");
 		return model;
 
+	}
+//	@RequestMapping("/loginError")
+//	  public String loginError(Model model) {
+//	    model.addAttribute("login?error", true);
+//	    return "redirect:/";
+//	  }
+
+	@GetMapping("/loginError")
+	public String login(HttpServletRequest request, Model model) {
+		HttpSession session = request.getSession(false);
+		String errorMessage = "";
+		if (session != null) {
+			AuthenticationException ex = (AuthenticationException) session
+					.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
+			if (ex != null) {
+				errorMessage = "Usuario o contraseña incorrectos!";
+			}
+		}
+		model.addAttribute("errorMessage", errorMessage);
+		return "inicio_sesion";
 	}
 
 	@RequestMapping(value = { "/volver_inicio" }, method = RequestMethod.POST)
@@ -1954,10 +1978,9 @@ public class ControllerMVC {
 
 		listDishes.add(menuObj.getFirst_dish());
 		listDishes.add(menuObj.getSecond_dish());
-		if(menuObj.getThird_dish()!=null) {
+		if (menuObj.getThird_dish() != null) {
 			listDishes.add(menuObj.getThird_dish());
 		}
-		
 
 		Menu menu = new Menu();
 		String description = "Menú individual";
@@ -1969,7 +1992,7 @@ public class ControllerMVC {
 
 		menu.setFecha_creacion(new java.sql.Timestamp(Calendar.getInstance().getTime().getTime()));
 		menu.setFecha_publicacion(menuObj.getDate_publish());
-		
+
 		Menu menuDb = menuRepo.save(menu);
 
 		try {
@@ -2141,6 +2164,7 @@ public class ControllerMVC {
 
 		Menu menu = new Menu();
 
+		menu.setFecha_publicacion(menuLocalObj.getDate_publish());
 		menu.setNombre_menu(menuLocalObj.getNombre_menu());
 		menu.setDescripcion("Menú grupal");
 		menu.setFecha_creacion(new java.sql.Timestamp(Calendar.getInstance().getTime().getTime()));
@@ -2700,7 +2724,6 @@ public class ControllerMVC {
 		return model;
 	}
 
-
 	@RequestMapping("/user/PlatosMenu/{id_menu}")
 	public ModelAndView mostrarPlatosMenu(@PathVariable("id_menu") int id_menu) {
 
@@ -3202,7 +3225,7 @@ public class ControllerMVC {
 		int select = 0;
 		model.addObject("select", select);
 		mostrarEmpresa(model);
-		
+
 		return model;
 	}
 
@@ -3402,9 +3425,9 @@ public class ControllerMVC {
 		}
 	}
 
-	public List<ComponentsDishTable> obtenerComponentesMenuGrupal(List<Integer> listDishes){
+	public List<ComponentsDishTable> obtenerComponentesMenuGrupal(List<Integer> listDishes) {
 		List<ComponentsDishTable> listComponentsDishAux = new ArrayList<ComponentsDishTable>();
-		
+
 		for (int i = 0; i < listDishes.size(); i++) {
 			if (listDishes.get(i) != 0) {
 
@@ -3432,7 +3455,7 @@ public class ControllerMVC {
 		}
 		return listComponentsDishAux;
 	}
-	
+
 	public void obtenerComponentesMenucolectivo(MenuObj menuObj, ModelAndView model) {
 		List<Integer> listDishes = new ArrayList<Integer>();
 
@@ -3448,7 +3471,8 @@ public class ControllerMVC {
 			listDishes.add(menuObj.getThird_dish());
 		}
 
-		Map<String, List<ComponentsDishTable>> mapComponents = clasificarComponentes(obtenerComponentesMenuGrupal(listDishes));
+		Map<String, List<ComponentsDishTable>> mapComponents = clasificarComponentes(
+				obtenerComponentesMenuGrupal(listDishes));
 		Map<String, Float> valoresProximales = calculoProximales(mapComponents);
 		Map<String, Float> valoresHC = calculoHC(mapComponents);
 
@@ -3494,8 +3518,7 @@ public class ControllerMVC {
 		mostrarEmpresa(model);
 
 	}
-	
-	
+
 	@RequestMapping("/editor/componentes_menu_colectivo")
 	public ModelAndView componentesMenuColectivo_admin(MenuObj menuObj) {
 
@@ -3522,9 +3545,8 @@ public class ControllerMVC {
 
 		return model;
 	}
-	
-	
-	public List<Integer> obtenerPlatosMenu(int id_menu){
+
+	public List<Integer> obtenerPlatosMenu(int id_menu) {
 		List<Integer> listDishes = new ArrayList<Integer>();
 		ResultSet rs;
 		try {
@@ -3540,11 +3562,12 @@ public class ControllerMVC {
 		}
 		return listDishes;
 	}
-	
+
 	public void obtenerComponentesMenuIndividual(int id_menu, ModelAndView model) {
 		List<Integer> listDishes = obtenerPlatosMenu(id_menu);
 
-		Map<String, List<ComponentsDishTable>> mapComponents = clasificarComponentes(obtenerComponentesMenuGrupal(listDishes));
+		Map<String, List<ComponentsDishTable>> mapComponents = clasificarComponentes(
+				obtenerComponentesMenuGrupal(listDishes));
 		Map<String, Float> valoresProximales = calculoProximales(mapComponents);
 		Map<String, Float> valoresHC = calculoHC(mapComponents);
 
@@ -3599,7 +3622,6 @@ public class ControllerMVC {
 		obtenerComponentesMenuIndividual(id_menu, model);
 		return model;
 	}
-
 
 	public List<ComponentsDishTable> ordenarComponentesPorUnidadCantidad(
 			List<ComponentsDishTable> componentsDishTableVitaminas) {
@@ -3790,7 +3812,6 @@ public class ControllerMVC {
 
 		return "redirect:/editor";
 	}
-
 
 	@RequestMapping(value = { "/editor/cancelar_nuevo_plato/{id_plato}" })
 	public String cancelarPlato(@PathVariable("id_plato") Integer id_plato) {

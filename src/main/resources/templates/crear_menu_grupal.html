@@ -84,6 +84,13 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 						    	<label for="exampleInputEmail1" >Nombre del menú</label>
 						    	<input type="text" class="form-control"  th:field="*{nombre_menu}"  style="margin-top:8px;width:60%;" aria-describedby="emailHelp" placeholder="Introduce nombre del menú" required>
 						    </div>
+						    <div class="form-group" style="margin-top:30px;">
+								<div class="col" style="width:60%">
+									<label for="exampleInputEmail1" class="form-label select-label" style="width:100%;margin-bottom:12px;">Selecciona fecha de publicación del menú*</label> 
+									<input id="date" type="date" style="width:100%;height:33px;" th:field="*{date_publish}" >
+								</div>
+
+							</div>
 						    <div  class="checkbox-group required" style="margin-top:30px;" >
 								<label for="exampleInputEmail1" class="form-label select-label">Escoge local/es al que pertenece menú</label> 
 								    <ul style="margin-left:20px;" >
@@ -93,6 +100,9 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 								        </li>
 								    </ul>
 						    </div>
+						    <div style="width:100%;margin-bottom:20px;">
+								<small id="emailHelp" class="form-text text-muted">(*) Campos obligatorios</small>
+							</div>
 							<button type="submit" class="btn btn-primary" id="elID" style="margin-top:30px;">Proceder a escoger platos</button>
 						</form>
 					</div>
@@ -237,6 +247,23 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	        alert(address.join('\n'));
 	    }
 	});
+	</script>
+	<script type="text/javascript">
+	var today = new Date();
+	var dd = today.getDate();
+	var mm = today.getMonth() + 1; 
+	var yyyy = today.getFullYear();
+
+	if (dd < 10) {
+	   dd = '0' + dd;
+	}
+
+	if (mm < 10) {
+	   mm = '0' + mm;
+	} 
+	    
+	today = yyyy + '-' + mm + '-' + dd;
+	document.getElementById("date").setAttribute("min", today);
 	</script>
 	
 	<script>

@@ -89,7 +89,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
 		.formLogin()
 		.loginPage("/prueba")
 		.usernameParameter("username")
-		.successHandler(successHandler).failureUrl("/login?error=true")
+		.successHandler(successHandler).failureUrl("/loginError")
 		.permitAll()
 		.and()
 		.logout().logoutSuccessUrl("/").permitAll();
