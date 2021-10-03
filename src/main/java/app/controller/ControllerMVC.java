@@ -1115,24 +1115,15 @@ public class ControllerMVC {
 	public ModelAndView editarMenu(@PathVariable("id_menu") int id_menu) {
 
 		ModelAndView model = new ModelAndView("");
-//		ModelAndView model = new ModelAndView("editar_menu");
-//
-//		Menu menu = menuRepo.findById(id_menu).get();
-//
-//		model.addObject("menu", menu);
-//
-//		Integer id = obtenerUsuario().getIdEmpresa();
-//		if (id != null) {
-//			String company = companyRepo.findById(id).get().getNombre();
-//			model.addObject("company", company);
-//		}
 
 		if (menuRepo.findById(id_menu).get().getDescripcion().equals("Menú individual")) {
 
 			model.setViewName("editar_menu");
-
+			model.addObject("menuName", menuRepo.findById(id_menu).get().getNombre_menu());
 			Menu menu = menuRepo.findById(id_menu).get();
 			MenuObj menuObj = new MenuObj();
+			
+			menuObj.setDate_publish(menu.getFecha_publicacion());
 			menuObj.setName_menu(menu.getNombre_menu());
 			try {
 				Statement st1 = Application.con.createStatement();
@@ -1270,6 +1261,8 @@ public class ControllerMVC {
 
 			Menu menu = menuRepo.findById(id_menu).get();
 			MenuObj menuObj = new MenuObj();
+			
+//			menuObj.setDate_publish(menu.getFecha_publicacion());
 			menuObj.setName_menu(menu.getNombre_menu());
 			model.addObject("menuObj", menuObj);
 			try {
@@ -1305,6 +1298,8 @@ public class ControllerMVC {
 				rs.close();
 
 				GroupalDish groupalDish = new GroupalDish();
+				
+				groupalDish.setDate_publish(menu.getFecha_publicacion());
 				groupalDish.setName_menu(menu.getNombre_menu());
 //				groupalDish.setId_menu(menu.getId_menu());
 
@@ -1576,6 +1571,7 @@ public class ControllerMVC {
 
 			Menu menu = menuRepo.findById(id_menu).get();
 			menu.setNombre_menu(menuObj.getName_menu());
+			menu.setFecha_publicacion(menuObj.getDate_publish());
 			menuRepo.save(menu);
 
 		} catch (SQLException e) {
@@ -1840,6 +1836,7 @@ public class ControllerMVC {
 
 		Map<String, String> mapAlergensDish = obtenerAlergenosPlato(id_plato);
 
+		model.addObject("dishName", dishRepo.findById(id_plato).get().getNombre_plato());
 		model.addObject("mapAlergensDish", mapAlergensDish);
 		mostrarEmpresa(model);
 		return model;
@@ -2239,6 +2236,7 @@ public class ControllerMVC {
 
 		Menu menu = new Menu();
 
+		menu.setFecha_publicacion(menuLocalObj.getDate_publish());
 		menu.setNombre_menu(menuLocalObj.getNombre_menu());
 		menu.setDescripcion("Menú grupal");
 		menu.setFecha_creacion(new java.sql.Timestamp(Calendar.getInstance().getTime().getTime()));
@@ -2424,6 +2422,7 @@ public class ControllerMVC {
 		redirectAttributes.addAttribute("id_menu", id_menu);
 
 		menu.setNombre_menu(groupalDish.getName_menu());
+		menu.setFecha_publicacion(groupalDish.getDate_publish());
 		menuRepo.save(menu);
 		return "redirect:/editor/editMenu/{id_menu}";
 	}
@@ -2876,7 +2875,9 @@ public class ControllerMVC {
 
 	@GetMapping({ "/editor/alergenos_menu_individual/{id_menu}" })
 	public ModelAndView alergenosMenusIndividualesAdmin(@PathVariable("id_menu") int id_menu) {
-		ModelAndView model = new ModelAndView("alergenos_menu_admin");
+		ModelAndView model = new ModelAndView("alergenos_menu_admin_ind");
+		
+		model.addObject("menuName", menuRepo.findById(id_menu).get().getNombre_menu());
 		Map<String, String> mapAlergensMenu = obtenerAlergenosMenu(id_menu);
 		model.addObject("mapAlergensMenu", mapAlergensMenu);
 		model.addObject("id_menu", id_menu);
@@ -2941,6 +2942,8 @@ public class ControllerMVC {
 	@RequestMapping({ "/editor/alergenos_menu_colectivo/{id_menu}" })
 	public ModelAndView alergenosMenusColectivosAdmin(MenuObj menuObj, @PathVariable("id_menu") int id_menu) {
 		ModelAndView model = new ModelAndView("alergenos_menu_admin");
+		
+		model.addObject("menuName", menuRepo.findById(id_menu).get().getNombre_menu());
 
 		Map<String, String> mapAlergensMenu = new HashMap<String, String>();
 
@@ -2979,6 +2982,8 @@ public class ControllerMVC {
 	public ModelAndView escogerPlatosMenuGrupalAlergenos(@PathVariable("id_menu") int id_menu) {
 
 		ModelAndView model = new ModelAndView("escoger_platos_menu_grupal_alergenos");
+		
+		model.addObject("menuName", menuRepo.findById(id_menu).get().getNombre_menu());
 
 		List<Map<Integer, String>> listMapsTypeDishes = getListMapsTypeDishes(id_menu);
 
@@ -3171,6 +3176,7 @@ public class ControllerMVC {
 
 		ModelAndView model = new ModelAndView("escoger_platos_menu_grupal_componentes");
 
+		model.addObject("menuName", menuRepo.findById(id_menu).get().getNombre_menu());
 		List<Map<Integer, String>> listMapsTypeDishes = getListMapsTypeDishes(id_menu);
 
 		Map<Integer, String> mapaPlatosTipo1Menu = new HashMap<Integer, String>();
@@ -3360,6 +3366,8 @@ public class ControllerMVC {
 	public ModelAndView componentesPlato(@PathVariable("id_plato") int id_plato) {
 
 		ModelAndView model = new ModelAndView("componentes_plato_admin");
+		
+		model.addObject("dishName", dishRepo.findById(id_plato).get().getNombre_plato());
 
 		List<ComponentsDishTable> listComponentsDish = obtenerBDcomponentesPlato(id_plato);
 
@@ -3531,6 +3539,7 @@ public class ControllerMVC {
 	public ModelAndView componentesMenuColectivo_admin(MenuObj menuObj) {
 
 		ModelAndView model = new ModelAndView("componentes_plato_admin");
+		model.addObject("menuName", menuObj.name_menu);
 		obtenerComponentesMenucolectivo(menuObj, model);
 
 		return model;
@@ -3629,6 +3638,7 @@ public class ControllerMVC {
 
 		ModelAndView model = new ModelAndView("componentes_plato_admin");
 
+		model.addObject("menuName", menuRepo.findById(id_menu).get().getNombre_menu());
 		obtenerComponentesMenuIndividual(id_menu, model);
 		return model;
 	}
