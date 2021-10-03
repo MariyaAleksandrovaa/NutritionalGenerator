@@ -70,7 +70,6 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 				<nav aria-label="breadcrumb">
 				  <ol class="breadcrumb" style="background-color:#ffffff;font-size:1.5em;margin-bottom:0px;">
 				  	<li class="breadcrumb-item"><a th:href="@{/user}">Página principal</a></li>
-				  	<li class="breadcrumb-item"><a th:href="@{'/user/escoger_platos_menu_grupal_componentes/' + ${id_menu}}">Seleccionar platos para ver componentes</a></li>
 				    <li class="breadcrumb-item active">Información nutricional del menú</li>
 				  </ol>
 				</nav>
@@ -462,7 +461,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	/*<![CDATA[*/
 	
 	    var porcentajeProteinas = /*[[${porcentajeProteinas}]]*/ 'default';
-// 		var porcentajeEnergia = /*[[${porcentajeEnergia}]]*/ 'default';
+		var porcentajeEnergia = /*[[${porcentajeEnergia}]]*/ 'default';
 		var porcentajeHC = /*[[${porcentajeHC}]]*/ 'default';
 		var porcentajeGrasa = /*[[${porcentajeGrasa}]]*/ 'default';
 		

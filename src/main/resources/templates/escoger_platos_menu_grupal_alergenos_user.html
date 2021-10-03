@@ -68,6 +68,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 			    <li class="breadcrumb-item active">Seleccionar platos para ver alérgenos</li>
 			  </ol>
 			</nav>
+			<label for="exampleInputEmail1" th:text="${menuName}" style="font-size: 2em;margin-bottom: 0px;margin-top: 0px;"></label>
 			<div role="tabpanel">
 				<div class="tab-content" style="margin-left: 20%;">
 						<div role="tabpanel" class="tab-pane active" id="seccion1" style="width: 50%;margin: 0 auto;">
@@ -77,9 +78,9 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 							method="post" >			
 											
 							<div class="form-group" style="margin-top:30px;">
-								<label for="exampleInputEmail1">Escoge el primer plato de este menú para calcular sus alérgenos</label> 
-								<select class="form-select" th:field="*{first_dish}" aria-label="Default select example" style="margin-top:10px;width:60%">
-									<option selected th:value="${select}">Escoge un plato</option>
+								<label for="exampleInputEmail1">Escoge el primer plato de este menú para calcular sus alérgenos*</label> 
+								<select class="form-select" th:field="*{first_dish}" required aria-label="Default select example" style="margin-top:10px;width:60%">
+									<option selected value="">Escoge un plato</option>
 									<option th:each="dish:${mapaPlatosTipo1Menu}"
 										th:value="${dish.key}"
 										th:text="${dish.value}"										
@@ -87,9 +88,9 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 								</select>
 							</div>
 							<div class="form-group" style="margin-top:30px;">
-								<label for="exampleInputEmail1">Escoge el segundo plato de este menú para calcular sus alérgenos</label> 
-								<select class="form-select" th:field="*{second_dish}" aria-label="Default select example" style="margin-top:10px;width:60%">
-									<option selected th:value="${select}">Escoge un plato</option>
+								<label for="exampleInputEmail1">Escoge el segundo plato de este menú para calcular sus alérgenos*</label> 
+								<select class="form-select" th:field="*{second_dish}" required aria-label="Default select example" style="margin-top:10px;width:60%">
+									<option selected value="">Escoge un plato</option>
 									<option th:each="dish:${mapaPlatosTipo2Menu}"
 										th:value="${dish.key}"
 										th:text="${dish.value}"										
@@ -99,13 +100,16 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 							<div class="form-group" style="margin-top:30px;">
 								<label for="exampleInputEmail1">Escoge el postre de este menú para calcular sus alérgenos(Opcional)</label> 
 								<select class="form-select" th:field="*{third_dish}" aria-label="Default select example" style="margin-top:10px;width:60%">
-									<option selected th:value="${select}">Escoge un plato</option>
+									<option selected value="">Escoge un plato</option>
 									<option th:each="dish:${mapaPlatosTipo3Menu}"
 										th:value="${dish.key}"
 										th:text="${dish.value}"										
 									/>
 								</select>
-							</div>														
+							</div>	
+							<div style="width:100%;margin-bottom:10px;">
+								<small id="emailHelp" class="form-text text-muted">(*) Campos obligatorios</small>
+							</div>													
 							<button type="submit" class="btn btn-primary" >Aceptar</button>
 						</form>
 					</div>

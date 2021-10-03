@@ -12,8 +12,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>	
+	
 <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
 <!-- Custom Theme files -->
 <link href="../../css/bootstrap.css" type="text/css" rel="stylesheet" media="all">
@@ -25,7 +24,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 
 <link href="../../css/style.css" type="text/css" rel="stylesheet" media="all">   
 <link href="../../css/font-awesome.css" rel="stylesheet"> <!-- font-awesome icons --> 
-<link rel="stylesheet" href="../css/smoothbox.css" type='text/css' media="all" /> 
+<link rel="stylesheet" href="../../css/smoothbox.css" type='text/css' media="all" /> 
 <!-- //Custom Theme files --> 
 
 <!-- js -->
@@ -40,6 +39,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 </head>
 
 <body> 
+	<!-- banner -->
 	<div class="banner">
 		<p style="float: left;margin-top:10px;font-size:1.5em;margin-left:20px;">
 			Bienvenido <b>[[${#request.userPrincipal.principal.username}]]</b> 
@@ -60,69 +60,32 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 		</div>
 		<b th:text="${company}" style="margin-left:20px;color:#000000;font-size:2em;"></b>
 	</div>
+	<!-- //banner -->   
+	<!-- gallery -->
 	<div class="about gallery">
-		<div class="container">
+		<div class="container">  
 			<nav aria-label="breadcrumb">
 			  <ol class="breadcrumb" style="background-color:#ffffff;font-size:1.5em;margin-bottom:40px;">
 			  	<li class="breadcrumb-item"><a th:href="@{/user}">Página principal</a></li>
-			    <li class="breadcrumb-item active">Editar menú</li>
+			    <li class="breadcrumb-item active">Alérgenos del menú</li>
 			  </ol>
 			</nav>
-			<div role="tabpanel">
-						<form
-							th:action="@{'/user/crear_menu_grupal/guardarPlato_editar/' + ${id_menu}}"
-							th:object="${groupalDish}" 
-							method="post" 
-							style="margin-left:38%;">	
-							
-							<div class="form-group">
-							    <label for="exampleInputEmail1">Nombre del menú</label>
-							    <input type="text" class="form-control"  th:field="*{name_menu}" style="margin-top:8px;width:40%;"  aria-describedby="emailHelp" required>
-							</div>
-							<div class="form-group">
-								<div class="col" style="width:60%">
-									<label for="exampleInputEmail1" class="form-label select-label" style="width:100%;margin-bottom:12px;">Selecciona fecha de publicación del menú</label> 
-									<input id="date" type="date" style="width:67%;height:33px;" required th:value="*{date_publish}" th:field="*{date_publish}" >
-								</div>
-							</div>						
-							<div class="form-group">
-								<label for="exampleInputEmail1">Escoge plato para añadir a menú grupal</label> 
-								<select class="form-select" th:field="*{id_dish}" aria-label="Default select example" style="margin-top:10px;width:40%;height:33px;">
-									<option selected th:value="${select}">Escoge un plato</option>
-									<option th:each="dish:${listDish}"
-										th:value="${dish.id_plato}"
-										th:text="${dish.nombre_plato}"
-
-									/>
-								</select>
-							</div>
-
-							<button type="submit" class="btn btn-primary" style="margin-top:20px;">Añadir plato al menú y/o guardar cambios</button>
-						</form>
-				
-					<div class ="row">
-						<table class="table" style="margin-top:40px;">
-						  <thead>
-						    <tr >
-							  <th scope="col">Tipo de plato</th>
-						      <th scope="col">Nombre de plato</th>
-						      <th scope="col" data-field="action" style="margin-left:10%;margin-right:10%;width:15%;">Operación</th>
-						    </tr>
-						  </thead>
-						  <tbody id="myTable">
-						    <tr th:each="dish: ${listDish2}">
-			                    <td th:text="${dish.tipo_plato}"></td>
-			                    <td th:text="${dish.nombre_plato}"></td>
-		                    	<td >
-									 <div class="botonesEdicion" >
-							        	<a th:href="@{'/user/eliminarPlato_menu_grupal_edicion/' + ${id_menu} + '/' + ${dish.id_plato}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color:#FF3333;border-color:#FF3333;;color:#ffffff;font-size:0.9rem; " >Eliminar</a>
-									 </div>     	                    	
-			                    </td>
-						    </tr>
-						  </tbody>
-						</table>
-					</div>
-
+			<label for="exampleInputEmail1" th:text="${menuName}" style="font-size: 2em;margin-bottom: 0px;margin-top: 0px;"></label>
+			<div class ="row">
+				<table class="table" style = "margin-top:30px;width: 40%;margin-left: 30%;">
+				  <thead>
+				    <tr >
+					  <th scope="col">Nombre alérgeno</th>
+				      <th scope="col">Descripción alérgeno</th>
+				    </tr>
+				  </thead>
+				  <tbody id="myTable">
+				    <tr th:each="alergenMenu: ${mapAlergensMenu}">
+	                    <td th:text="${alergenMenu.key}">Nombre alérgeno</td>
+	                    <td th:text="${alergenMenu.value}">Descripción alérgeno</td>
+				    </tr>
+				  </tbody>
+				</table>
 			</div>
 		</div>
 	</div>
@@ -136,9 +99,6 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 			</div>
 		</div>
 	</div>
-	<!-- //footer -->
-  
-	<!-- menu-js -->
 	<script>
 		$('.navicon').on('click', function (e) {
 		  e.preventDefault();
@@ -253,34 +213,6 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	    }
 	});
 	</script>
-	
-	<script>
-	// jQuery version
-	$("input[type='number']").each(function(i, el) {
-	    el.type = "text";
-	    el.onfocus = function(){this.type="number";};
-	    el.onblur = function(){this.type="text";};
-	});
-	</script>
-	<script type="text/javascript">
-	var today = new Date();
-	var dd = today.getDate();
-	var mm = today.getMonth() + 1; 
-	var yyyy = today.getFullYear();
-
-	if (dd < 10) {
-	   dd = '0' + dd;
-	}
-
-	if (mm < 10) {
-	   mm = '0' + mm;
-	} 
-	    
-	today = yyyy + '-' + mm + '-' + dd;
-	document.getElementById("date").setAttribute("min", today);
-	</script>
-
-	
 
 	<!-- //smooth-scrolling-of-move-up -->  		
 	<!-- Bootstrap core JavaScript

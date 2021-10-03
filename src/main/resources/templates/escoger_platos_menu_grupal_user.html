@@ -65,8 +65,9 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 			<nav aria-label="breadcrumb">
 			  <ol class="breadcrumb" style="background-color:#ffffff;font-size:1.5em;margin-bottom:40px;">
 			  	<li class="breadcrumb-item"><a th:href="@{/user}">Página principal</a></li>
-			  	<li class="breadcrumb-item active">Crear menú grupal</li>
+			  	<li class="breadcrumb-item"><a th:href="@{/user/crear_menu_grupal}">Crear menú grupal</a></li>
 			    <li class="breadcrumb-item active">Escoger platos del menú</li>
+<!-- 			     -->
 			  </ol>
 			</nav>
 			<div role="tabpanel">
@@ -84,7 +85,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 							<div class="form-group" style="margin-top:30px;">
 								<label for="exampleInputEmail1">Escoge plato para añadir a menú grupal</label> 
 								<select class="form-select" th:field="*{id_dish}" aria-label="Default select example" style="margin-top:10px;width:60%">
-									<option selected th:value="${select}" >Escoge un plato</option>
+									<option selected th:value="0" >Escoge un plato</option>
 									<option th:each="dish:${listDish}"
 										th:value="${dish.id_plato}"
 										th:text="${dish.nombre_plato}"
