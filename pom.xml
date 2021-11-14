@@ -14,6 +14,8 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>NutritGenerator-2</name>
 	<description>Genarator of nutritional informs</description>
+	<packaging>jar</packaging>
+	
 	<properties>
 		<java.version>11</java.version>
 		<start-class>app.Application</start-class>
@@ -22,7 +24,7 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
-			<version>2.5.2</version><!--$NO-MVN-MAN-VER$ -->
+			<version>2.5.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -49,13 +51,10 @@
 		    <artifactId>popper.js</artifactId>
 		    <version>2.9.2</version>
 		</dependency>
-						
-		
-		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
-			<version>2.5.2</version><!--$NO-MVN-MAN-VER$ -->
+			<version>2.5.2</version>
 		</dependency>
 
 		<!-- <dependency> -->
@@ -73,8 +72,6 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<version>8.0.25</version>
 		</dependency>
-		
-		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -101,6 +98,12 @@
 		    <artifactId>thymeleaf-extras-springsecurity5</artifactId>
 		    <version>3.0.4.RELEASE</version>
 		</dependency>
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-tomcat</artifactId>
+		    <scope>provided</scope>
+		</dependency>
+		
 
 	</dependencies>
 <!-- 	<build> -->
@@ -112,18 +115,24 @@
 <!-- 		</plugins> -->
 <!-- 	</build> -->
 	<build>
-    <plugins>
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <version>3.1</version>
-            <configuration>
-                <source>1.8</source>
-                <target>1.8</target>
-            </configuration>
-        </plugin>
-    </plugins>
-</build>
+		<finalName>ws-nutritGenerator-app</finalName>
+	    <plugins>
+	        <plugin>
+	            <groupId>org.apache.maven.plugins</groupId>
+	            <artifactId>maven-compiler-plugin</artifactId>
+	            <version>3.1</version>
+	            <configuration>
+	                <source>1.8</source>
+	                <target>1.8</target>
+	                <executable>true</executable>
+	            </configuration>
+	        </plugin>
+	        <plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+	    </plugins>
+	</build>
 
 <!-- <build>   -->
 <!--     <plugins>   -->

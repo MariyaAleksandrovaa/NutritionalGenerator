@@ -63,7 +63,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 		<div class="container">
 				<nav aria-label="breadcrumb">
 				  <ol class="breadcrumb" style="background-color:#ffffff;font-size:1.5em;margin-bottom:40px;">
-				  	<li class="breadcrumb-item"><a th:href="@{/admin}">Página principal</a></li>
+				  	<li class="breadcrumb-item"><a th:href="@{/editor}">Página principal</a></li>
 				  	<li class="breadcrumb-item active">Crear nuevo plato</li>
 				    <li class="breadcrumb-item active">Escoger ingredientes plato</li>
 				  </ol>
@@ -94,7 +94,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 				                    <td th:text="${food.nombre}">Nombre</td>
 				                    <td th:text="${food.ingles}">Nombre en inglés</td>
 				                    <td >
-										 <div class="botonesEdicion" style="margin-right:-140px">
+										 <div class="botonesEdicion" style="margin-right:20px">
 										 	<a th:href="@{'/editor/crear_nuevo_plato/ingredientes/' + ${food.id_alimento} + '/' + ${id_plato}}" class="btn btn-info btn-lg" style="background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;;font-size:0.9rem;">Añadir al plato</a>
 										 </div>     	                    	
 					                 </td>

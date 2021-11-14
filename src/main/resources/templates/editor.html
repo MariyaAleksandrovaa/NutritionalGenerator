@@ -119,27 +119,29 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 						</div>
 					</div>
 					<div role="tabpanel" class="tab-pane" id="seccion2">
-						<button type="button" class="btn btn-secondary" style="margin-top:25px;width:200px;margin-left:43%;margin-bottom:20px;" onclick="window.location.href='/admin/crear_nuevo_plato'">Crear nuevo plato</button>
+						<button type="button" class="btn btn-secondary" style="margin-top:25px;width:200px;margin-left:43%;margin-bottom:20px;" onclick="window.location.href='/editor/crear_nuevo_plato'">Crear nuevo plato</button>
 						<div class ="row">
 							<table class="table">
 							  <thead>
 							    <tr >
+							      <th scope="col">Fecha Creación</th>
 							      <th scope="col">Número</th>
 							      <th scope="col">Nombre del plato</th>
 							      <th scope="col">Descripción</th>
-							      <th scope="col" data-field="action" data-formatter="actionFormatter">Operacion</th>
+							      <th scope="col" data-field="action" data-formatter="actionFormatter" style="width:12%;">Operacion</th>
 							      <th scope="col" style="width:23%;">Tablas</th>
 							    </tr>
 							  </thead>
 							  <tbody>
 							    <tr th:each="dish: ${listDish}">
+							    	<td th:text="${dish.fecha_creacion}">Fecha Creación</td>
 				                    <td th:text="${dish.plato}">Número</td>
 				                    <td th:text="${dish.nombre_plato}">Nombre del plato</td>
 				                    <td th:text="${dish.descripcion}">Descripción</td>
 				                    <td >
-										 <div class="botonesEdicion" style="margin-right:-140px">
+										 <div class="botonesEdicion" style="margin-right:-140px;">
 										 	<a th:href="@{'/editor/editDish/' + ${dish.id_plato}}" class="btn btn-info btn-lg" style="background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;;font-size:0.9rem;">Editar</a>
-								        	<a th:href="@{'/editor/deleteDish/' + ${dish.id_plato}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color:#FF3333;border-color:#FF3333;;color:#ffffff;font-size:0.9rem; " >Eliminar</a>
+								        	<a th:href="@{'/editor/deleteDish/' + ${dish.id_plato}}" class="btn btn-info btn-lg" style="margin-left:20px;margin-right:20px;background-color:#FF3333;border-color:#FF3333;;color:#ffffff;font-size:0.9rem; " >Eliminar</a>
 										 </div>     	                    	
 				                    </td>
 		                    		<td>

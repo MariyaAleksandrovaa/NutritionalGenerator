@@ -1,5 +1,8 @@
 package app.views;
 
+import java.sql.Timestamp;
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -14,6 +17,15 @@ public class DishView {
 	public String nombre_plato;
 	public String descripcion;
 	public Integer id_empresa;
+	public Timestamp fecha_creacion;
+
+	public Date getFecha_creacion() {
+		return fecha_creacion;
+	}
+
+	public void setFecha_creacion(Timestamp fecha_creacion) {
+		this.fecha_creacion = fecha_creacion;
+	}
 
 	public Integer getId_empresa() {
 		return id_empresa;

@@ -6,9 +6,17 @@ import java.sql.ResultSet;
 
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -212,7 +220,6 @@ public class ControllerMVC {
 	private List<Menu> obtenerMenusUsuario(int id_empresa) {
 
 		List<Menu> listMenusAll = menuRepo.findAllOrderByDate();
-
 		List<Menu> listMenu = new ArrayList<Menu>();
 
 		for (int i = 0; i < listMenusAll.size(); i++) {
@@ -250,6 +257,37 @@ public class ControllerMVC {
 
 		return "admin";
 	}
+
+//	public List<DishView> obtenerPlatosUsuario(int id_empresa) {
+//
+//		List<DishView> listDishes = new ArrayList<DishView>();
+//		
+//		try {
+//
+//			Statement st = Application.con.createStatement();
+//			ResultSet rs = st.executeQuery(
+//					"SELECT fecha_creacion, plato, nombre_plato, descripcion FROM view_gestionplatos where id_empresa= "
+//							+ id_empresa + " order by fecha_creacion desc;");
+//
+//			while (rs.next()) {
+//				java.sql.Timestamp fecha_creacion = rs.getTimestamp(1);
+//				String nombre_plato = rs.getString(2);
+//				String nombre = rs.getString(3);
+//				String descripcion = rs.getString(4);
+//
+//				SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//				Timestamp dateTime = Timestamp.valueOf(sdf3.format(fecha_creacion));
+//				
+//				listDishes.add(new DishView(dateTime, nombre_plato, nombre, descripcion ));
+//			}
+//			rs.close();
+//			st.close();
+//
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+//		return listDishes;
+//	}
 
 	// NutriApp para usuario normal
 
@@ -308,8 +346,6 @@ public class ControllerMVC {
 	@RequestMapping(value = "/admin/registrar_nueva_empresa/registrar_empresa_exito", method = RequestMethod.POST)
 	public String viewRegistrarNuevaEmpresa2Page(@Valid Empresa empresa, BindingResult bindingResult,
 			ModelMap modelMap) {
-
-		int a = 0;
 
 //		ModelAndView model = new ModelAndView();
 
@@ -739,14 +775,7 @@ public class ControllerMVC {
 	@RequestMapping("/admin/registrar_nuevo_local/exito")
 	public String viewRegistrarNuevoLocal(Local local, BindingResult bindingResult, ModelMap modelMap) {
 
-//		ModelAndView model = new ModelAndView("registrar_local_exito");
-
 		localRepo.save(local);
-//		Integer id = obtenerUsuario().getIdEmpresa();
-//		if (id != null) {
-//			String company = companyRepo.findById(id).get().getNombre();
-////			model.addObject("company", company);
-//		}
 
 		return "redirect:/admin";
 	}
@@ -884,6 +913,7 @@ public class ControllerMVC {
 		dish.setDescripcion(dishObj.getDescripcion());
 		dish.setId_tipo_platos(dishObj.getTypeDish());
 		dish.setId_empresa(obtenerUsuario().getIdEmpresa());
+		dish.setFecha_creacion(Timestamp.valueOf(LocalDateTime.now()));
 
 		Dish dish2 = dishRepo.save(dish);
 
@@ -1037,12 +1067,13 @@ public class ControllerMVC {
 		Dish dish = new Dish();
 		dish.setNombre_plato(dishObj.getNombre_plato());
 		dish.setDescripcion(dishObj.getDescripcion());
-
 		dish.setId_empresa(obtenerUsuario().getIdEmpresa());
-
 		dish.setId_tipo_platos(dishObj.getTypeDish());
 
 		dishRepo.save(dish);
+
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+		LocalDateTime now = LocalDateTime.now();
 
 		for (Entry<String, BigDecimal> ingrediente : dishObj.getMapFood().entrySet()) {
 
@@ -1050,7 +1081,7 @@ public class ControllerMVC {
 				Statement st = Application.con.createStatement();
 				st.executeUpdate("insert into platos_alimentos (idPlato, idAlimento, cantidad) values ("
 						+ dish.getId_plato() + ", " + foodRepo.findByNameAlimento(ingrediente.getKey()).getIdAlimento()
-						+ "," + ingrediente.getValue() + ");");
+						+ "," + ingrediente.getValue() + ", " + dtf.format(now) + ");");
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -1122,7 +1153,7 @@ public class ControllerMVC {
 			model.addObject("menuName", menuRepo.findById(id_menu).get().getNombre_menu());
 			Menu menu = menuRepo.findById(id_menu).get();
 			MenuObj menuObj = new MenuObj();
-			
+
 			menuObj.setDate_publish(menu.getFecha_publicacion());
 			menuObj.setName_menu(menu.getNombre_menu());
 			try {
@@ -1261,7 +1292,7 @@ public class ControllerMVC {
 
 			Menu menu = menuRepo.findById(id_menu).get();
 			MenuObj menuObj = new MenuObj();
-			
+
 //			menuObj.setDate_publish(menu.getFecha_publicacion());
 			menuObj.setName_menu(menu.getNombre_menu());
 			model.addObject("menuObj", menuObj);
@@ -1298,7 +1329,7 @@ public class ControllerMVC {
 				rs.close();
 
 				GroupalDish groupalDish = new GroupalDish();
-				
+
 				groupalDish.setDate_publish(menu.getFecha_publicacion());
 				groupalDish.setName_menu(menu.getNombre_menu());
 //				groupalDish.setId_menu(menu.getId_menu());
@@ -1321,7 +1352,7 @@ public class ControllerMVC {
 	public ModelAndView editarMenu_user(@PathVariable("id_menu") int id_menu) {
 		ModelAndView model = new ModelAndView();
 		model.addObject("menuName", menuRepo.findById(id_menu).get().getNombre_menu());
-		
+
 		if (menuRepo.findById(id_menu).get().getDescripcion().equals("Menú individual")) {
 
 			model.setViewName("editar_menu_user");
@@ -1340,7 +1371,6 @@ public class ControllerMVC {
 
 				while (rs1.next()) {
 					Integer id_plato = rs1.getInt(1);
-					String nombre_plato = rs1.getString(2);
 					Integer id_tipo_plato = rs1.getInt(3);
 
 					if (id_tipo_plato == 1) {
@@ -1815,7 +1845,7 @@ public class ControllerMVC {
 			ComponentsDishTable componentDishTable = new ComponentsDishTable();
 
 			componentDishTable.setNameComponent(componente.getKey());
-			componentDishTable.setAmount(componente.getValue());
+			componentDishTable.setAmount(componente.getValue().toString());
 
 			GroupUnitObj groupUnitObj = mapComponentsIngredient.get(componente.getKey());
 
@@ -2221,11 +2251,11 @@ public class ControllerMVC {
 		}
 
 		GroupalDish groupalDish = new GroupalDish();
-		
+
 		model.addObject("groupalDish", groupalDish);
 		model.addObject("id_menu", menu_grupal.getId_menu());
 		mostrarEmpresa(model);
-		
+
 		return model;
 	}
 
@@ -2876,7 +2906,7 @@ public class ControllerMVC {
 	@GetMapping({ "/editor/alergenos_menu_individual/{id_menu}" })
 	public ModelAndView alergenosMenusIndividualesAdmin(@PathVariable("id_menu") int id_menu) {
 		ModelAndView model = new ModelAndView("alergenos_menu_admin_ind");
-		
+
 		model.addObject("menuName", menuRepo.findById(id_menu).get().getNombre_menu());
 		Map<String, String> mapAlergensMenu = obtenerAlergenosMenu(id_menu);
 		model.addObject("mapAlergensMenu", mapAlergensMenu);
@@ -2887,15 +2917,15 @@ public class ControllerMVC {
 
 	@GetMapping({ "/user/alergenos_menu_individual/{id_menu}" })
 	public ModelAndView alergenosMenusIndividuales(@PathVariable("id_menu") int id_menu) {
-		
+
 		ModelAndView model = new ModelAndView("alergenos_menu_individual");
-		
+
 		Map<String, String> mapAlergensMenu = obtenerAlergenosMenu(id_menu);
 		model.addObject("mapAlergensMenu", mapAlergensMenu);
 		model.addObject("id_menu", id_menu);
 		model.addObject("menuName", menuRepo.findById(id_menu).get().getNombre_menu());
 		mostrarEmpresa(model);
-		
+
 		return model;
 	}
 
@@ -2906,7 +2936,7 @@ public class ControllerMVC {
 		model.addObject("id_menu", id_menu);
 		model.addObject("menuName", menuRepo.findById(id_menu).get().getNombre_menu());
 		mostrarEmpresa(model);
-		
+
 		Map<String, String> mapAlergensMenu = new HashMap<String, String>();
 
 		if (menuObj.getFirst_dish() != null) {
@@ -2942,7 +2972,7 @@ public class ControllerMVC {
 	@RequestMapping({ "/editor/alergenos_menu_colectivo/{id_menu}" })
 	public ModelAndView alergenosMenusColectivosAdmin(MenuObj menuObj, @PathVariable("id_menu") int id_menu) {
 		ModelAndView model = new ModelAndView("alergenos_menu_admin");
-		
+
 		model.addObject("menuName", menuRepo.findById(id_menu).get().getNombre_menu());
 
 		Map<String, String> mapAlergensMenu = new HashMap<String, String>();
@@ -2982,7 +3012,7 @@ public class ControllerMVC {
 	public ModelAndView escogerPlatosMenuGrupalAlergenos(@PathVariable("id_menu") int id_menu) {
 
 		ModelAndView model = new ModelAndView("escoger_platos_menu_grupal_alergenos");
-		
+
 		model.addObject("menuName", menuRepo.findById(id_menu).get().getNombre_menu());
 
 		List<Map<Integer, String>> listMapsTypeDishes = getListMapsTypeDishes(id_menu);
@@ -3260,6 +3290,29 @@ public class ControllerMVC {
 			ComponentsDishTable componentsDishTable = listComponentsDish.get(i);
 
 			if (componentsDishTable.getGroupComponent().equals("Proximales")) {
+
+				if (componentsDishTable.getNameComponent().equals("energía, total")) {
+					Float f = 0.0f;
+					f = Float.parseFloat(componentsDishTable.getAmount());
+
+					Integer quantityInt = f.intValue();
+					Integer quantityIntJul = (Integer) ((int) (quantityInt * 4.184));
+
+					componentsDishTable.setAmount(quantityInt.toString() + " / " + quantityIntJul.toString());
+
+					componentsDishTable.setUnit("kCal / kJul");
+
+//					etiquetaNutricional.put("Valor energético", quantityInt.toString() + " kCal " + " / "
+//							+ quantityIntJul.toString() + " kJul");
+					int a = 0;
+//					Integer kCal = Integer.valueOf((int) f);
+
+//					Integer kJul = (int) (kCal * 4.184);
+//					String amount = kCal.toString() + " kCal / " + kJul.toString() + " kJul";
+
+//					componentsDishTable.setAmount(amount);
+				}
+
 				componentsDishTableProximal.add(componentsDishTable);
 
 			} else if (componentsDishTable.getGroupComponent().equals("Hidratos de Carbono")) {
@@ -3297,29 +3350,82 @@ public class ControllerMVC {
 		return listComponentsDishOrdered;
 	}
 
-	public Map<String, Double> calculoProximales(Map<String, List<ComponentsDishTable>> mapComponents) {
+	public Map<String, String> calculoProximales(Map<String, List<ComponentsDishTable>> mapComponents) {
 
-		Map<String, Double> valoresProximales = new HashMap<String, Double>();
+		Map<String, String> valoresProximales = new HashMap<String, String>();
 
 		Double valorProteína = Double.valueOf(0);
-		Double valorEnergético = Double.valueOf(0);
+//		Double valorEnergético = Double.valueOf(0);
 		Double valorGrasa = Double.valueOf(0);
 
 		for (ComponentsDishTable componentsDishTable : mapComponents.get("proximales")) {
 
 			if (componentsDishTable.getNameComponent().equals("proteina, total")) {
-				valorProteína += componentsDishTable.getAmount();
+				valorProteína += Double.parseDouble(componentsDishTable.getAmount());
 
 			} else if (componentsDishTable.getNameComponent().equals("energía, total")) {
-				valorEnergético += componentsDishTable.getAmount();
+
+//				Float fl = 0.00f;
+//				fl = Float.parseFloat(componentsDishTable.getAmount());
+//
+//				Integer quantityInt = fl.intValue();
+//				Integer quantityIntJul = (Integer) ((int) (quantityInt * 4.184));
+
+				valoresProximales.put("Valor energético", componentsDishTable.getAmount());
+
+//				Float integ = Float.parseFloat(componentsDishTable.getAmount());
+//				Integer quantityInt = integ.intValue();
+//				Integer quantityIntJul = (Integer) ((int) (quantityInt * 4.184));
+//				valoresProximales.put("Valor energético", quantityInt.toString() + " kCal " + " / "
+//						+ quantityIntJul.toString() + " kJul");
+
+//				Float f = 0.0f;
+//				f = Float.parseFloat(componentsDishTable.getAmount());
+//
+//				Integer quantityInt = f.intValue();
+//				Integer quantityIntJul = (Integer) ((int) (quantityInt * 4.184));
+
+//				componentsDishTable
+//						.setAmount(quantityInt.toString() + "kCal / " + quantityIntJul.toString() + "kJul");
+
+//				valoresProximales.put("Valor energético",
+//						quantityInt.toString() + "kCal / " + quantityIntJul.toString() + "kJul");
+
+//				Float integ = 0.0f;
+//				integ = Float.parseFloat(componentsDishTable.getAmount());
+//				Integer quantityInt = integ.intValue();
+//				Integer quantityIntJul = (Integer) ((int) (quantityInt * 4.184));
+//
+//				componentsDishTable.setAmount(quantityInt + "kCal / " + quantityIntJul + " kJul");
+
+//				valoresProximales.put("proteina", valorProteína.toString());
+//				valoresProximales.put("Valor energético",
+//						quantityInt.toString() + " kCal " + " / " + quantityIntJul.toString() + " kJul");
+
+//				Double integ = Double.parseDouble(componentsDishTable.getAmount());
+//				Integer quantityInt = integ.intValue();
+//				Integer quantityIntJul = (Integer) ((int) (quantityInt * 4.184));
+//				
+//				valoresProximales.put("Valor energético", quantityInt + " kCal /" + quantityIntJul + " kJul");
+
+//				etiquetaNutricional.put("Valor energético", quantityInt.toString() + " kCal " + " / "
+//						+ quantityIntJul.toString() + " kJul");
+
+//				float valorEnergético =  Integer.(componentsDishTable.getAmount());
+				int a = 0;
+//				Integer value = Integer.valorEnergético;
+//				Integer valueKJul = (int)(valorEnergético * 4.184);
+
+//				valoresProximales.put("energiaKcal", value.toString());
+//				valoresProximales.put("energiaKjul", valueKJul.toString());
 
 			} else if (componentsDishTable.getNameComponent().equals("grasa, total (lipidos totales)")) {
-				valorGrasa += componentsDishTable.getAmount();
+				valorGrasa += Double.parseDouble(componentsDishTable.getAmount());
 			}
 		}
-		valoresProximales.put("proteina", valorProteína);
-		valoresProximales.put("energia", valorEnergético);
-		valoresProximales.put("grasa", valorGrasa);
+
+		valoresProximales.put("proteina", valorProteína.toString());
+		valoresProximales.put("grasa", valorGrasa.toString());
 
 		return valoresProximales;
 	}
@@ -3328,18 +3434,18 @@ public class ControllerMVC {
 		Map<String, Double> valoresHC = new HashMap<String, Double>();
 
 		Double valorOtrosHC = Double.valueOf(0);
-		Double valorFibra =  Double.valueOf(0);
+		Double valorFibra = Double.valueOf(0);
 		Double valorAzúcar = Double.valueOf(0);
 
 		for (ComponentsDishTable componentsDishTable : mapComponents.get("hc")) {
 
 			if (componentsDishTable.getNameComponent().equals("fibra, dietetica total")) {
-				valorFibra += componentsDishTable.getAmount();
+				valorFibra += Double.parseDouble(componentsDishTable.getAmount());
 
 			} else if (componentsDishTable.getNameComponent().equals("azucares, totales")) {
-				valorAzúcar += componentsDishTable.getAmount();
+				valorAzúcar += Double.parseDouble(componentsDishTable.getAmount());
 			} else {
-				valorOtrosHC += componentsDishTable.getAmount();
+				valorOtrosHC += Double.parseDouble(componentsDishTable.getAmount());
 			}
 		}
 
@@ -3355,32 +3461,137 @@ public class ControllerMVC {
 		for (ComponentsDishTable componentsDishTable : mapComponents.get("grasas")) {
 
 			if (componentsDishTable.getNameComponent().contains("ácidos grasos")) {
-				acGrasos += componentsDishTable.getAmount();
+				acGrasos += Double.parseDouble(componentsDishTable.getAmount());
 
 			}
 		}
 		return acGrasos;
 	}
 
+	public Map<String, String> calculoEtiquetaNutricional(Map<String, List<ComponentsDishTable>> mapComponents) {
+
+		Map<String, String> etiquetaNutricional = new HashMap<String, String>();
+		Float cantidadHC = 0.00f;
+
+		for (Entry<String, List<ComponentsDishTable>> listGroupComponents : mapComponents.entrySet()) {
+
+			if (!listGroupComponents.getKey().equals("vitaminas")) {
+				if (listGroupComponents.getKey().equals("grasas")) {
+
+					List<ComponentsDishTable> listFat = listGroupComponents.getValue();
+
+					for (int i = 0; i < listFat.size(); i++) {
+						ComponentsDishTable component = listFat.get(i);
+						if (component.getNameComponent().equals("ácidos grasos saturados totales")) {
+
+							etiquetaNutricional.put("de las cuales saturadas",
+									component.getAmount() + " " + component.getUnit());
+//						} else if (component.getNameComponent().equals("ácidos grasos, poliinsaturados totales")) {
+//							etiquetaNutricional.put("Grasas poliinsaturada",
+//									component.getAmount() + " " + component.getUnit());
+//						} else if (component.getNameComponent().equals("ácidos grasos, monoinsaturados totales")) {
+//							etiquetaNutricional.put("Grasas monoinsaturada",
+//									component.getAmount() + " " + component.getUnit());
+//						} else if (component.getNameComponent().equals("ácidos grasos, trans totales")) {
+//							etiquetaNutricional.put("Grasas trans", component.getAmount() + " " + component.getUnit());
+						} else if (component.getNameComponent().equals("colesterol")) {
+							etiquetaNutricional.put("Colesterol", component.getAmount() + " " + component.getUnit());
+						}
+					}
+//					listFatOrdered.add(etiquetaNutricional.get("Grasas saturadas"));
+
+				} else if (listGroupComponents.getKey().equals("hc")) {
+
+					for (int i = 0; i < listGroupComponents.getValue().size(); i++) {
+						ComponentsDishTable component = listGroupComponents.getValue().get(i);
+						if (component.getNameComponent().equals("fibra, dietetica total")) {
+							etiquetaNutricional.put("Fibra", component.getAmount() + " " + component.getUnit());
+						} else if (component.getNameComponent().equals("azucares, totales")) {
+							etiquetaNutricional.put("Azúcares", component.getAmount() + " " + component.getUnit());
+						} else if (component.getNameComponent().equals("carbohidratos")) {
+
+						}
+						cantidadHC += Float.parseFloat(component.getAmount());
+					}
+					etiquetaNutricional.put("Hidratos de Carbono", cantidadHC.toString() + " g");
+
+				} else if (listGroupComponents.getKey().equals("proximales")) {
+					for (int i = 0; i < listGroupComponents.getValue().size(); i++) {
+
+						ComponentsDishTable component = listGroupComponents.getValue().get(i);
+
+						if (component.getNameComponent().equals("grasa, total (lipidos totales)")) {
+
+							etiquetaNutricional.put("Grasas", component.getAmount() + " " + component.getUnit());
+						} else if (component.getNameComponent().equals("proteina, total")) {
+							etiquetaNutricional.put("Proteínas", component.getAmount() + " " + component.getUnit());
+						} else if (component.getNameComponent().equals("energía, total")) {
+
+							try {
+//								Float integ = Float.parseFloat(component.getAmount());
+//								Integer quantityInt = integ.intValue();
+//								Integer quantityIntJul = (Integer) ((int) (quantityInt * 4.184)); 
+								etiquetaNutricional.put("Valor energético", component.getAmount() + "  kCal / kJul");
+							} catch (NumberFormatException ex) {
+								ex.printStackTrace();
+							}
+
+						}
+					}
+				} else if (listGroupComponents.getKey().equals("minerales")) {
+					for (int i = 0; i < listGroupComponents.getValue().size(); i++) {
+
+						ComponentsDishTable component = listGroupComponents.getValue().get(i);
+
+						if (component.getNameComponent().equals("sal")) {
+							etiquetaNutricional.put("Sal", component.getAmount() + " " + component.getUnit());
+						}
+					}
+				}
+			}
+		}
+
+		return etiquetaNutricional;
+	}
+
+	public Map<String, String> ordenarComponentesNutri(Map<String, String> etiquetaNutri) {
+
+		Map<String, String> etiquetaFinal = new LinkedHashMap<String, String>();
+
+		etiquetaFinal.put("Valor energético", etiquetaNutri.get("Valor energético"));
+		etiquetaFinal.put("Proteínas", etiquetaNutri.get("Proteínas"));
+		etiquetaFinal.put("Hidratos de Carbono", etiquetaNutri.get("Hidratos de Carbono"));
+		etiquetaFinal.put("Grasas", etiquetaNutri.get("Grasas"));
+		etiquetaFinal.put("de las cuales saturadas", etiquetaNutri.get("de las cuales saturadas"));
+		etiquetaFinal.put("Colesterol", etiquetaNutri.get("Colesterol"));
+		etiquetaFinal.put("Fibra", etiquetaNutri.get("Fibra"));
+		etiquetaFinal.put("Azúcares", etiquetaNutri.get("Azúcares"));
+
+		return etiquetaFinal;
+	}
+
 	@RequestMapping("/editor/ComponentesDish/{id_plato}")
 	public ModelAndView componentesPlato(@PathVariable("id_plato") int id_plato) {
 
 		ModelAndView model = new ModelAndView("componentes_plato_admin");
-		
+
 		model.addObject("dishName", dishRepo.findById(id_plato).get().getNombre_plato());
 
 		List<ComponentsDishTable> listComponentsDish = obtenerBDcomponentesPlato(id_plato);
 
 		Map<String, List<ComponentsDishTable>> mapComponents = clasificarComponentes(listComponentsDish);
 
-		Map<String, Double> valoresProximales = calculoProximales(mapComponents);
+		Map<String, String> valoresProximales = calculoProximales(mapComponents);
+//		Map<String, String> mapaComponentes = calculoEtiquetaNutricional(mapComponents);
 		Map<String, Double> valoresHC = calculoHC(mapComponents);
 
 		Double hcTotales = valoresHC.get("fibra") + valoresHC.get("azucar") + valoresHC.get("otrosHC");
 		Double acGrasos = calcularAcGrasos(mapComponents);
 
-		double proporcionGrasas = valoresProximales.get("grasa") * 9;
-		double proporcionProteinas = valoresProximales.get("proteina") * 4;
+//		calculoEtiquetaNutricional(valoresProximales);
+
+		double proporcionGrasas = Double.valueOf(valoresProximales.get("grasa")) * 9;
+		double proporcionProteinas = Double.valueOf(valoresProximales.get("proteina")) * 4;
 		double proporcionHC = hcTotales * 4;
 		double proporcionValorOtrosHC = valoresHC.get("otrosHC") * 4;
 
@@ -3388,12 +3599,16 @@ public class ControllerMVC {
 		double proporcionValorAzúcar = valoresHC.get("azucar") * 4;
 		double proporcionAcGrasos = acGrasos * 9;
 
-		double total = valoresProximales.get("energia") + proporcionGrasas + proporcionProteinas + proporcionHC;
+		double total = /* valoresProximales.get("energia") + */ proporcionGrasas + proporcionProteinas + proporcionHC;
 
-		List<ComponentsDishTable> listComponentsDishOrdered = ordenarPorUnidad(mapComponents);
+//		List<ComponentsDishTable> listComponentsDishOrdered = ordenarPorUnidad(mapComponents);
+
+		Map<String, String> etiquetaNutri = calculoEtiquetaNutricional(mapComponents);
+
+		Map<String, String> map = ordenarComponentesNutri(etiquetaNutri);
 
 //		Cargo datos de tabla completa
-		model.addObject("listComponentsDish", listComponentsDishOrdered);
+		model.addObject("listComponentsDish", map);
 
 //		Cargo datos de tablas 
 		model.addObject("componentsDishTableProximal", mapComponents.get("proximales"));
@@ -3406,7 +3621,7 @@ public class ControllerMVC {
 		model.addObject("porcentajeGrasa", calcularPorcentaje(proporcionGrasas, total));
 		model.addObject("porcentajeProteinas", calcularPorcentaje(proporcionProteinas, total));
 		model.addObject("porcentajeHC", calcularPorcentaje(proporcionHC, total));
-		model.addObject("porcentajeEnergia", calcularPorcentaje(valoresProximales.get("energia"), total));
+//		model.addObject("porcentajeEnergia", calcularPorcentaje(valoresProximales.get("energia"), total));
 		model.addObject("porcentajeOtrosHC", calcularPorcentaje(proporcionValorOtrosHC, total));
 		model.addObject("porcentajeFibra", calcularPorcentaje(proporcionValorFibra, total));
 		model.addObject("porcentajeAzucar", calcularPorcentaje(proporcionValorAzúcar, total));
@@ -3454,11 +3669,16 @@ public class ControllerMVC {
 
 					boolean flag = false;
 					for (int k = 0; k < listComponentsDishAux.size(); k++) {
-						if (listComponentsDishAux.get(k).getNameComponent().equals(listComponentsDish.get(j).getNameComponent())) {
+						if (listComponentsDishAux.get(k).getNameComponent()
+								.equals(listComponentsDish.get(j).getNameComponent())) {
 							flag = true;
-							listComponentsDishAux.get(k).setAmount(round(listComponentsDishAux.get(k).getAmount() + listComponentsDish.get(j).getAmount(), 2));
+							Double db = round(Double.parseDouble(listComponentsDishAux.get(k).getAmount())
+									+ Double.parseDouble(listComponentsDish.get(j).getAmount()), 2);
+
+							listComponentsDishAux.get(k).setAmount(db.toString());
 						}
 					}
+
 					if (!flag) {
 						listComponentsDishAux.add(listComponentsDish.get(j));
 
@@ -3489,14 +3709,14 @@ public class ControllerMVC {
 
 		Map<String, List<ComponentsDishTable>> mapComponents = clasificarComponentes(
 				obtenerComponentesMenuGrupal(listDishes));
-		Map<String, Double> valoresProximales = calculoProximales(mapComponents);
+		Map<String, String> valoresProximales = calculoProximales(mapComponents);
 		Map<String, Double> valoresHC = calculoHC(mapComponents);
 
 		Double hcTotales = valoresHC.get("fibra") + valoresHC.get("azucar") + valoresHC.get("otrosHC");
 		Double acGrasos = calcularAcGrasos(mapComponents);
 
-		Double proporcionGrasas = valoresProximales.get("grasa") * 9;
-		Double proporcionProteinas = valoresProximales.get("proteina") * 4;
+		Double proporcionGrasas = Double.valueOf(valoresProximales.get("grasa")) * 9;
+		Double proporcionProteinas = Double.valueOf(valoresProximales.get("proteina")) * 4;
 		Double proporcionHC = hcTotales * 4;
 		Double proporcionValorOtrosHC = valoresHC.get("otrosHC") * 4;
 
@@ -3504,12 +3724,12 @@ public class ControllerMVC {
 		Double proporcionValorAzúcar = valoresHC.get("azucar") * 4;
 		Double proporcionAcGrasos = acGrasos * 9;
 
-		Double total = /*valoresProximales.get("energia") +*/ proporcionGrasas + proporcionProteinas + proporcionHC;
+		Double total = /* valoresProximales.get("energia") + */ proporcionGrasas + proporcionProteinas + proporcionHC;
 
 		List<ComponentsDishTable> listComponentsDishOrdered = ordenarPorUnidad(mapComponents);
 
 //		Cargo datos de tabla completa
-		model.addObject("listComponentsDish", listComponentsDishOrdered);
+//		model.addObject("listComponentsDish", listComponentsDishOrdered);
 
 //		Cargo datos de tablas 
 		model.addObject("componentsDishTableProximal", mapComponents.get("proximales"));
@@ -3549,7 +3769,7 @@ public class ControllerMVC {
 	public ModelAndView componentesMenuColectivo_user(MenuObj menuObj, @PathVariable("id_menu") int id_menu) {
 
 		ModelAndView model = new ModelAndView("componentes_plato");
-		model.addObject("menuName",menuRepo.findById(id_menu).get().getNombre_menu());
+		model.addObject("menuName", menuRepo.findById(id_menu).get().getNombre_menu());
 		model.addObject("id_menu", id_menu);
 		obtenerComponentesMenucolectivo(menuObj, model);
 		return model;
@@ -3587,14 +3807,14 @@ public class ControllerMVC {
 
 		Map<String, List<ComponentsDishTable>> mapComponents = clasificarComponentes(
 				obtenerComponentesMenuGrupal(listDishes));
-		Map<String, Double> valoresProximales = calculoProximales(mapComponents);
+		Map<String, String> valoresProximales = calculoProximales(mapComponents);
 		Map<String, Double> valoresHC = calculoHC(mapComponents);
 
 		Double hcTotales = valoresHC.get("fibra") + valoresHC.get("azucar") + valoresHC.get("otrosHC");
 		Double acGrasos = calcularAcGrasos(mapComponents);
 
-		Double proporcionGrasas = valoresProximales.get("grasa") * 9;
-		Double proporcionProteinas = valoresProximales.get("proteina") * 4;
+		Double proporcionGrasas = Double.valueOf(valoresProximales.get("grasa")) * 9;
+		Double proporcionProteinas = Double.valueOf(valoresProximales.get("proteina")) * 4;
 		Double proporcionHC = hcTotales * 4;
 		Double proporcionValorOtrosHC = valoresHC.get("otrosHC") * 4;
 
@@ -3602,7 +3822,7 @@ public class ControllerMVC {
 		Double proporcionValorAzúcar = valoresHC.get("azucar") * 4;
 		Double proporcionAcGrasos = acGrasos * 9;
 
-		Double total = /*valoresProximales.get("energia") +*/ proporcionGrasas + proporcionProteinas + proporcionHC;
+		Double total = /* valoresProximales.get("energia") + */ proporcionGrasas + proporcionProteinas + proporcionHC;
 
 		List<ComponentsDishTable> listComponentsDishOrdered = ordenarPorUnidad(mapComponents);
 
@@ -3655,7 +3875,22 @@ public class ControllerMVC {
 
 		for (ComponentsDishTable componentsDishTable : componentsDishTableVitaminas) {
 			if (componentsDishTable.getUnit().equals("kcal") || componentsDishTable.getUnit().equals("kj(kcal)")) {
-				componentsDishTableKcal.add(componentsDishTable);
+
+				ComponentsDishTable componentsDishTable_1 = new ComponentsDishTable();
+
+				Double toKJul = 4.184;
+				Double res = Double.parseDouble(componentsDishTable.getAmount()) * toKJul;
+				Double res_1 = Double.parseDouble(componentsDishTable.getAmount());
+
+				Integer intkJul = res.intValue();
+				Integer intkCal = res_1.intValue();
+
+				componentsDishTable_1.setAmount(intkCal.toString() + " / " + intkJul.toString());
+				componentsDishTable_1.setUnit("kCal / kJul");
+				componentsDishTable_1.setGroupComponent(componentsDishTable.getGroupComponent());
+				componentsDishTable_1.setNameComponent(componentsDishTable.getNameComponent());
+
+				componentsDishTableKcal.add(componentsDishTable_1);
 
 			} else if (componentsDishTable.getUnit().equals("g")) {
 				componentsDishTableG.add(componentsDishTable);

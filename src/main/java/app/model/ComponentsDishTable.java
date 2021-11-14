@@ -4,10 +4,10 @@ public class ComponentsDishTable {
 
 	public String groupComponent;
 	public String nameComponent;
-	public Double amount;
+	public String amount;
 	public String unit;
 
-	public ComponentsDishTable(String groupComponent, String nameComponent, Double amount, String unit) {
+	public ComponentsDishTable(String groupComponent, String nameComponent, String amount, String unit) {
 		this.groupComponent = groupComponent;
 		this.nameComponent = nameComponent;
 		this.amount = amount;
@@ -34,11 +34,11 @@ public class ComponentsDishTable {
 		this.nameComponent = nameComponent;
 	}
 
-	public Double getAmount() {
+	public String getAmount() {
 		return amount;
 	}
 
-	public void setAmount(Double amount) {
+	public void setAmount(String amount) {
 		this.amount = amount;
 	}
 

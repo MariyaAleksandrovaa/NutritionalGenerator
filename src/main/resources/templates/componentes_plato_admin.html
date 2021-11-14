@@ -70,7 +70,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 				<nav aria-label="breadcrumb">
 				  <ol class="breadcrumb" style="background-color:#ffffff;font-size:1.5em;margin-bottom:40px;">
 				  	<li class="breadcrumb-item"><a th:href="@{/editor}">Página principal</a></li>
-				    <li class="breadcrumb-item active">Información nutricional del menú</li>
+				    <li class="breadcrumb-item active">Información nutricional del plato</li>
 				  </ol>
 				</nav>
 				
@@ -93,13 +93,37 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 						<label for="exampleInputEmail1" th:text="${name_menu}" style="font-size: 2em;margin-bottom: 30px;margin-top: 30px;"></label>
 					    <div id="container" style="margin-bottom:40px;"></div>
 					    
-						<b th:text="'Energía:   ' + ${porcentajeEnergia} + '%' " style="margin-left:20px;color:#00b347;font-size:1.5em;"> </b>
 						<b th:text="'Hidratos de carbono:   ' + ${porcentajeHC} + '%' " style="margin-left:20px;color:#964B00;font-size:1.5em;"> </b>
 						<b th:text="'Proteínas:   ' + ${porcentajeProteinas} + '%' " style="margin-left:20px;color:#4169E1;font-size:1.5em;"> </b>
 						<b th:text="'Grasas:   ' + ${porcentajeGrasa} + '%' " style="margin-left:20px;color:#8A2BE2;font-size:1.5em;"> </b>
 					
 					</div>
+					
+					
 					<div role="tabpanel" class="tab-pane " id="seccion2">
+						<label for="exampleInputEmail1" th:text="${name_menu}" style="font-size: 2em;margin-bottom: 30px;margin-top: 30px;"></label>
+					
+						<div class ="row" style="display:flex;justify-content:center;padding:0px 250px 0px 250px;">
+<!-- 							<div style="width:40%;display:flex;justify-content:center;"> -->
+								<table class="table" style = "margin-top:30px;">
+									
+								  <thead>
+								    <tr >
+								      <th scope="col">Nombre componente</th>
+								      <th scope="col" style="width:30%;">Cantidad </th>
+								    </tr>
+								  </thead>
+								  <tbody id="completeTable">
+								    <tr th:each="componente: ${listComponentsDish}">
+					                    <td th:text="${componente.key}">Grupo componente</td>
+					                    <td th:text="${componente.value}" style="width:30%;">Nombre componente</td>
+								    </tr>
+								  </tbody>
+								</table>
+<!-- 							</div> -->
+						</div>
+					</div>
+					<div role="tabpanel" class="tab-pane " id="seccion3">
 						<label for="exampleInputEmail1" th:text="${name_menu}" style="font-size: 2em;margin-bottom: 30px;margin-top: 30px;"></label>
 						
 						
@@ -218,31 +242,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 							</table>
 						</div>
 					</div>
-					<div role="tabpanel" class="tab-pane " id="seccion3">
-						<label for="exampleInputEmail1" th:text="${name_menu}" style="font-size: 2em;margin-bottom: 30px;margin-top: 30px;"></label>
-					
-						<div class ="row">
-							<table class="table" style = "margin-top:30px">
-								
-							  <thead>
-							    <tr >
-								  <th scope="col">Grupo componente</th>
-							      <th scope="col">Nombre componente</th>
-							      <th scope="col">Cantidad </th>
-							      <th scope="col">Unidad</th>
-							    </tr>
-							  </thead>
-							  <tbody id="completeTable">
-							    <tr th:each="componente: ${listComponentsDish}">
-				                    <td th:text="${componente.groupComponent}">Grupo componente</td>
-				                    <td th:text="${componente.nameComponent}">Nombre componente</td>
-				                    <td th:text="${componente.amount}">Cantidad</td>
-				                    <td th:text="${componente.unit}">Unidad</td>
-							    </tr>
-							  </tbody>
-							</table>
-						</div>
-					</div>
+
 				
 			</div>
 				
@@ -442,10 +442,40 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	        case "Grasas":
 		           color = "#FADB44" ;
 		           break;
+	        case "Colesterol":
+		           color = "#FADB44" ;
+		           break;
+	        case "Grasas saturadas":
+		           color = "#FADB44" ;
+		           break;
+	        case "Grasas monoinsaturada":
+		           color = "#FADB44" ;
+		           break;
+	        case "Grasas trans":
+		           color = "#FADB44" ;
+		           break;		
+	        case "Grasas poliinsaturada":
+		           color = "#FADB44" ;
+		           break;
+		           
+	        case "de las cuales saturadas":
+		           color = "#FADB44" ;
+		           break;
+	        case "Valor energético":
+		           color = "#E0E0E0" ;
+		           break;		
+	        case "Fibra":
+		           color = "#CCFF99" ;
+		           break;			           
 	        case "Hidratos de Carbono":
 		           color = "#FAB8AA" ;
 		           break;
-		           
+	        case "Azúcares":
+		           color = "#F1C7FF" ;
+		           break;		   
+	        case "Proteínas":
+		           color = "#99CCFF" ;
+		           break;			           
 	        case "Vitaminas":
 		           color = "#95F59A" ;
 		           break;
