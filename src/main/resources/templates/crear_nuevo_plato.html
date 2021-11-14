@@ -78,7 +78,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 							method="post" >
 							
 						    <div class="form-group" style="margin-top:25px;">
-						    	<label for="exampleInputEmail1" >Nombre del plato</label>
+						    	<label for="exampleInputEmail1" >Nombre del plato*</label>
 						    	<input type="text" class="form-control" id="id_cif" th:field="*{nombre_plato}"  style="margin-top:8px;width:60%;" aria-describedby="emailHelp" placeholder="Introduce nombre que le quieras dar al plato" required>
 						    </div>
 						    <div class="form-group">
@@ -87,16 +87,18 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 						    </div>
 							
 							<div class="form-group" style="margin-top:30px;">
-								<label for="exampleInputEmail1">Escoge el tipo de plato</label> 
-								<select class="form-select" th:field="*{typeDish}" aria-label="Default select example" style="margin-top:10px;width:60%">
-<!-- 									<option selected th:value="${select}">Escoge una empresa</option> -->
+								<label for="exampleInputEmail1">Escoge el tipo de plato*</label> 
+								<select class="form-select" th:field="*{typeDish}" aria-label="Default select example" style="margin-top:10px;width:60%;height:34px;" required>
+									<option selected value="">Escoge el tipo de plato</option>
 									<option th:each="typeDish:${listTypeDishes}"
 										th:value="${typeDish.id_tipos_platos}"
 										th:text="${typeDish.descripcion}"
 									/>
 								</select>
 							</div>
-	
+							<div style="width:100%;height:30px;"> 
+								<small id="emailHelp" class="form-text text-muted">(*) Campos obligatorios</small>
+							</div>
 							<button type="submit" class="btn btn-primary">Proceder a escoger ingredientes</button>
 						</form>
 					</div>

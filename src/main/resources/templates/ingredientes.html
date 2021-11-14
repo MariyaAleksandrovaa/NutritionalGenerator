@@ -33,6 +33,15 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> -->
 <!-- //js -->
 
+<style>
+	botonesOpcion{
+		display:flex;
+		justify-content:right;
+		font-size:15px;
+		flex-direction: column;
+	}
+</style>
+
 <!-- web-fonts -->   
 <link href="//fonts.googleapis.com/css?family=Playfair+Display:400,400i,700,700i,900,900i" rel="stylesheet">
 <!-- //web-fonts -->
@@ -68,10 +77,11 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 				    <li class="breadcrumb-item active">Escoger ingredientes plato</li>
 				  </ol>
 				</nav>		
-		  
-						<a th:href="@{/editor/terminarPlato}" class="btn btn-info btn-lg" style="margin-bottom:35px;background-color: #6c757d;margin-left:91%;font-size:1.5rem;border-color: #6c757d;color:#ffffff;">Terminar plato</a>
-						<a th:href="@{'/editor/cancelar_nuevo_plato/' + ${id_plato}}" class="btn btn-info btn-lg" style="margin-bottom:35px;margin-left:91%;font-size:1.5rem;background-color:#FF3333;border-color:#FF3333;color:#ffffff;">Cancelar plato</a>
-						<a th:href="@{'/editor/ver_ingredientes_plato/' + ${id_plato}}" class="btn btn-info btn-lg" style="margin-bottom:35px;margin-left:91%;font-size:0.9rem;background-color:#728FCE;border-color:#728FCE;color:#ffffff;">Ver ingredientes actuales</a>
+		  				<div class="botonesOpcion">
+		  					<a th:href="@{/editor/terminarPlato}" class="btn btn-info btn-lg" style="margin-right:15px;margin-bottom:35px;background-color: #6c757d;border-color: #6c757d;color:#ffffff;">Terminar plato</a>
+							<a th:href="@{'/editor/cancelar_nuevo_plato/' + ${id_plato}}" class="btn btn-info btn-lg" style="margin-right:15px;margin-bottom:35px;background-color:#FF3333;border-color:#FF3333;color:#ffffff;">Cancelar plato</a>
+							<a th:href="@{'/editor/ver_ingredientes_plato/' + ${id_plato}}" class="btn btn-info btn-lg" style="margin-bottom:35px;background-color:#728FCE;border-color:#728FCE;color:#ffffff;">Ver ingredientes actuales</a>
+						</div>
 						<div class="row justify-content-start">
 							<div class="col-12">
 								<input class="form-control" id="myInput" type="text" placeholder="Busca alimento">
@@ -84,8 +94,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 								  <th scope="col">Grupo</th>
 							      <th scope="col">Nombre</th>
 							      <th scope="col">Nombre en inglés</th>
-							      <th scope="col">Operacion</th>
-							      
+							      <th scope="col">Operación</th>
 							    </tr>
 							  </thead>
 							  <tbody id="myTable">
