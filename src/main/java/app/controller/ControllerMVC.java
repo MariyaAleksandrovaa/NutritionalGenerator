@@ -3299,20 +3299,9 @@ public class ControllerMVC {
 					Integer quantityIntJul = (Integer) ((int) (quantityInt * 4.184));
 
 					componentsDishTable.setAmount(quantityInt.toString() + " / " + quantityIntJul.toString());
-
 					componentsDishTable.setUnit("kCal / kJul");
 
-//					etiquetaNutricional.put("Valor energético", quantityInt.toString() + " kCal " + " / "
-//							+ quantityIntJul.toString() + " kJul");
-					int a = 0;
-//					Integer kCal = Integer.valueOf((int) f);
-
-//					Integer kJul = (int) (kCal * 4.184);
-//					String amount = kCal.toString() + " kCal / " + kJul.toString() + " kJul";
-
-//					componentsDishTable.setAmount(amount);
 				}
-
 				componentsDishTableProximal.add(componentsDishTable);
 
 			} else if (componentsDishTable.getGroupComponent().equals("Hidratos de Carbono")) {
@@ -3558,16 +3547,27 @@ public class ControllerMVC {
 
 		Map<String, String> etiquetaFinal = new LinkedHashMap<String, String>();
 
-		etiquetaFinal.put("Valor energético", etiquetaNutri.get("Valor energético"));
-		etiquetaFinal.put("Proteínas", etiquetaNutri.get("Proteínas"));
-		etiquetaFinal.put("Hidratos de Carbono", etiquetaNutri.get("Hidratos de Carbono"));
-		etiquetaFinal.put("Grasas", etiquetaNutri.get("Grasas"));
-		etiquetaFinal.put("de las cuales saturadas", etiquetaNutri.get("de las cuales saturadas"));
-		etiquetaFinal.put("Colesterol", etiquetaNutri.get("Colesterol"));
-		etiquetaFinal.put("Fibra", etiquetaNutri.get("Fibra"));
-		etiquetaFinal.put("Azúcares", etiquetaNutri.get("Azúcares"));
+		etiquetaFinal.put("Valor energético", valorEtiqueta(etiquetaNutri, "Valor energético"));
+		etiquetaFinal.put("Proteínas", valorEtiqueta(etiquetaNutri, "Proteínas"));
+		etiquetaFinal.put("Hidratos de Carbono", valorEtiqueta(etiquetaNutri, "Hidratos de Carbono"));
+		etiquetaFinal.put("Grasas", valorEtiqueta(etiquetaNutri, "Grasas"));
+		etiquetaFinal.put("de las cuales saturadas", valorEtiqueta(etiquetaNutri, "de las cuales saturadas"));
+		etiquetaFinal.put("Colesterol", valorEtiqueta(etiquetaNutri, "Colesterol"));
+		etiquetaFinal.put("Fibra", valorEtiqueta(etiquetaNutri, "Fibra"));
+		etiquetaFinal.put("Azúcares", valorEtiqueta(etiquetaNutri, "Azúcares"));
 
 		return etiquetaFinal;
+	}
+
+	public String valorEtiqueta(Map<String, String> etiquetaFinal, String valorEtiqueta) {
+		String valorEtiq = "";
+
+		if (!etiquetaFinal.containsKey(valorEtiqueta)) {
+			valorEtiq = "0,0 g";
+		} else {
+			valorEtiq = etiquetaFinal.get(valorEtiqueta);
+		}
+		return valorEtiq;
 	}
 
 	@RequestMapping("/editor/ComponentesDish/{id_plato}")
