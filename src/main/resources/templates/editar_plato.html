@@ -33,6 +33,32 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> -->
 <!-- //js -->
+<style>
+button {
+    border: 1px #AAA solid;
+    padding: 4px 10px;
+}
+.hide {
+    display: none;
+}
+.close {
+    color: #000000; 
+    font-size: 40px;
+    opacity: 1;
+}
+.modal-body{
+	font-size: 20px;
+    display: flex;
+    justify-content: center;
+    height: 150px;
+    padding: 10% 5%;
+}
+.modal-header{
+	display: flex;
+    justify-content: flex-end;
+    padding-right: 30px;
+}
+</style>
 
 <!-- web-fonts -->   
 <link href="//fonts.googleapis.com/css?family=Playfair+Display:400,400i,700,700i,900,900i" rel="stylesheet">
@@ -69,29 +95,30 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 			  </ol>
 			</nav>
 			<div role="tabpanel">
-				<form th:action="@{'/editor/saveDish/' + ${id_plato}}" th:object="${dish}" method="post" style="width:100%;">
-					  <div class="form-group">
-					    <label for="exampleInputEmail1">Nombre del plato</label>
-					    <input type="text" class="form-control"  th:field="*{nombre_plato}" style="margin-top:8px;"  aria-describedby="emailHelp" placeholder="Introduce nombre de empresa" required>
-					  </div>
-					  <div class="form-group">
-					    <label for="exampleInputEmail1">Descripción del plato</label>
-					    <input type="text" class="form-control"  th:field="*{descripcion}"  style="margin-top:8px;"  aria-describedby="emailHelp" placeholder="Introduce correo electrónico">
-					  </div>					  
-					  <div class="form-group" style="margin-top:25px;">
-					    <label for="exampleInputEmail1" >Tipo de plato</label>
-					    	<select class="form-select" th:field="*{id_tipo_platos}" aria-label="Default select example" style="margin-top:10px;">
-<!-- 										<option th:selected="*{grupo}"></option> -->
+				<div style="display:flex;justify-content:center;">
+					<form th:action="@{'/editor/saveDish/' + ${id_plato}}" th:object="${dish}" method="post" style="width:50%;">
+						  <div class="form-group">
+						    <label for="exampleInputEmail1">Nombre del plato</label>
+						    <input type="text" class="form-control"  th:field="*{nombre_plato}" style="margin-top:8px;"  aria-describedby="emailHelp" placeholder="Introduce nombre de empresa" required>
+						  </div>
+						  <div class="form-group">
+						    <label for="exampleInputEmail1">Descripción del plato</label>
+						    <input type="text" class="form-control"  th:field="*{descripcion}"  style="margin-top:8px;"  aria-describedby="emailHelp" placeholder="Introduce correo electrónico">
+						  </div>					  
+						  <div class="form-group" style="margin-top:25px;">
+						    <label for="exampleInputEmail1" >Tipo de plato</label>
+						    	<select class="form-select" th:field="*{id_tipo_platos}" aria-label="Default select example" style="margin-top:10px;height:34px;">
+									<option th:each="typeDish:${listTypeDish}"
+										th:value="${typeDish.id_tipos_platos}"
+										th:text="${typeDish.descripcion}"
+									/>
+								</select>
+						  </div>
+						<button type="submit" class="btn btn-primary" style="font-size:1.5em;margin-top:3%;">Guardar cambios</button>
+					</form>				
+				</div>
 
-								<option th:each="typeDish:${listTypeDish}"
-									th:value="${typeDish.id_tipos_platos}"
-									th:text="${typeDish.descripcion}"
-								/>
-							</select>
-					  </div>
-					<button type="submit" class="btn btn-primary" style="font-size:1.5em;margin-top:3%;">Guardar cambios</button>
-				</form>
-					<a th:href="@{'/editor/addDish/' + ${id_plato}}" class="btn btn-info btn-lg" style="background-color: #6c757d;border-color: #6c757d;color:#ffffff;;font-size:0.9rem;margin-left: 44%;
+					<a th:href="@{'/editor/addDish/' + ${id_plato}}" class="btn btn-info btn-lg" style="background-color: #6c757d;border-color: #6c757d;color:#ffffff;;font-size:15px;margin-left: 44%;
     margin-top: 2%;
     margin-bottom: 1%;">Añadir nuevo ingrediente</a>
 
@@ -110,12 +137,71 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 						    <tr th:each="ingredient: ${listDishIngredients}">
 			                    <td th:text="${ingredient.ingrediente}"></td>
 			                    <td th:text="${ingredient.cantidad}"></td>
-		                    	<td >
-									 <div class="botonesEdicion" >
-									 	<a th:href="@{'/editor/editIngredientDish/' + ${id_plato} + '/' + ${ingredient.id_ingrediente} + '/' + ${ingredient.cantidad}}" class="btn btn-info btn-lg" style="background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;;font-size:0.9rem;">Editar</a>
-							        	<a th:href="@{'/editor/deleteIngredientDish/' + ${id_plato} + '/' + ${ingredient.id_ingrediente}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color:#FF3333;border-color:#FF3333;;color:#ffffff;font-size:0.9rem; " >Eliminar</a>
-									 </div>     	                    	
-			                    </td>
+			                    	<td style="width:10%">
+										 <div class="botonesEdicion" >
+											<div class="modal" id="demoModal">
+											    <div class="modal-dialog">
+											    	<div class="modal-content">
+											    		<div class="modal-header">
+<!-- 											    			<h2 class="modal-title">Confirmación</h2> -->
+											    			<button type="button" class="close" data-dismiss="modal" style="color:#000000;">
+											    				<span style="color:black;">&times;</span>
+											    			</button>
+											    		</div>
+											    		<div class="modal-body">
+											    			<small th:text="${'¿Está seguro/a de que desea eliminar el menú ?'}">Subtitle</small>
+											    		</div>
+											    		<div class="modal-footer">
+											    			<a type="button" class="btn btn-secondary" style="font-size:20px;" th:href="@{'/editor/deleteMenu/' }" >Aceptar</a>
+											    		</div>
+											    	</div>
+											    </div>
+
+											</div>
+											<div style="display:flex;flex-content:column;">
+												<a th:href="@{'/editor/editMenu/' }" class="btn btn-info btn-lg" style="background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;;font-size:0.9rem;margin-right:15px;">Editar</a>
+												
+												<div class="row">
+													<div class="col">
+														<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#demoModal" style="background-color:#FF3333;border-color:#FF3333;">Eliminar</button>
+													</div>
+												</div>
+<!-- 													<a th:href="@{'/editor/deleteMenu/' + ${menu.id_menu}}" class="btn btn-info btn-lg" style="margin-left:15px;background-color:#FF3333;border-color:#FF3333;;color:#ffffff;font-size:0.9rem; " >Eliminar</a> -->
+												</div>
+										 </div>     	                    	
+				                    </td>
+<!-- 		                    	<td > -->
+<!-- 									 <div class="botonesEdicion" style="display:flex;flex-content:column;"> -->
+<!-- 										<div class="modal" id="demoModal"> -->
+<!-- 										    <div class="modal-dialog"> -->
+<!-- 										    	<div class="modal-content"> -->
+<!-- 										    		<div class="modal-header"> -->
+<!-- 	<!-- 											    			<h2 class="modal-title">Confirmación</h2> --> -->
+<!-- 										    			<button type="button" class="close" data-dismiss="modal" style="color:#000000;"> -->
+<!-- 										    				<span style="color:black;">&times;</span> -->
+<!-- 										    			</button> -->
+<!-- 										    		</div> -->
+<!-- 										    		<div class="modal-body"> -->
+<!-- 										    			<small th:text="${'¿Está seguro/a de que desea eliminar el ingrediente ' + ingredient.ingrediente + ' del plato?'}">Subtitle</small> -->
+<!-- 										    		</div> -->
+<!-- 										    		<div class="modal-footer"> -->
+<!-- 										    			<a type="button" class="btn btn-secondary" style="font-size:20px;" th:href="@{'/editor/deleteIngredientDish/' + ${id_plato} + '/' + ${ingredient.id_ingrediente}}" >Aceptar</a> -->
+<!-- 										    		</div> -->
+<!-- 										    	</div> -->
+<!-- 										    </div> -->
+<!-- 										</div> -->
+<!-- 										<div style="display:flex;flex-content:column;"> -->
+<!-- 										 	<a th:href="@{'/editor/editIngredientDish/' + ${id_plato} + '/' + ${ingredient.id_ingrediente} + '/' + ${ingredient.cantidad}}" class="btn btn-info btn-lg" style="background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;;font-size:0.9rem;">Editar</a> -->
+<!-- 	<!-- 							        	<a th:href="@{'/editor/deleteIngredientDish/' + ${id_plato} + '/' + ${ingredient.id_ingrediente}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color:#FF3333;border-color:#FF3333;;color:#ffffff;font-size:0.9rem; " >Eliminar</a> --> -->
+										 
+<!-- 								 			<div class="row" style="margin-left:20px;"> -->
+<!-- 												<div class="col"> -->
+<!-- 													<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#demoModal" style="background-color:#FF3333;border-color:#FF3333;">Eliminar</button> -->
+<!-- 												</div> -->
+<!-- 											</div> -->
+<!-- 										</div>     -->
+<!-- 									 </div>     	                    	 -->
+<!-- 			                    </td> -->
 						    </tr>
 						  </tbody>
 						</table>
@@ -260,7 +346,11 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	    el.onblur = function(){this.type="text";};
 	});
 	</script>
-
+<!-- 	<script type="text/javascript"> -->
+// 	$(document).ready(function(){
+// 	    $('.modal').modal('show');
+// 	});
+<!-- 	</script> -->
 	
 
 	<!-- //smooth-scrolling-of-move-up -->  		

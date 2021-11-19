@@ -1673,7 +1673,7 @@ public class ControllerMVC {
 		dish.setId_empresa(obtenerUsuario().getIdEmpresa());
 		dishRepo.save(dish);
 
-		return "redirect:/editor";
+		return "redirect:/editor/editDish/{id_plato}";
 	}
 
 //	@RequestMapping("/admin/ComponentesDish/{id_plato}")

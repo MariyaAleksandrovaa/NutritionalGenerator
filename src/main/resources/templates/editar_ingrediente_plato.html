@@ -62,15 +62,22 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	</div>
 	<div class="about gallery">
 		<div class="container">
+			<nav aria-label="breadcrumb">
+			  <ol class="breadcrumb" style="background-color:#ffffff;font-size:1.5em;margin-bottom:40px;">
+			  	<li class="breadcrumb-item"><a th:href="@{/editor}">Página principal</a></li>
+			  	<li class="breadcrumb-item"><a th:href="@{'/editor/editDish/' + ${dishIngredient.id_plato}}">Editar plato</a></li>
+			    <li class="breadcrumb-item active">Editar ingrediente de plato</li>
+			  </ol>
+			</nav>
 			<div role="tabpanel">
-				<form th:action="@{'/editor/saveEditIngredientDish/' + ${dishIngredient.id_plato} + '/' + ${dishIngredient.id_ingrediente}}" th:object="${dishIngredient}" method="POST" style="width:70%;margin-left:30%;">					  
+				<form th:action="@{'/editor/saveEditIngredientDish/' + ${dishIngredient.id_plato} + '/' + ${dishIngredient.id_ingrediente}}" th:object="${dishIngredient}" method="POST" style="padding:5% 32%;">					  
 					  <div class="form-group">
 					    <label for="exampleInputEmail1">Ingrediente</label>
-					    <input class="form-control" type="text" th:field="*{nombre_ingrediente}" th:placeholder="*{nombre_ingrediente}" style="margin-top:8px;width:70%;" readonly>
+					    <input class="form-control" type="text" th:field="*{nombre_ingrediente}" th:placeholder="*{nombre_ingrediente}" style="margin-top:8px;" readonly>
 					  </div>
 					  <div class="form-group">
 					    <label for="exampleInputEmail1">Cantidad (g/ml)</label>
-					    <input type="text" class="form-control"  th:field="*{cantidad}" style="margin-top:8px;width:70%;"  aria-describedby="emailHelp" placeholder="Introduce nombre del menú" required>
+					    <input type="text" class="form-control"  th:field="*{cantidad}" style="margin-top:8px;"  aria-describedby="emailHelp" placeholder="Introduce nombre del menú" required>
 					  </div>
 				  	<button type="submit" name="btnSaveEdit" class="btn btn-primary">Guardar</button>
 				</form>

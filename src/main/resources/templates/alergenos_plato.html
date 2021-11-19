@@ -71,21 +71,25 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 			  </ol>
 			</nav>
 			<label for="exampleInputEmail1" th:text="${dishName}" style="font-size: 2em;margin-bottom: 40px;"></label>
-			<div class ="row">
-				<table class="table" style = "margin-top:30px;width: 40%;margin-left: 30%;">
-				  <thead>
-				    <tr >
-					  <th scope="col">Nombre alérgeno</th>
-				      <th scope="col">Descripción alérgeno</th>
-				    </tr>
-				  </thead>
-				  <tbody id="myTable">
-				    <tr th:each="alergenDish: ${mapAlergensDish}">
-	                    <td th:text="${alergenDish.key}">Nombre alérgeno</td>
-	                    <td th:text="${alergenDish.value}">Descripción alérgeno</td>
-				    </tr>
-				  </tbody>
-				</table>
+			<div th:if="${!mapAlergensDish.empty}">
+				<div class ="row">
+					<table class="table" style = "margin-top:30px;width: 40%;margin-left: 30%;">
+					  <thead>
+					    <tr >
+						  <th scope="col">Nombre alérgeno</th>
+					      <th scope="col">Descripción alérgeno</th>
+					    </tr>
+					  </thead>
+					  <tbody id="myTable">
+					    <tr th:each="alergenDish: ${mapAlergensDish}">
+		                    <td th:text="${alergenDish.key}">Nombre alérgeno</td>
+		                    <td th:text="${alergenDish.value}">Descripción alérgeno</td>
+					    </tr>
+					  </tbody>
+					</table>
+				</div>
+			</div>
+			<div th:if="${mapAlergensDish.empty}" style="font-size:15px;display:flex;justify-content:center;">Este plato no contiene alérgenos
 			</div>
 		</div>
 	</div>

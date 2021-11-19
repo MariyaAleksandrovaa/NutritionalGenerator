@@ -69,13 +69,14 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 			  </ol>
 			</nav>
 			<label for="exampleInputEmail1" th:text="${nameDish}" style="font-size: 2em;margin-bottom: 30px;"></label>
-			<div role="tabpanel">
-					  <div class ="row">
+			<div role="tabpanel" style="display: flex;justify-content: center;">
+				<div th:if="${!listDishIngredients.empty}" style="width:50%;">
+<!-- 					  <div class ="row" style=""> -->
 						<table class="table">
 						  <thead>
 						    <tr >
 							  <th scope="col">Ingrediente</th>
-						      <th scope="col">Cantidad (g/ml)</th>
+						      <th scope="col" style="">Cantidad (g/ml)</th>
 						    </tr>
 						  </thead>
 						  <tbody id="myTable">
@@ -85,8 +86,10 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 						    </tr>
 						  </tbody>
 						</table>
-					</div>	
-
+<!-- 					</div>	 -->
+				</div>
+				<div th:if="${listDishIngredients.empty}" style="font-size:15px;">Este plato no tiene ingredientes
+				</div>
 			</div>
 		</div>
 	</div>
