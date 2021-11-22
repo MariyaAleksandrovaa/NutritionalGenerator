@@ -68,22 +68,26 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 			  </ol>
 			</nav>
 			<label for="exampleInputEmail1" th:text="${nombreMenu}" style="font-size: 2em;margin-bottom: 30px;margin-top: 30px;"></label>		
-			<div class ="row">
-				<table class="table" style="width:25%;margin-left:40%;">
-				  <thead>
-				    <tr >
-				    	<th scope="col">Tipo platos</th>
-					  	<th scope="col">Nombre plato</th>
-				    </tr>
-				  </thead>
-				  <tbody id="myTable">
-				    <tr th:each="dish: ${listDish2}">
-	                    <td th:text="${dish.tipo_plato}" th:value="${dish.tipo_plato}">Plato</td>
-	                    <td th:text="${dish.nombre_plato}" th:value="${dish.nombre_plato}">Plato</td>
-				    </tr>
-				  </tbody>
-				</table>
+			<div th:if="${!listDish2.empty}">	
+				<div class ="row">
+					<table class="table" style="width:25%;margin-left:40%;">
+					  <thead>
+					    <tr >
+					    	<th scope="col">Tipo platos</th>
+						  	<th scope="col">Nombre plato</th>
+					    </tr>
+					  </thead>
+					  <tbody id="myTable">
+					    <tr th:each="dish: ${listDish2}">
+		                    <td th:text="${dish.tipo_plato}" th:value="${dish.tipo_plato}">Plato</td>
+		                    <td th:text="${dish.nombre_plato}" th:value="${dish.nombre_plato}">Plato</td>
+					    </tr>
+					  </tbody>
+					</table>
+				</div>
 			</div>	
+			<div th:if="${listDish2.empty}" style="font-size:15px;display:flex;justify-content:center;margin-top:40px;">Este menú no contiene alérgenos
+			</div>
 		</div>
 	</div>
 	<!-- //gallery -->  

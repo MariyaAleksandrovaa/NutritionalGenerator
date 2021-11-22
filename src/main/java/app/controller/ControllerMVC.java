@@ -7,14 +7,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -71,7 +68,6 @@ import app.repository.FoodRepository;
 import app.repository.GroupFoodRepository;
 import app.repository.LocalRepository;
 import app.repository.MenuRepository;
-//import app.repository.LocalRepository;
 import app.repository.RoleRepository;
 import app.repository.TypeDishRepository;
 import app.repository.UserRepository;
@@ -208,6 +204,14 @@ public class ControllerMVC {
 
 		for (int i = 0; i < listDishAll.size(); i++) {
 			DishView dishView = listDishAll.get(i);
+			
+//			if(dishView.getFecha_creacion() != null) {
+//				java.sql.Timestamp fecha_creacion = listDishAll.get(i).getFecha_creacion();
+//
+//				SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//				Timestamp dateTime = Timestamp.valueOf(sdf3.format(fecha_creacion));
+//				dishView.setFecha_creacion(dateTime);				
+//			}
 
 			if (dishView.getId_empresa() == id_empresa) {
 				listDish.add(dishView);
@@ -463,16 +467,16 @@ public class ControllerMVC {
 
 	// Funciones para ventana alimento (admin)
 
-	@RequestMapping("/admin/editFood/{nombre}")
-	public ModelAndView editarAlimento(@PathVariable("nombre") String nombre) {
+	@RequestMapping("/admin/editFood/{id_alimento}")
+	public ModelAndView editarAlimento(@PathVariable("id_alimento") int id_alimento) {
 
-		FoodView foodView = foodViewRepo.findByNameAlimento(nombre);
+		Food food = foodRepo.findById(id_alimento).get();
 		List<GroupFood> listGroupFood = groupFoodRepo.findAll();
 
 		ModelAndView model = new ModelAndView("editar_alimento");
 
 		model.addObject("listGroupFood", listGroupFood);
-		model.addObject("foodView", foodView);
+		model.addObject("foodView", food);
 
 		Integer id = obtenerUsuario().getIdEmpresa();
 		if (id != null) {
@@ -483,43 +487,39 @@ public class ControllerMVC {
 		return model;
 	}
 
-	@PostMapping("/admin/guardarFood/{nombre}")
-	public String guardarAlimento(@PathVariable("nombre") String nombre, FoodView foodView) {
+	@PostMapping("/admin/guardarFood/{id_alimento}")
+	public String guardarAlimento(@PathVariable("id_alimento") int id_alimento, Food foodView) {
 
-		Food foodOld = foodRepo.findByNameAlimento(nombre);
-		GroupFood groupfood = groupFoodRepo.findGroupByName(foodView.getGrupo());
+		Food foodOld = foodRepo.findById(id_alimento).get();
 
-		foodOld.setIdGrupo(groupfood.getId_grupos_alimentos());
 		foodOld.setNombre(foodView.getNombre());
 		foodOld.setIngles(foodView.getIngles());
-		foodOld.setEdible_portion(foodView.getEdible_portion());
 
 		foodRepo.save(foodOld);
 
 		return "redirect:/admin";
 	}
 
-	@RequestMapping("/admin/deleteFood/{nombre}")
-	public String eliminarAlimento(@PathVariable("nombre") String nombre) {
+	@RequestMapping("/admin/deleteFood/{id_alimento}")
+	public String eliminarAlimento(@PathVariable("id_alimento") int id_alimento) {
 
-		Food food = foodRepo.findByNameAlimento(nombre);
-
+		Food food = foodRepo.findById(id_alimento).get();
 		foodRepo.delete(food);
 
 		return "redirect:/admin";
 	}
 
-	@RequestMapping("/admin/AlergenosFood/{nombre}")
-	public ModelAndView mostrarAlergenos(@PathVariable("nombre") String nombre) {
+	@RequestMapping("/admin/AlergenosFood/{id_alimento}")
+	public ModelAndView mostrarAlergenos(@PathVariable("id_alimento") int id_alimento) {
 
 		ModelAndView model = new ModelAndView("alergenos");
 
-		Food food = foodRepo.findByNameAlimento(nombre);
+		Food food = foodRepo.findByIdAlimento(id_alimento);
 
 		List<AlergensFood> listaAlergenos = obtenerBDalergenosAlimento(food.getIdAlimento());
 
 		model.addObject("listaAlergenos", listaAlergenos);
-
+		model.addObject("name_food", food.getNombre());
 		Integer id = obtenerUsuario().getIdEmpresa();
 		if (id != null) {
 			String company = companyRepo.findById(id).get().getNombre();
@@ -556,13 +556,13 @@ public class ControllerMVC {
 		return listaAlergenos;
 	}
 
-	@RequestMapping("/admin/ComponentesFood/{nombre}")
-	public ModelAndView mostrarComponentes(@PathVariable("nombre") String nombre) {
+	@RequestMapping("/admin/ComponentesFood/{id_alimento}")
+	public ModelAndView mostrarComponentes(@PathVariable("id_alimento") int id_alimento) {
 
 		ModelAndView model = new ModelAndView("componentes");
 
-		Food food = foodRepo.findByNameAlimento(nombre);
-
+		Food food = foodRepo.findById(id_alimento).get();
+		
 		List<ComponentsFood> listaComponentes = obtenerBDcomponentesAlimento(food.getIdAlimento());
 
 		model.addObject("listaComponentes", listaComponentes);
@@ -803,10 +803,7 @@ public class ControllerMVC {
 		}
 
 		List<Empresa> listCompanies = companyRepo.findAll();
-		int select = -1;
-
 		model.addObject("listCompanies", listCompanies);
-		model.addObject("select", select);
 
 		Integer id = obtenerUsuario().getIdEmpresa();
 		if (id != null) {
@@ -913,7 +910,10 @@ public class ControllerMVC {
 		dish.setDescripcion(dishObj.getDescripcion());
 		dish.setId_tipo_platos(dishObj.getTypeDish());
 		dish.setId_empresa(obtenerUsuario().getIdEmpresa());
-		dish.setFecha_creacion(Timestamp.valueOf(LocalDateTime.now()));
+		
+		SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Timestamp dateTime = Timestamp.valueOf(sdf3.format(Timestamp.valueOf(LocalDateTime.now())));
+		dish.setFecha_creacion(dateTime);
 
 		Dish dish2 = dishRepo.save(dish);
 
@@ -1069,6 +1069,7 @@ public class ControllerMVC {
 		dish.setDescripcion(dishObj.getDescripcion());
 		dish.setId_empresa(obtenerUsuario().getIdEmpresa());
 		dish.setId_tipo_platos(dishObj.getTypeDish());
+//		dish.setFecha_creacion(Timestamp.valueOf(LocalDateTime.now()));
 
 		dishRepo.save(dish);
 
@@ -1670,8 +1671,12 @@ public class ControllerMVC {
 	@PostMapping("/editor/saveDish/{id_plato}")
 	public String guardarPlato(Dish dish) {
 
-		dish.setId_empresa(obtenerUsuario().getIdEmpresa());
-		dishRepo.save(dish);
+		Dish dishDB = dishRepo.findById(dish.getId_plato()).get();
+		dishDB.setDescripcion(dish.getDescripcion());
+		dishDB.setNombre_plato(dish.getNombre_plato());
+		dishDB.setId_tipo_platos(dish.getId_tipo_platos());
+		
+		dishRepo.save(dishDB);
 
 		return "redirect:/editor/editDish/{id_plato}";
 	}
@@ -2535,7 +2540,7 @@ public class ControllerMVC {
 		ModelAndView model = new ModelAndView("escoger_platos_menu_grupal_admin");
 
 		Menu menu = menuRepo.findById(id_menu).get();
-
+		model.addObject("menu_name", menu.getNombre_menu());
 		if (groupalDish.getId_dish() != 0) {
 			try {
 				Statement st = Application.con.createStatement();
@@ -3730,6 +3735,13 @@ public class ControllerMVC {
 
 //		Cargo datos de tabla completa
 //		model.addObject("listComponentsDish", listComponentsDishOrdered);
+		
+		Map<String, String> etiquetaNutri = calculoEtiquetaNutricional(mapComponents);
+
+		Map<String, String> map = ordenarComponentesNutri(etiquetaNutri);
+
+//		Cargo datos de tabla completa
+		model.addObject("listComponentsDish", map);
 
 //		Cargo datos de tablas 
 		model.addObject("componentsDishTableProximal", mapComponents.get("proximales"));
@@ -3755,11 +3767,12 @@ public class ControllerMVC {
 
 	}
 
-	@RequestMapping("/editor/componentes_menu_colectivo")
-	public ModelAndView componentesMenuColectivo_admin(MenuObj menuObj) {
+	@RequestMapping("/editor/componentes_menu_colectivo{id_menu}")
+	public ModelAndView componentesMenuColectivo_admin(MenuObj menuObj, @PathVariable("id_menu") int id_menu) {
 
 		ModelAndView model = new ModelAndView("componentes_plato_admin");
 		model.addObject("menuName", menuObj.name_menu);
+		model.addObject("id_menu", id_menu);
 		obtenerComponentesMenucolectivo(menuObj, model);
 
 		return model;
@@ -3826,8 +3839,16 @@ public class ControllerMVC {
 
 		List<ComponentsDishTable> listComponentsDishOrdered = ordenarPorUnidad(mapComponents);
 
+		
+		Map<String, String> etiquetaNutri = calculoEtiquetaNutricional(mapComponents);
+
+		Map<String, String> map = ordenarComponentesNutri(etiquetaNutri);
+
 //		Cargo datos de tabla completa
-		model.addObject("listComponentsDish", listComponentsDishOrdered);
+		model.addObject("listComponentsDish", map);
+		
+//		Cargo datos de tabla completa
+//		model.addObject("listComponentsDish", listComponentsDishOrdered);
 
 //		Cargo datos de tablas 
 		model.addObject("componentsDishTableProximal", mapComponents.get("proximales"));

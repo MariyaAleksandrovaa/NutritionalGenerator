@@ -115,10 +115,10 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 								pertenece</label> <select class="form-select" 
 								th:field="*{empresa}"
 								aria-label="Default select example"
-								style="margin-top: 10px; width: 40%">
+								style="margin-top: 10px; width: 40%;height:34px;">
 								<option selected th:value="${empresa}"></option>
 								<option th:each="company:${listCompanies}"
-									th:value="${company.nombre}" th:text="${company.nombre}" />
+									th:value="${company.id_empresa}" th:text="${company.nombre}" />
 							</select>
 						</div>
 

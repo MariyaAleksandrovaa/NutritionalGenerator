@@ -36,6 +36,32 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 <!-- web-fonts -->   
 <link href="//fonts.googleapis.com/css?family=Playfair+Display:400,400i,700,700i,900,900i" rel="stylesheet">
 <!-- //web-fonts -->
+<style>
+button {
+    border: 1px #AAA solid;
+    padding: 4px 10px;
+}
+.hide {
+    display: none;
+}
+.close {
+    color: #000000; 
+    font-size: 40px;
+    opacity: 1;
+}
+.modal-body{
+	font-size: 20px;
+    display: flex;
+    justify-content: center;
+    height: 150px;
+    padding: 10% 0;
+}
+.modal-header{
+	display: flex;
+    justify-content: flex-end;
+    padding-right: 30px;
+}
+</style>
 </head>
 
 <body> 
@@ -99,6 +125,28 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 								  </thead>
 								  <tbody id="myTable">
 								    <tr th:each="company: ${listCompanies}">
+								    	<!-- Modal -->
+										<div class="modal" id="myModal" role="dialog" th:attrappend="id=${company.id_empresa}">
+										  <div class="modal-dialog modal-dialog-centered">
+										    <div class="modal-content">
+										    
+										      <div class="modal-header">
+										        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+										          <span aria-hidden="true">&times;</span>
+										        </button>
+										      </div>
+										      
+										      <div class="modal-body" style="font-family: 'Playfair Display';padding:10% 10%;">
+										        <label style="font-weight: 400;">¿Está seguro/a de que desea eliminar la empresa <span th:text="${company.nombre}"></span>?</label>
+										      </div>
+										      
+										      <div class="modal-footer">
+										        <a type="button" class="btn btn-primary" th:href="@{'/admin/delete/' + ${company.id_empresa}}">Aceptar</a>
+										      </div>
+										      
+										    </div>
+										  </div>
+										</div>
 					                    <td th:text="${company.cif}">CIF</td>
 					                    <td th:text="${company.nombre}">Nombre de empresa</td>
 					                    <td th:text="${company.email}">Correo electrónico</td>
@@ -106,8 +154,11 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 					                    <td th:text="${company.codigo_postal}">Código postal</td>
 					                    <td >
 											 <div class="botonesEdicion" style="margin-right:-140px">
-											 	<a th:href="@{'/admin/edit/' + ${company.id_empresa}}" class="btn btn-info btn-lg" style="background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;;font-size:0.9rem;">Editar</a>
-									        	<a th:href="@{'/admin/delete/' + ${company.id_empresa}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color:#FF3333;border-color:#FF3333;;color:#ffffff;font-size:0.9rem; " >Eliminar</a>
+											 	<a th:href="@{'/admin/edit/' + ${company.id_empresa}}" class="btn btn-info btn-lg" style="background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;;font-size:0.9rem;margin-right:20px;">Editar</a>
+<!-- 									        	<a th:href="@{'/admin/delete/' + ${company.id_empresa}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color:#FF3333;border-color:#FF3333;;color:#ffffff;font-size:0.9rem; " >Eliminar</a> -->
+												<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" th:attrappend="data-target=${company.id_empresa}" style="border-color:#FF3333;background-color:#FF3333;">
+												  Eliminar
+												</button>
 											 </div>     	                    	
 					                    </td>
 								    </tr>
@@ -133,6 +184,28 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 								  </thead>
 								  <tbody id="table">
 							    <tr th:each="user: ${listUsers}" style="cursor: pointer;" data-toggle="modal" data-target="#orderModal">
+							    		<!-- Modal -->
+										<div class="modal" id="myModal2" role="dialog" th:attrappend="id=${user.user_id}">
+										  <div class="modal-dialog modal-dialog-centered">
+										    <div class="modal-content">
+										    
+										      <div class="modal-header">
+										        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+										          <span aria-hidden="true">&times;</span>
+										        </button>
+										      </div>
+										      
+										      <div class="modal-body" style="font-family: 'Playfair Display';padding:10% 10%;">
+										        <label style="font-weight: 400;">¿Está seguro/a de que desea eliminar el usuario <span th:text="${user.name}"></span> <span th:text="${user.surname}"></span>?</label>
+										      </div>
+										      
+										      <div class="modal-footer">
+										        <a type="button" class="btn btn-primary" th:href="@{'/admin/deleteUser/' + ${user.user_id}}">Aceptar</a>
+										      </div>
+										      
+										    </div>
+										  </div>
+										</div>
 				                    <td th:text="${user.username}">Nombre usuario</td>
 				                    <td th:text="${user.name}">Nombre personal</td>
 				                    <td th:text="${user.surname}">Apellido</td>
@@ -141,8 +214,10 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 				                    <td th:text="${user.rol}">Rol</td>	
 				                    			                    
 				                    <td >
-					                    	<a th:href="@{'/admin/editUser/' + ${user.user_id}}" class="btn btn-info btn-lg" style="background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;font-size:0.9rem;">Editar</a>
-					                    	<a th:href="@{'/admin/deleteUser/' + ${user.user_id}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color: #FF3333;border-color:#FF3333;color:#ffffff;font-size:0.9rem;">Eliminar</a>
+					                    	<a th:href="@{'/admin/editUser/' + ${user.user_id}}" class="btn btn-info btn-lg" style="background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;font-size:0.9rem;margin-right:20px;">Editar</a>
+			                    			<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal2" th:attrappend="data-target=${user.user_id}" style="border-color:#FF3333;background-color:#FF3333;">
+											  Eliminar
+											</button>
 				                    </td>
 								    </tr>
 								  </tbody>
@@ -163,12 +238,36 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 								  </thead>
 								  <tbody id="table">
 							    <tr th:each="local: ${listLocals}" style="cursor: pointer;" data-toggle="modal" data-target="#orderModal">
+							    		<!-- Modal -->
+										<div class="modal" id="myModal3" role="dialog" th:attrappend="id=${local.id_local}">
+										  <div class="modal-dialog modal-dialog-centered">
+										    <div class="modal-content">
+										    
+										      <div class="modal-header">
+										        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+										          <span aria-hidden="true">&times;</span>
+										        </button>
+										      </div>
+										      
+										      <div class="modal-body" style="font-family: 'Playfair Display';padding:10% 10%;">
+										        <label style="font-weight: 400;">¿Está seguro/a de que desea eliminar el local <span th:text="${local.local}"></span>?</label>
+										      </div>
+										      
+										      <div class="modal-footer">
+										        <a type="button" class="btn btn-primary" th:href="@{'/admin/deleteLocal/' + ${local.id_local}}">Aceptar</a>
+										      </div>
+										    </div>
+										  </div>
+										</div>
 				                    <td th:text="${local.local}">Local</td>
 				                    <td th:text="${local.direccion}">Dirección</td>
 				                    <td th:text="${local.empresa}">Empresa a la que pertenece</td>				                    			                    
 				                    <td style = "width:33%;">
-				                    	<a th:href="@{'/admin/editLocal/' + ${local.id_local}}" class="btn btn-info btn-lg" style="background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;font-size:0.9rem;">Editar</a>
-				                    	<a th:href="@{'/admin/deleteLocal/' + ${local.id_local}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color: #FF3333;border-color:#FF3333;color:#ffffff;font-size:0.9rem;">Eliminar</a>
+				                    	<a th:href="@{'/admin/editLocal/' + ${local.id_local}}" class="btn btn-info btn-lg" style="margin-right:20px;background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;font-size:0.9rem;">Editar</a>
+<!-- 				                    	<a th:href="@{'/admin/deleteLocal/' + ${local.id_local}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color: #FF3333;border-color:#FF3333;color:#ffffff;font-size:0.9rem;">Eliminar</a> -->
+			                    		<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal3" th:attrappend="data-target=${local.id_local}" style="border-color:#FF3333;background-color:#FF3333;">
+												  Eliminar
+										</button>
 			                    	</td>
 								    </tr>
 								  </tbody>
@@ -179,7 +278,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 					</div>
 					<div role="tabpanel" class="tab-pane" id="seccion3">
 					
-						<button type="button" class="btn btn-secondary" style="margin-top:25px;margin-bottom:35px;width:200px;margin-left:43%;" onclick="window.location.href='/admin/registrar_nueva_empresa'">Registrar nuevo alimento</button>
+<!-- 						<button type="button" class="btn btn-secondary" style="margin-top:25px;margin-bottom:35px;width:200px;margin-left:43%;" onclick="window.location.href='/admin/registrar_nueva_empresa'">Registrar nuevo alimento</button> -->
 							<div class="row justify-content-start">
 								<div class="col-10">
 									<input class="form-control" id="myInput" type="text" placeholder="Busca alimento" style="width:120%;">
@@ -198,20 +297,44 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 								    </tr>
 								  </thead>
 								  <tbody id="myTable">
-								    	<tr th:each="food: ${listFood}" style="cursor: pointer;" data-toggle="modal" data-target="#orderModal">
-						                    <td th:text="${food.grupo}" style="width:20%;">Grupo</td>
-						                    <td th:text="${food.nombre}" style="width:25%;">Nombre</td>
-						                    <td th:text="${food.ingles}" style="width:25%;">Nombre en inglés</td>
-						                    <td >
-							                    	<a th:href="@{'/admin/editFood/' + ${food.nombre}}" class="btn btn-info btn-lg" style="background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;font-size:0.9rem;">Editar</a>
-							                    	<a th:href="@{'/admin/deleteFood/' + ${food.nombre}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color: #FF3333;border-color:#FF3333;color:#ffffff;font-size:0.9rem;">Eliminar</a>
-						                    </td>
-						                    <td>
-						                    	<a th:href="@{'/admin/ComponentesFood/' + ${food.nombre}}" class="btn btn-info btn-lg" style="background-color: #3c89d0;border-color:#3c89d0;color:#ffffff;font-size:0.9rem;">Componentes</a>
-						                    	<a th:href="@{'/admin/AlergenosFood/' + ${food.nombre}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color: #c38452;border-color:#c38452;color:#ffffff;font-size:0.9rem;">Alérgenos</a>
-						                   
-						                    </td>
-									    </tr>
+							    	<tr th:each="food: ${listFood}" style="cursor: pointer;" data-toggle="modal" data-target="#orderModal">
+							    		<!-- Modal -->
+										<div class="modal" id="myModal4" role="dialog" th:attrappend="id=${food.id_alimento}">
+										  <div class="modal-dialog modal-dialog-centered">
+										    <div class="modal-content">
+										    
+										      <div class="modal-header">
+										        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+										          <span aria-hidden="true">&times;</span>
+										        </button>
+										      </div>
+										      
+										      <div class="modal-body" style="font-family: 'Playfair Display';padding:10% 10%;">
+										        <label style="font-weight: 400;">¿Está seguro/a de que desea eliminar el alimento <span th:text="${food.nombre}"></span>?</label>
+										      </div>
+										      
+										      <div class="modal-footer">
+										        <a type="button" class="btn btn-primary" th:href="@{'/admin/deleteFood/' + ${food.id_alimento}}">Aceptar</a>
+										      </div>
+										    </div>
+										  </div>
+										</div>
+					                    <td th:text="${food.grupo}" style="width:20%;">Grupo</td>
+					                    <td th:text="${food.nombre}" style="width:25%;">Nombre</td>
+					                    <td th:text="${food.ingles}" style="width:25%;">Nombre en inglés</td>
+					                    <td >
+						                    	<a th:href="@{'/admin/editFood/' + ${food.id_alimento}}" class="btn btn-info btn-lg" style="margin-right:20px;background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;font-size:0.9rem;">Editar</a>
+<!-- 						                    	<a th:href="@{'/admin/deleteFood/' + ${food.id_alimento}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color: #FF3333;border-color:#FF3333;color:#ffffff;font-size:0.9rem;">Eliminar</a> -->
+					                    		<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal4" th:attrappend="data-target=${food.id_alimento}" style="border-color:#FF3333;background-color:#FF3333;">
+												  Eliminar
+												</button>
+					                    </td>
+					                    <td>
+					                    	<a th:href="@{'/admin/ComponentesFood/' + ${food.id_alimento}}" class="btn btn-info btn-lg" style="background-color: #3c89d0;border-color:#3c89d0;color:#ffffff;font-size:0.9rem;">Componentes</a>
+					                    	<a th:href="@{'/admin/AlergenosFood/' + ${food.id_alimento}}" class="btn btn-info btn-lg" style="margin-left:20px;background-color: #c38452;border-color:#c38452;color:#ffffff;font-size:0.9rem;">Alérgenos</a>
+					                   
+					                    </td>
+								    </tr>
 								  </tbody>
 								</table>
 							</div>

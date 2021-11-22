@@ -75,28 +75,33 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 						
 							  <div class="form-group" style="margin-top:25px;">
 							    <label for="exampleInputEmail1" >Nombre de usuario*</label>
-							    <input type="text" class="form-control" id="id_cif" th:field="*{username}"  style="margin-top:8px;width:60%;" aria-describedby="emailHelp" placeholder="Introduce nombre de usuario " required>
+							    <input type="text" class="form-control" th:field="*{username}" id="sketchpad-post" style="margin-top:8px;width:60%;" aria-describedby="emailHelp" autocomplete="off" placeholder="Introduce nombre de usuario " required>
 							  </div>
 							  <div class="form-group">
 							    <label for="exampleInputEmail1">Contraseña*</label>
-							    <input type="text" class="form-control" id="id_nombre" th:field="*{password}" style="margin-top:8px;width:60%;"  aria-describedby="emailHelp" placeholder="Introduce contraseña" required>
+							    <div style="display:flex;flex-direction:row;">
+							    	<input id="password-field" type="password" class="form-control" th:field="*{password}" value="secret" text="">
+<!-- 							    <input type="text" class="form-control" th:field="*{password}" style="margin-top:8px;width:60%;" placeholder="Introduce contraseña" required> -->
+							  		<span toggle="#password-field" class="fa fa-fw fa-eye field-icon toggle-password"></span>
+							    </div>
+
 							  </div>
 							  <div class="form-group">
 							    <label for="exampleInputEmail1">Nombre personal</label>
-							    <input type="text" class="form-control" id="id_correo" th:field="*{name}"  style="margin-top:8px;width:60%;"  aria-describedby="emailHelp" placeholder="Introduce nombre">
+							    <input type="text" class="form-control" th:field="*{name}"  style="margin-top:8px;width:60%;"  aria-describedby="emailHelp" placeholder="Introduce nombre">
 							  </div>
 							  <div class="form-group">
 							    <label for="exampleInputEmail1">Apellidos</label>
-							    <input type="tel" class="form-control" id="id_telefono" th:field="*{surname}"  style="margin-top:8px;width:60%;"  aria-describedby="emailHelp" placeholder="Introduce apellidos">
+							    <input type="tel" class="form-control" th:field="*{surname}"  style="margin-top:8px;width:60%;"  aria-describedby="emailHelp" placeholder="Introduce apellidos">
 							  </div>
 							  <div class="form-group">
 							    <label for="exampleInputEmail1">Correo electrónico</label>
-							    <input type="tel" class="form-control" id="id_telefono" th:field="*{email}"  style="margin-top:8px;width:60%;"  aria-describedby="emailHelp" placeholder="Introduce correo electrónico">
+							    <input type="tel" class="form-control" th:field="*{email}"  style="margin-top:8px;width:60%;"  aria-describedby="emailHelp" placeholder="Introduce correo electrónico">
 							  </div>
 							  <div class="form-group">
 								    <label for="exampleInputEmail1">Empresa*</label>
-							    		<select class="form-select" th:field="*{idEmpresa}" aria-label="Default select example" style="margin-top:10px;width:60%" required>
-											<option selected value="">Escoge una empresa</option>
+							    		<select class="form-select" th:field="*{idEmpresa}" aria-label="Default select example" style="margin-top:10px;width:60%;height:34px;" required>
+											<option hidden value="">Escoge una empresa</option>
 											<option th:each="company:${listCompanies}"
 												th:value="${company.id_empresa}"
 												th:text="${company.nombre}"
@@ -105,8 +110,8 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 							  </div>
 							  <div class="form-group">
 							    	<label for="exampleInputEmail1">Rol*</label>
-							    		<select class="form-select" th:field="*{roles}" aria-label="Default select example" style="margin-top:10px;width:60%" required>
-											<option selected value="">Escoge un rol</option>
+							    		<select class="form-select" th:field="*{roles}" aria-label="Default select example" style="margin-top:10px;width:60%;height:34px;" required>
+											<option selected="true" disabled="disabled" value="">Escoge un rol</option>
 											<option th:each="rol:${listRoles}"
 												th:value="${rol.id}"
 												th:text="${rol.name}"
@@ -115,8 +120,6 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 
 							    
 							  	<small id="emailHelp" class="form-text text-muted">(*) Campos obligatorios</small>
-							  	
-							 
 							  </div>
 							  <button type="submit" class="btn btn-primary">Aceptar</button>
 						</form>
@@ -134,8 +137,21 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 			</div>
 		</div>
 	</div>
-	<!-- //footer -->
-	<!-- menu-js -->
+	<script>
+	document.getElementById('sketchpad-post').value = "";
+	</script>
+	<script>
+	$(".toggle-password").click(function() {
+
+		  $(this).toggleClass("fa-eye fa-eye-slash");
+		  var input = $($(this).attr("toggle"));
+		  if (input.attr("type") == "password") {
+		    input.attr("type", "text");
+		  } else {
+		    input.attr("type", "password");
+		  }
+		});
+	</script>
 	<script>
 		$('.navicon').on('click', function (e) {
 		  e.preventDefault();

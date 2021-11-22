@@ -36,6 +36,32 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 <!-- web-fonts -->   
 <link href="//fonts.googleapis.com/css?family=Playfair+Display:400,400i,700,700i,900,900i" rel="stylesheet">
 <!-- //web-fonts -->
+<style>
+button {
+    border: 1px #AAA solid;
+    padding: 4px 10px;
+}
+.hide {
+    display: none;
+}
+.close {
+    color: #000000; 
+    font-size: 40px;
+    opacity: 1;
+}
+.modal-body{
+	font-size: 20px;
+    display: flex;
+    justify-content: center;
+    height: 150px;
+    padding: 10% 0;
+}
+.modal-header{
+	display: flex;
+    justify-content: flex-end;
+    padding-right: 30px;
+}
+</style>
 </head>
 
 <body> 
@@ -99,14 +125,39 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 							  </thead>
 							  <tbody>
 							    <tr th:each="menu: ${listMenus}">
+								    	<!-- Modal -->
+										<div class="modal" id="myModal" role="dialog" th:attrappend="id=${menu.id_menu}">
+										  <div class="modal-dialog modal-dialog-centered">
+										    <div class="modal-content">
+										    
+										      <div class="modal-header">
+										        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+										          <span aria-hidden="true">&times;</span>
+										        </button>
+										      </div>
+										      
+										      <div class="modal-body" style="font-family: 'Playfair Display';padding:10% 10%;">
+										        <label style="font-weight: 400;font-size:20px;">¿Está seguro/a de que desea eliminar el menú  <span th:text="${menu.nombre_menu}"></span></label>
+										      </div>
+										      
+										      <div class="modal-footer">
+										        <a type="button" class="btn btn-primary" th:href="@{'/user/deleteMenu/' + ${menu.id_menu}}">Aceptar</a>
+										      </div>
+										      
+										    </div>
+										  </div>
+										</div>
 							    	<td th:text="${menu.fecha_publicacion}" style="width:10%">Fecha Publicación</td>
 				                    <td th:text="${menu.fecha_creacion}" style="width:10%">Fecha Creación</td>
 				                    <td th:text="${menu.nombre_menu}" style="width:20%">Nombre del menú</td>
 				                    <td th:text="${menu.descripcion}" style="width:10%">Descripción</td>
 			                    	<td style="width:10%">
 										 <div class="botonesEdicion" >
-										 	<a th:href="@{'/user/editMenu/' + ${menu.id_menu}}" class="btn btn-info btn-lg" style="background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;;font-size:0.9rem;">Editar</a>
-								        	<a th:href="@{'/user/deleteMenu/' + ${menu.id_menu}}" class="btn btn-info btn-lg" style="margin-left:15px;background-color:#FF3333;border-color:#FF3333;;color:#ffffff;font-size:0.9rem; " >Eliminar</a>
+										 	<a th:href="@{'/user/editMenu/' + ${menu.id_menu}}" class="btn btn-info btn-lg" style="background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;;font-size:0.9rem;margin-right:15px;">Editar</a>
+								        	<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" th:attrappend="data-target=${menu.id_menu}" style="border-color:#FF3333;background-color:#FF3333;">
+											  Eliminar
+											</button>
+<!-- 								        	<a th:href="@{'/user/deleteMenu/' + ${menu.id_menu}}" class="btn btn-info btn-lg" style="margin-left:15px;background-color:#FF3333;border-color:#FF3333;;color:#ffffff;font-size:0.9rem; " >Eliminar</a> -->
 										 </div>     	                    	
 				                    </td>
 				                    <td style="width:15%">

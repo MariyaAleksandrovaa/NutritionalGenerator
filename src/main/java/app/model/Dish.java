@@ -1,5 +1,7 @@
 package app.model;
 
+import java.sql.Timestamp;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -26,10 +28,10 @@ public class Dish {
 	public Integer id_empresa;
 
 	public String tipo_plato;
-	public java.sql.Timestamp fecha_creacion;
+	public Timestamp fecha_creacion;
 
 	public Dish(Integer id_plato, int id_tipo_platos, String nombre_plato, String descripcion, Integer id_empresa,
-			java.sql.Timestamp fecha_creacion) {
+			Timestamp fecha_creacion) {
 		this.id_plato = id_plato;
 		this.id_tipo_platos = id_tipo_platos;
 		this.nombre_plato = nombre_plato;
@@ -55,11 +57,11 @@ public class Dish {
 
 	}
 
-	public java.sql.Timestamp getFecha_creacion() {
+	public Timestamp getFecha_creacion() {
 		return fecha_creacion;
 	}
 
-	public void setFecha_creacion(java.sql.Timestamp fecha_creacion) {
+	public void setFecha_creacion(Timestamp fecha_creacion) {
 		this.fecha_creacion = fecha_creacion;
 	}
 

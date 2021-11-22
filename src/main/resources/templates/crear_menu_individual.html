@@ -93,14 +93,14 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 						    </div>
 							<div class="form-group" style="margin-top:30px;">
 								<div class="col" style="width:60%">
-									<label for="exampleInputEmail1" class="form-label select-label" style="width:100%;margin-bottom:12px;">Selecciona fecha de publicación del menú*</label> 
+									<label for="exampleInputEmail1" class="form-label select-label" style="width:100%;margin-bottom:12px;">Selecciona fecha de publicación del menú</label> 
 									<input id="date" type="date" style="width:100%;height:33px;" th:field="*{date_publish}" >
 								</div>
 
 							</div>
 							<div class="form-group" style="margin-top:30px;">
 								<label for="exampleInputEmail1">Escoge el primer plato del menú*</label> 
-								<select class="form-select" th:field="*{first_dish}" aria-label="Default select example" style="margin-top:10px;width:60%" required>
+								<select class="form-select" th:field="*{first_dish}" aria-label="Default select example" style="margin-top:10px;width:60%;height:34px;" required>
 									<option selected value="">Primer plato</option>
 									<option th:each="dish:${listDishCompany1}"
 										th:value="${dish.id_plato}"
@@ -110,7 +110,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 							</div>
 							<div class="form-group" style="margin-top:30px;">
 								<label for="exampleInputEmail1">Escoge el segundo plato del menú*</label> 
-								<select class="form-select" th:field="*{second_dish}" aria-label="Default select example" style="margin-top:10px;width:60%" required>
+								<select class="form-select" th:field="*{second_dish}" aria-label="Default select example" style="margin-top:10px;width:60%;height:34px;" required>
 									<option selected value="">Segundo plato</option>
 									<option th:each="dish:${listDishCompany2}"
 										th:value="${dish.id_plato}"
@@ -120,7 +120,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 							</div>
 							<div class="form-group" style="margin-top:30px;">
 								<label for="exampleInputEmail1">Escoge el postre del menú (Opcional)</label> 
-								<select class="form-select" th:field="*{third_dish}" aria-label="Default select example" style="margin-top:10px;width:60%">
+								<select class="form-select" th:field="*{third_dish}" aria-label="Default select example" style="margin-top:10px;width:60%;height:34px;">
 									<option selected value="" class="disabled">Postre (Opcional)</option>
 									<option th:each="dish:${listDishCompany3}"
 										th:value="${dish.id_plato}"

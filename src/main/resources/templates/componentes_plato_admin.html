@@ -70,7 +70,8 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 				<nav aria-label="breadcrumb">
 				  <ol class="breadcrumb" style="background-color:#ffffff;font-size:1.5em;margin-bottom:40px;">
 				  	<li class="breadcrumb-item"><a th:href="@{/editor}">Página principal</a></li>
-				    <li class="breadcrumb-item active">Información nutricional del plato</li>
+				  	<li class="breadcrumb-item"><a th:href="@{'/editor/escoger_platos_menu_grupal_componentes/' + ${id_menu}}">Seleccionar platos para ver componentes</a></li>
+				    <li class="breadcrumb-item active">Información nutricional del menú</li>
 				  </ol>
 				</nav>
 				
@@ -91,41 +92,37 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 				<div class="tab-content">
 					<div role="tabpanel" class="tab-pane active" id="seccion1">
 						<label for="exampleInputEmail1" th:text="${name_menu}" style="font-size: 2em;margin-bottom: 30px;margin-top: 30px;"></label>
-					    <div id="container" style="margin-bottom:40px;"></div>
 					    
-						<b th:text="'Hidratos de carbono:   ' + ${porcentajeHC} + '%' " style="margin-left:20px;color:#964B00;font-size:1.5em;"> </b>
-						<b th:text="'Proteínas:   ' + ${porcentajeProteinas} + '%' " style="margin-left:20px;color:#4169E1;font-size:1.5em;"> </b>
-						<b th:text="'Grasas:   ' + ${porcentajeGrasa} + '%' " style="margin-left:20px;color:#8A2BE2;font-size:1.5em;"> </b>
+					    	<div id="container" style="margin-bottom:40px;"></div>
+					    
+							<b th:text="'Hidratos de carbono:   ' + ${porcentajeHC} + '%' " style="margin-left:20px;color:#964B00;font-size:1.5em;"> </b>
+							<b th:text="'Proteínas:   ' + ${porcentajeProteinas} + '%' " style="margin-left:20px;color:#4169E1;font-size:1.5em;"> </b>
+							<b th:text="'Grasas:   ' + ${porcentajeGrasa} + '%' " style="margin-left:20px;color:#8A2BE2;font-size:1.5em;"> </b>
 					
 					</div>
-					
-					
 					<div role="tabpanel" class="tab-pane " id="seccion2">
 						<label for="exampleInputEmail1" th:text="${name_menu}" style="font-size: 2em;margin-bottom: 30px;margin-top: 30px;"></label>
-					
-						<div class ="row" style="display:flex;justify-content:center;padding:0px 250px 0px 250px;margin-top:-60px;">
-<!-- 							<div style="width:40%;display:flex;justify-content:center;"> -->
-								<table class="table" style = "margin-top:30px;">
-									
-								  <thead>
-								    <tr >
-								      <th scope="col">Nombre componente</th>
-								      <th scope="col" style="width:30%;">Cantidad </th>
-								    </tr>
-								  </thead>
-								  <tbody id="completeTable">
-								    <tr th:each="componente: ${listComponentsDish}">
-					                    <td th:text="${componente.key}">Grupo componente</td>
-					                    <td th:text="${componente.value}" style="width:30%;">Nombre componente</td>
-								    </tr>
-								  </tbody>
-								</table>
-<!-- 							</div> -->
-						</div>
+								<div class ="row" style="display:flex;justify-content:center;padding:0px 250px 0px 250px;margin-top:-60px;">
+		<!-- 							<div style="width:40%;display:flex;justify-content:center;"> -->
+										<table class="table" style = "margin-top:30px;">
+											
+										  <thead>
+										    <tr >
+										      <th scope="col">Nombre componente</th>
+										      <th scope="col" style="width:30%;">Cantidad </th>
+										    </tr>
+										  </thead>
+										  <tbody id="completeTable">
+										    <tr th:each="componente: ${listComponentsDish}">
+							                    <td th:text="${componente.key}">Grupo componente</td>
+							                    <td th:text="${componente.value}" style="width:30%;">Nombre componente</td>
+										    </tr>
+										  </tbody>
+										</table>
+								</div>
 					</div>
 					<div role="tabpanel" class="tab-pane " id="seccion3">
 						<label for="exampleInputEmail1" th:text="${name_menu}" style="font-size: 2em;margin-bottom: 30px;margin-top: 30px;"></label>
-						
 						<div th:if="${!componentsDishTableProximal.empty}">
 							<div class ="row">
 								<h4 style="margin-top:20px;">Proximales</h4>

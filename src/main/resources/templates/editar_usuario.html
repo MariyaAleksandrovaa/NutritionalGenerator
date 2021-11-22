@@ -136,8 +136,8 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 						<label for="exampleInputEmail1">Empresa</label> <select
 							class="form-select" th:field="*{nombre}"
 							aria-label="Default select example"
-							style="margin-top: 10px; width: 40%">
-							<option selected th:text="${nombre}" th:value="${nombre}"></option>
+							style="margin-top: 10px; width: 40%;height:34px;margin-bottom:20px;">
+							<option selected text="Escoge una empresa" value="" th:disabled="disabled">Escoge una empresa</option>
 							<option th:each="company:${listCompanies}"
 								th:value="${company.nombre}" th:text="${company.nombre}" />
 						</select>
@@ -145,8 +145,8 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 						<label for="exampleInputEmail1">Rol</label> <select
 							class="form-select" th:field="*{rol}"
 							aria-label="Default select example"
-							style="margin-top: 10px; width: 40%">
-							<option selected th:value="*{rol}"></option>
+							style="margin-top: 10px; width: 40%;height:34px;margin-bottom:20px;">
+							<option selected text="Escoge un rol" value="" th:disabled="disabled">Escoge un rol</option>
 							<option th:each="rol:${listRoles}" th:value="${rol.name}"
 								th:text="${rol.name}" />
 						</select>

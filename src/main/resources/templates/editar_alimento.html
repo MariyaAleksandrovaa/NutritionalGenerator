@@ -64,52 +64,29 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 		<div class="container">
 			<nav aria-label="breadcrumb">
 			  <ol class="breadcrumb" style="background-color: #FFFFFF;margin-bottom:30px;font-size: 150%;">
-			    <li class="breadcrumb-item active"  aria-current="page"><a href="#">Inicio</a></li>
-			    <li class="breadcrumb-item"><a href="#">Editar alimento</a></li>
+			    <li class="breadcrumb-item" aria-current="page"><a th:href="@{/admin}">Página principal</a></li>
+			    <li class="breadcrumb-item active">Editar alimento</li>
 			  </ol>
 			</nav>  
 			<div role="tabpanel">
-				<ul class="nav nav-tabs" role="tablist">
-				  <li role ="presentation" class="active" >
-				    <a href="#seccion1" data-toggle="tab" role="tab">Editar alimento</a>
-				  </li>
-				</ul>
-				<div class="tab-content" style="margin-left: 40%;">
-					<div role="tabpanel" class="tab-pane active" id="seccion1" style="width: 50%;margin: 0 auto;">
+				<div class="tab-content" style="">
+					<div role="tabpanel" class="tab-pane active" id="seccion1" style="">
 					</div>
-
-						<form th:action="@{'/admin/guardarFood/' + ${foodView.nombre}}" th:object="${foodView}" method="post">
-							  <div class="form-group" style="margin-top:25px;">
-							    <label for="exampleInputEmail1" >Grupo del alimento</label>
-							    
-							    	<select class="form-select" th:field="*{grupo}" aria-label="Default select example" style="margin-top:10px;width:40%">
-<!-- 										<option th:selected="*{grupo}"></option> -->
-										<option
-											th:value="*{grupo}"
-											th:text="*{grupo}"
-										/>
-										<option th:each="groupFood:${listGroupFood}"
-											th:value="${groupFood.grupo}"
-											th:text="${groupFood.grupo}"
-										/>
-									</select>
-<!-- 							    <input type="text" class="form-control" th:field="*{grupo}"  style="margin-top:8px;width:40%;" aria-describedby="emailHelp" placeholder="Introduce CIF"> -->
-							  </div>
+					<div style="display:flex;justify-content:center;flex-direction:column;">
+						<form th:action="@{'/admin/guardarFood/' + ${foodView.id_alimento}}" th:object="${foodView}" method="post"  style="display:flex;justify-content:center;flex-direction:column;padding: 0 40%;">
 							  <div class="form-group">
 							    <label for="exampleInputEmail1">Nombre del alimento</label>
-							    <input type="text" class="form-control"  th:field="*{nombre}" style="margin-top:8px;width:40%;"  aria-describedby="emailHelp" placeholder="Introduce nombre de empresa" required>
+							    <input type="text" class="form-control"  th:field="*{nombre}" style="margin-top:8px;width:300px;"  aria-describedby="emailHelp" placeholder="Introduce nombre de empresa" required>
 							  </div>
 							  <div class="form-group">
 							    <label for="exampleInputEmail1">Nombre en inglés del alimento</label>
-							    <input type="text" class="form-control"  th:field="*{ingles}"  style="margin-top:8px;width:40%;"  aria-describedby="emailHelp" placeholder="Introduce correo electrónico">
-							  </div>
-							  <div class="form-group">
-							    <label for="exampleInputEmail1">Porción</label>
-							    <input type="tel" class="form-control"  th:field="*{edible_portion}"  style="margin-top:8px;width:40%;"  aria-describedby="emailHelp" placeholder="Introduce teléfono de empresa">
+							    <input type="text" class="form-control"  th:field="*{ingles}"  style="margin-top:8px;width:300px;"  aria-describedby="emailHelp" placeholder="Introduce correo electrónico">
 							  </div>
 
-						  	<button type="submit" class="btn btn-primary">Aceptar</button>
-						</form>
+						  	<button type="submit" class="btn btn-primary" style="width: fit-content;">Aceptar</button>
+						</form>					
+					</div>
+
 				</div>
 			</div>
 		</div>
