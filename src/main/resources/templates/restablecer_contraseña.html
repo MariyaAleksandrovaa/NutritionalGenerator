@@ -97,11 +97,14 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 							placeholder="Introduce el nombre de usuario " required>
 					</div>
 					<div class="form-group">
-						<label for="exampleInputEmail1">Contraseña</label> <input
-							type="password" class="form-control" id="id_nombre" th:field="*{pwd}"
-							style="margin-top: 8px; width: 40%;" aria-describedby="emailHelp"
-							placeholder="Introduce contraseña" required>
-							<span toggle="#password-field" class="fa fa-fw fa-eye field-icon toggle-password"></span>
+						<label for="exampleInputEmail1">Contraseña</label> 
+<!-- 						<input type="password" class="form-control" id="id_nombre" th:field="*{pwd}" -->
+<!-- 							 aria-describedby="emailHelp" -->
+<!-- 							required> -->
+<!-- 							<span toggle="#password-field" class="form-control" ></span> -->
+<!-- style="margin-top: 8px; width: 40%;"  -->
+<!-- minlength="8" -->
+						<input type="password"  placeholder="Introduce contraseña" required>
 					</div>
 					<div class="form-group">
 						<label for="exampleInputEmail1">Repite contraseña</label> <input

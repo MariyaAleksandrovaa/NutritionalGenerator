@@ -56,6 +56,7 @@ import app.objects.DishObj;
 import app.objects.FoodAmountObj;
 import app.objects.GroupUnitObj;
 import app.objects.GroupalDish;
+import app.objects.LabelObj;
 import app.objects.LocalEnable;
 import app.objects.MenuLocalObj;
 import app.objects.MenuObj;
@@ -3303,8 +3304,8 @@ public class ControllerMVC {
 					Integer quantityInt = f.intValue();
 					Integer quantityIntJul = (Integer) ((int) (quantityInt * 4.184));
 
-					componentsDishTable.setAmount(quantityInt.toString() + " / " + quantityIntJul.toString());
-					componentsDishTable.setUnit("kCal / kJul");
+					componentsDishTable.setAmount(quantityIntJul.toString()+ " kJ / " + quantityInt.toString() + " kcal" );
+//					componentsDishTable.setUnit("kcal / kJ");
 
 				}
 				componentsDishTableProximal.add(componentsDishTable);
@@ -3480,19 +3481,11 @@ public class ControllerMVC {
 
 							etiquetaNutricional.put("de las cuales saturadas",
 									component.getAmount() + " " + component.getUnit());
-//						} else if (component.getNameComponent().equals("ácidos grasos, poliinsaturados totales")) {
-//							etiquetaNutricional.put("Grasas poliinsaturada",
-//									component.getAmount() + " " + component.getUnit());
-//						} else if (component.getNameComponent().equals("ácidos grasos, monoinsaturados totales")) {
-//							etiquetaNutricional.put("Grasas monoinsaturada",
-//									component.getAmount() + " " + component.getUnit());
-//						} else if (component.getNameComponent().equals("ácidos grasos, trans totales")) {
-//							etiquetaNutricional.put("Grasas trans", component.getAmount() + " " + component.getUnit());
+
 						} else if (component.getNameComponent().equals("colesterol")) {
 							etiquetaNutricional.put("Colesterol", component.getAmount() + " " + component.getUnit());
 						}
 					}
-//					listFatOrdered.add(etiquetaNutricional.get("Grasas saturadas"));
 
 				} else if (listGroupComponents.getKey().equals("hc")) {
 
@@ -3522,10 +3515,7 @@ public class ControllerMVC {
 						} else if (component.getNameComponent().equals("energía, total")) {
 
 							try {
-//								Float integ = Float.parseFloat(component.getAmount());
-//								Integer quantityInt = integ.intValue();
-//								Integer quantityIntJul = (Integer) ((int) (quantityInt * 4.184)); 
-								etiquetaNutricional.put("Valor energético", component.getAmount() + "  kCal / kJul");
+								etiquetaNutricional.put("Valor energético", component.getAmount());
 							} catch (NumberFormatException ex) {
 								ex.printStackTrace();
 							}
@@ -3537,8 +3527,8 @@ public class ControllerMVC {
 
 						ComponentsDishTable component = listGroupComponents.getValue().get(i);
 
-						if (component.getNameComponent().equals("sal")) {
-							etiquetaNutricional.put("Sal", component.getAmount() + " " + component.getUnit());
+						if (component.getNameComponent().equals("sodio")) {
+							etiquetaNutricional.put("Sal", String.valueOf(Double.valueOf(component.getAmount())*2.5) + " " + component.getUnit());
 						}
 					}
 				}
@@ -3548,19 +3538,19 @@ public class ControllerMVC {
 		return etiquetaNutricional;
 	}
 
-	public Map<String, String> ordenarComponentesNutri(Map<String, String> etiquetaNutri) {
+	public List<LabelObj> ordenarComponentesNutri(Map<String, String> etiquetaNutri) {
 
-		Map<String, String> etiquetaFinal = new LinkedHashMap<String, String>();
-
-		etiquetaFinal.put("Valor energético", valorEtiqueta(etiquetaNutri, "Valor energético"));
-		etiquetaFinal.put("Proteínas", valorEtiqueta(etiquetaNutri, "Proteínas"));
-		etiquetaFinal.put("Hidratos de Carbono", valorEtiqueta(etiquetaNutri, "Hidratos de Carbono"));
-		etiquetaFinal.put("Grasas", valorEtiqueta(etiquetaNutri, "Grasas"));
-		etiquetaFinal.put("de las cuales saturadas", valorEtiqueta(etiquetaNutri, "de las cuales saturadas"));
-		etiquetaFinal.put("Colesterol", valorEtiqueta(etiquetaNutri, "Colesterol"));
-		etiquetaFinal.put("Fibra", valorEtiqueta(etiquetaNutri, "Fibra"));
-		etiquetaFinal.put("Azúcares", valorEtiqueta(etiquetaNutri, "Azúcares"));
-
+		List<LabelObj> etiquetaFinal = new ArrayList<LabelObj>();
+		
+		etiquetaFinal.add(new LabelObj("Valor energético", valorEtiqueta(etiquetaNutri, "Valor energético"), "8 400 kJ / 2 000 kcal"));
+		etiquetaFinal.add(new LabelObj("Grasas", valorEtiqueta(etiquetaNutri, "Grasas"), "70 g"));
+		etiquetaFinal.add(new LabelObj("de las cuales saturadas", valorEtiqueta(etiquetaNutri, "de las cuales saturadas"), "20 g"));
+		etiquetaFinal.add(new LabelObj("Hidratos de Carbono", valorEtiqueta(etiquetaNutri, "Hidratos de Carbono"), "260 g"));
+		etiquetaFinal.add(new LabelObj("de los cuales azúcares", valorEtiqueta(etiquetaNutri, "Azúcares"), "90 g"));
+		etiquetaFinal.add(new LabelObj("Fibra", valorEtiqueta(etiquetaNutri, "Fibra"), "30 g"));
+		etiquetaFinal.add(new LabelObj("Proteínas", valorEtiqueta(etiquetaNutri, "Proteínas"), "50 g"));
+		etiquetaFinal.add(new LabelObj("Sal", valorEtiqueta(etiquetaNutri, "Sal"), "6 g"));
+		
 		return etiquetaFinal;
 	}
 
@@ -3610,15 +3600,13 @@ public class ControllerMVC {
 
 		Map<String, String> etiquetaNutri = calculoEtiquetaNutricional(mapComponents);
 
-		Map<String, String> map = ordenarComponentesNutri(etiquetaNutri);
+		List<LabelObj> map = ordenarComponentesNutri(etiquetaNutri);
 
 //		Cargo datos de tabla completa
 		model.addObject("listComponentsDish", map);
 
 //		Cargo datos de tablas 
-		model.addObject("componentsDishTableProximal", mapComponents.get("proximales"));
-		model.addObject("componentsDishTableHcarbono", mapComponents.get("hc"));
-		model.addObject("componentsDishTableGrasa", mapComponents.get("grasas"));
+
 		model.addObject("componentsDishTableVitaminas", mapComponents.get("vitaminas"));
 		model.addObject("componentsDishTableMinerales", mapComponents.get("minerales"));
 
@@ -3626,14 +3614,13 @@ public class ControllerMVC {
 		model.addObject("porcentajeGrasa", calcularPorcentaje(proporcionGrasas, total));
 		model.addObject("porcentajeProteinas", calcularPorcentaje(proporcionProteinas, total));
 		model.addObject("porcentajeHC", calcularPorcentaje(proporcionHC, total));
-//		model.addObject("porcentajeEnergia", calcularPorcentaje(valoresProximales.get("energia"), total));
-		model.addObject("porcentajeOtrosHC", calcularPorcentaje(proporcionValorOtrosHC, total));
+//		model.addObject("porcentajeOtrosHC", calcularPorcentaje(proporcionValorOtrosHC, total));
 		model.addObject("porcentajeFibra", calcularPorcentaje(proporcionValorFibra, total));
-		model.addObject("porcentajeAzucar", calcularPorcentaje(proporcionValorAzúcar, total));
-		model.addObject("porcentajeAcGrasos", calcularPorcentaje(proporcionAcGrasos, total));
+//		model.addObject("porcentajeAzucar", calcularPorcentaje(proporcionValorAzúcar, total));
+//		model.addObject("porcentajeAcGrasos", calcularPorcentaje(proporcionAcGrasos, total));
 
-		model.addObject("porcentajeOtrasGrasas",
-				round(calcularPorcentaje(proporcionGrasas, total) - calcularPorcentaje(proporcionAcGrasos, total), 2));
+//		model.addObject("porcentajeOtrasGrasas",
+//				round(calcularPorcentaje(proporcionGrasas, total) - calcularPorcentaje(proporcionAcGrasos, total), 2));
 
 		mostrarEmpresa(model);
 
@@ -3738,7 +3725,7 @@ public class ControllerMVC {
 		
 		Map<String, String> etiquetaNutri = calculoEtiquetaNutricional(mapComponents);
 
-		Map<String, String> map = ordenarComponentesNutri(etiquetaNutri);
+		List<LabelObj> map = ordenarComponentesNutri(etiquetaNutri);
 
 //		Cargo datos de tabla completa
 		model.addObject("listComponentsDish", map);
@@ -3770,7 +3757,7 @@ public class ControllerMVC {
 	@RequestMapping("/editor/componentes_menu_colectivo{id_menu}")
 	public ModelAndView componentesMenuColectivo_admin(MenuObj menuObj, @PathVariable("id_menu") int id_menu) {
 
-		ModelAndView model = new ModelAndView("componentes_plato_admin");
+		ModelAndView model = new ModelAndView("componentes_menu_admin");
 		model.addObject("menuName", menuObj.name_menu);
 		model.addObject("id_menu", id_menu);
 		obtenerComponentesMenucolectivo(menuObj, model);
@@ -3842,7 +3829,7 @@ public class ControllerMVC {
 		
 		Map<String, String> etiquetaNutri = calculoEtiquetaNutricional(mapComponents);
 
-		Map<String, String> map = ordenarComponentesNutri(etiquetaNutri);
+		List<LabelObj>  map = ordenarComponentesNutri(etiquetaNutri);
 
 //		Cargo datos de tabla completa
 		model.addObject("listComponentsDish", map);

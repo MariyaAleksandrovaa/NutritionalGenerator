@@ -12,258 +12,297 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	
-<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+
+<script type="application/x-javascript">
+	 addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } 
+</script>
 <!-- Custom Theme files -->
-<link href="../../css/bootstrap.css" type="text/css" rel="stylesheet" media="all">
+<link href="../../css/bootstrap.css" type="text/css" rel="stylesheet"
+	media="all">
 
 <!-- CSS only -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"/>
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+	crossorigin="anonymous" />
 <!-- JavaScript Bundle with Popper -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<script
+	src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+	integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+	crossorigin="anonymous"></script>
 
-<link href="../../css/style.css" type="text/css" rel="stylesheet" media="all">   
-<link href="../../css/font-awesome.css" rel="stylesheet"> <!-- font-awesome icons --> 
-<link rel="stylesheet" href="../../css/smoothbox.css" type='text/css' media="all" /> 
-<!-- //Custom Theme files --> 
+<link href="../../css/style.css" type="text/css" rel="stylesheet"
+	media="all">
+<link href="../../css/font-awesome.css" rel="stylesheet">
+<!-- font-awesome icons -->
+<link rel="stylesheet" href="../../css/smoothbox.css" type='text/css'
+	media="all" />
+<!-- //Custom Theme files -->
 
 <!-- js -->
-<script src="../../js/jquery-2.2.3.min.js"></script>  
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="../../js/jquery-2.2.3.min.js"></script>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> -->
 <!-- //js -->
 <script src="https://code.highcharts.com/highcharts.js"></script>
 <script src="https://code.highcharts.com/modules/exporting.js"></script>
 <script src="https://code.highcharts.com/modules/accessibility.js"></script>
 
-<!-- web-fonts -->   
-<link href="//fonts.googleapis.com/css?family=Playfair+Display:400,400i,700,700i,900,900i" rel="stylesheet">
+<!-- web-fonts -->
+<link
+	href="//fonts.googleapis.com/css?family=Playfair+Display:400,400i,700,700i,900,900i"
+	rel="stylesheet">
 <!-- //web-fonts -->
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<!--     <script type="text/javascript"></script> -->
+    <script src="//code.jquery.com/jquery-3.2.0.min.js"></script>
+    <script src="js/piechart.min.js"></script>
+    <link rel="stylesheet" href="css/piechart.min.css">
+
+
 </head>
 
-<body> 
+<body>
 	<!-- banner -->
 	<div class="banner">
-		<p style="float: left;margin-top:10px;font-size:1.5em;margin-left:20px;">
-			Bienvenido <b>[[${#request.userPrincipal.principal.username}]]</b> 
+		<p
+			style="float: left; margin-top: 10px; font-size: 1.5em; margin-left: 20px;">
+			Bienvenido <b>[[${#request.userPrincipal.principal.username}]]</b>
 		</p>
-		<form th:action="@{/logout}" method="post" style="font-size:1.5em;margin-left:93%;">
-			<input type="submit" style="margin-top:10px;float: left;" value="Cerrar sesión" />					
-		</form>		
+		<form th:action="@{/logout}" method="post"
+			style="font-size: 1.5em; margin-left: 93%;">
+			<input type="submit" style="margin-top: 10px; float: left;"
+				value="Cerrar sesión" />
+		</form>
 		<!-- header -->
 		<div class="header">
 			<div class="container">
 				<div class="logo">
 					<h1>NutriApp</h1>
-				</div> 
-				<div class="banner-text w3labout-bnr" > 
-						<h2 >Cuenta de editor</h2>   
+				</div>
+				<div class="banner-text w3labout-bnr">
+					<h2>Cuenta de editor</h2>
 				</div>
 			</div>
 		</div>
-		<b th:text="${company}" style="margin-left:20px;color:#000000;font-size:2em;"></b>
+		<b th:text="${company}"
+			style="margin-left: 20px; color: #000000; font-size: 2em;"></b>
 	</div>
-	<!-- //banner -->   
+	<!-- //banner -->
 	<!-- gallery -->
 	<div class="about gallery">
-		<div class="container">  
-				<nav aria-label="breadcrumb">
-				  <ol class="breadcrumb" style="background-color:#ffffff;font-size:1.5em;margin-bottom:40px;">
-				  	<li class="breadcrumb-item"><a th:href="@{/editor}">Página principal</a></li>
-				  	<li class="breadcrumb-item"><a th:href="@{'/editor/escoger_platos_menu_grupal_componentes/' + ${id_menu}}">Seleccionar platos para ver componentes</a></li>
-				    <li class="breadcrumb-item active">Información nutricional del menú</li>
-				  </ol>
-				</nav>
-				
-				<label for="exampleInputEmail1" th:text="${menuName}" style="font-size: 2em;margin-bottom: 40px;"></label>
-				<label for="exampleInputEmail1" th:text="${dishName}" style="font-size: 2em;margin-bottom: 40px;"></label>
-				
-				<ul class="nav nav-tabs" role="tablist" id="myTab">
-				  <li role ="presentation"  class="nav-item" >
-				    <a href="#seccion1" data-toggle="tab" role="tab" class="nav-link active">Gráfico</a>
-				  </li>
-				  <li role ="presentation" class="nav-item">
-				  	<a href="#seccion2" data-toggle="tab" role="tab"class="nav-link">Etiqueta alimentaria</a>
-				  </li>
-				  <li role ="presentation" class="nav-item">
-				  	<a href="#seccion3" data-toggle="tab" role="tab"class="nav-link">Tabla nutricional</a>
-				  </li>
-				</ul>	
-				<div class="tab-content">
-					<div role="tabpanel" class="tab-pane active" id="seccion1">
-						<label for="exampleInputEmail1" th:text="${name_menu}" style="font-size: 2em;margin-bottom: 30px;margin-top: 30px;"></label>
-					    
-					    	<div id="container" style="margin-bottom:40px;"></div>
-					    
-							<b th:text="'Hidratos de carbono:   ' + ${porcentajeHC} + '%' " style="margin-left:20px;color:#964B00;font-size:1.5em;"> </b>
-							<b th:text="'Proteínas:   ' + ${porcentajeProteinas} + '%' " style="margin-left:20px;color:#4169E1;font-size:1.5em;"> </b>
-							<b th:text="'Grasas:   ' + ${porcentajeGrasa} + '%' " style="margin-left:20px;color:#8A2BE2;font-size:1.5em;"> </b>
-					
+		<div class="container">
+			<nav aria-label="breadcrumb">
+				<ol class="breadcrumb"
+					style="background-color: #ffffff; font-size: 1.5em; margin-bottom: 40px;">
+					<li class="breadcrumb-item"><a th:href="@{/editor}">Página
+							principal</a></li>
+					<!-- 				  	<li class="breadcrumb-item"><a th:href="@{'/editor/escoger_platos_menu_grupal_componentes/' + ${id_menu}}">Seleccionar platos para ver componentes</a></li> -->
+					<li class="breadcrumb-item active">Información nutricional del
+						menú</li>
+				</ol>
+			</nav>
+
+			<label for="exampleInputEmail1" th:text="${menuName}"
+				style="font-size: 2em; margin-bottom: 40px;"></label> <label
+				for="exampleInputEmail1" th:text="${dishName}"
+				style="font-size: 2em; margin-bottom: 40px;"></label>
+
+			<ul class="nav nav-tabs" role="tablist" id="myTab">
+				<li role="presentation" class="nav-item"><a href="#seccion1"
+					data-toggle="tab" role="tab" class="nav-link active">Gráfico</a></li>
+				<li role="presentation" class="nav-item"><a href="#seccion2"
+					data-toggle="tab" role="tab" class="nav-link">Etiqueta
+						alimentaria</a></li>
+				<li role="presentation" class="nav-item"><a href="#seccion3"
+					data-toggle="tab" role="tab" class="nav-link">Vitaminas y
+						minerales</a></li>
+			</ul>
+			<div class="tab-content">
+				<div role="tabpanel" class="tab-pane active" id="seccion1">
+					<h3 style="font-weight: 700; margin-top: 30px;">Porcentajes
+						sobre el total de energía</h3>
+					<div id="container" style="margin-bottom: 40px;"></div>
+					<div id="piechart"></div>   
+
+					<!-- 							<b th:text="'Hidratos de carbono:   ' + ${porcentajeHC} + '%' " style="margin-left:20px;color:#964B00;font-size:1.5em;"> </b> -->
+					<!-- 							<b th:text="'Proteínas:   ' + ${porcentajeProteinas} + '%' " style="margin-left:20px;color:#4169E1;font-size:1.5em;"> </b> -->
+					<!-- 							<b th:text="'Grasas:   ' + ${porcentajeGrasa} + '%' " style="margin-left:20px;color:#8A2BE2;font-size:1.5em;"> </b> -->
+
+				</div>
+				<div role="tabpanel" class="tab-pane " id="seccion2">
+					<label for="exampleInputEmail1" th:text="${name_menu}"
+						style="font-size: 2em; margin-bottom: 30px; margin-top: 30px;"></label>
+
+					<div class="row"
+						style="display: flex; justify-content: center; padding: 0px 150px; margin-top: -60px;">
+						<!-- 							<div style="width:40%;display:flex;justify-content:center;"> -->
+						<table class="table" style="margin-top: 30px;">
+
+							<thead>
+								<tr>
+									<th scope="col">Nombre componente</th>
+									<th scope="col" style="width: 30%;">Cantidad de la ración</th>
+									<th scope="col" style="width: 30%;">Ingesta de referencia</th>
+								</tr>
+							</thead>
+							<tbody id="completeTable">
+								<tr th:each="componente: ${listComponentsDish}">
+									<td th:text="${componente.component}" style="font-weight:700;">Grupo componente</td>
+									<td th:text="${componente.amount}" style="width: 30%;">Nombre componente</td>
+									<td th:text="${componente.recomendedAmount}" style="width: 30%;">Ingesta de referencia</td>
+								</tr>
+							</tbody>
+						</table>
 					</div>
-					<div role="tabpanel" class="tab-pane " id="seccion2">
-						<label for="exampleInputEmail1" th:text="${name_menu}" style="font-size: 2em;margin-bottom: 30px;margin-top: 30px;"></label>
-								<div class ="row" style="display:flex;justify-content:center;padding:0px 250px 0px 250px;margin-top:-60px;">
-		<!-- 							<div style="width:40%;display:flex;justify-content:center;"> -->
-										<table class="table" style = "margin-top:30px;">
-											
-										  <thead>
-										    <tr >
-										      <th scope="col">Nombre componente</th>
-										      <th scope="col" style="width:30%;">Cantidad </th>
-										    </tr>
-										  </thead>
-										  <tbody id="completeTable">
-										    <tr th:each="componente: ${listComponentsDish}">
-							                    <td th:text="${componente.key}">Grupo componente</td>
-							                    <td th:text="${componente.value}" style="width:30%;">Nombre componente</td>
-										    </tr>
-										  </tbody>
-										</table>
-								</div>
-					</div>
-					<div role="tabpanel" class="tab-pane " id="seccion3">
-						<label for="exampleInputEmail1" th:text="${name_menu}" style="font-size: 2em;margin-bottom: 30px;margin-top: 30px;"></label>
-						<div th:if="${!componentsDishTableProximal.empty}">
-							<div class ="row">
-								<h4 style="margin-top:20px;">Proximales</h4>
-								<table class="table" style = "margin-top:30px;background-color:#9DC4E0;">
-									
-								  <thead>
-								    <tr >
-									  <th scope="col" style="width:20%;">Grupo componente</th>
-								      <th scope="col" style="width:40%;">Nombre componente</th>
-								      <th scope="col" style="width:20%;">Cantidad </th>
-								      <th scope="col" style="width:20%;">Unidad</th>
-								    </tr>
-								  </thead>
-								  <tbody id="myTable">
-								    <tr th:each="componente: ${componentsDishTableProximal}">
-					                    <td th:text="${componente.groupComponent}">Grupo componente</td>
-					                    <td th:text="${componente.nameComponent}">Nombre componente</td>
-					                    <td th:text="${componente.amount}">Cantidad</td>
-					                    <td th:text="${componente.unit}">Unidad</td>
-								    </tr>
-								  </tbody>
-								</table>
-							</div>		
-						</div>		
-						<div th:if="${!componentsDishTableHcarbono.empty}">
-							<div class ="row">
-							<h4 style="margin-top:20px;">Hidratos de carbono</h4>
-								<table class="table" style = "margin-top:30px;background-color:#FAB8AA;">
-									
-								  <thead>
-								    <tr >
-									  <th scope="col" style="width:20%;">Grupo componente</th>
-								      <th scope="col" style="width:40%;">Nombre componente</th>
-								      <th scope="col" style="width:20%;">Cantidad </th>
-								      <th scope="col" style="width:20%;">Unidad</th>
-								    </tr>
-								  </thead>
-								  <tbody id="myTable">
-								    <tr th:each="componente: ${componentsDishTableHcarbono}">
-					                    <td th:text="${componente.groupComponent}">Grupo componente</td>
-					                    <td th:text="${componente.nameComponent}">Nombre componente</td>
-					                    <td th:text="${componente.amount}">Cantidad</td>
-					                    <td th:text="${componente.unit}">Unidad</td>
-								    </tr>
-								  </tbody>
-								</table>
-							</div>
-						</div>
-						<div th:if="${!componentsDishTableGrasa.empty}">
-							<div class ="row">
-							<h4 style="margin-top:20px;">Grasas</h4>
-								<table class="table" style = "margin-top:30px;background-color:#FADB44;">
-									
-								  <thead>
-								    <tr >
-									  <th scope="col" style="width:20%;">Grupo componente</th>
-								      <th scope="col" style="width:40%;">Nombre componente</th>
-								      <th scope="col" style="width:20%;">Cantidad </th>
-								      <th scope="col" style="width:20%;">Unidad</th>
-								    </tr>
-								  </thead>
-								  <tbody id="myTable">
-								    <tr th:each="componente: ${componentsDishTableGrasa}">
-					                    <td th:text="${componente.groupComponent}">Grupo componente</td>
-					                    <td th:text="${componente.nameComponent}">Nombre componente</td>
-					                    <td th:text="${componente.amount}">Cantidad</td>
-					                    <td th:text="${componente.unit}">Unidad</td>
-								    </tr>
-								  </tbody>
-								</table>
-							</div>
-						</div>
-						<div th:if="${!componentsDishTableVitaminas.empty}">
-							<div class ="row">
-							<h4 style="margin-top:20px;">Vitaminas</h4>
-								<table class="table" style = "margin-top:30px;background-color:#95F59A;">
-									
-								  <thead>
-								    <tr >
-									  <th scope="col" style="width:20%;">Grupo componente</th>
-								      <th scope="col" style="width:40%;">Nombre componente</th>
-								      <th scope="col" style="width:20%;">Cantidad </th>
-								      <th scope="col" style="width:20%;">Unidad</th>
-								    </tr>
-								  </thead>
-								  <tbody id="myTable">
-								    <tr th:each="componente: ${componentsDishTableVitaminas}">
-					                    <td th:text="${componente.groupComponent}">Grupo componente</td>
-					                    <td th:text="${componente.nameComponent}">Nombre componente</td>
-					                    <td th:text="${componente.amount}">Cantidad</td>
-					                    <td th:text="${componente.unit}">Unidad</td>
-								    </tr>
-								  </tbody>
-								</table>
-							</div>
-						</div>
-						<div th:if="${!componentsDishTableMinerales.empty}">
-							<div class ="row">
-							<h4 style="margin-top:20px;">Minerales</h4>
-								<table class="table" style = "margin-top:30px;background-color:#F1C7FF;">
-									
-								  <thead>
-								    <tr >
-									  <th scope="col" style="width:20%;">Grupo componente</th>
-								      <th scope="col" style="width:40%;">Nombre componente</th>
-								      <th scope="col" style="width:20%;">Cantidad </th>
-								      <th scope="col" style="width:20%;">Unidad</th>
-								    </tr>
-								  </thead>
-								  <tbody id="myTable">
-								    <tr th:each="componente: ${componentsDishTableMinerales}">
-					                    <td th:text="${componente.groupComponent}">Grupo componente</td>
-					                    <td th:text="${componente.nameComponent}">Nombre componente</td>
-					                    <td th:text="${componente.amount}">Cantidad</td>
-					                    <td th:text="${componente.unit}">Unidad</td>
-								    </tr>
-								  </tbody>
-								</table>
-							</div>
+					<h4 style="margin-top: 30px;">* Ingesta de referencia de un
+						adulto medio (8 400 kJ/ 2 000 kcal)</h4>
+					<h4 style="margin-top: 30px;">Estas ingestas de referencia están recogidas
+						en el Reglamento 1169/2011 DEL PARLAMENTO EUROPEO Y DEL CONSEJO de
+						25 de octubre de 2011 sobre la información alimentaria facilitada
+						al consumidor.</h4>
+				</div>
+				<div role="tabpanel" class="tab-pane " id="seccion3">
+					<label for="exampleInputEmail1" th:text="${name_menu}"
+						style="font-size: 2em; margin-bottom: 30px; margin-top: 30px;"></label>
+					<div th:if="${!componentsDishTableVitaminas.empty}">
+						<div class="row">
+							<h4 style="margin-top: 20px;">Vitaminas</h4>
+							<table class="table"
+								style="margin-top: 30px; background-color: #95F59A;">
+
+								<thead>
+									<tr>
+										<th scope="col" style="width: 20%;">Grupo componente</th>
+										<th scope="col" style="width: 40%;">Nombre componente</th>
+										<th scope="col" style="width: 20%;">Cantidad</th>
+										<th scope="col" style="width: 20%;">Unidad</th>
+									</tr>
+								</thead>
+								<tbody id="myTable">
+									<tr th:each="componente: ${componentsDishTableVitaminas}">
+										<td th:text="${componente.groupComponent}">Grupo
+											componente</td>
+										<td th:text="${componente.nameComponent}">Nombre
+											componente</td>
+										<td th:text="${componente.amount}">Cantidad</td>
+										<td th:text="${componente.unit}">Unidad</td>
+									</tr>
+								</tbody>
+							</table>
 						</div>
 					</div>
+					<div th:if="${!componentsDishTableMinerales.empty}">
+						<div class="row">
+							<h4 style="margin-top: 20px;">Minerales</h4>
+							<table class="table"
+								style="margin-top: 30px; background-color: #F1C7FF;">
+
+								<thead>
+									<tr>
+										<th scope="col" style="width: 20%;">Grupo componente</th>
+										<th scope="col" style="width: 40%;">Nombre componente</th>
+										<th scope="col" style="width: 20%;">Cantidad</th>
+										<th scope="col" style="width: 20%;">Unidad</th>
+									</tr>
+								</thead>
+								<tbody id="myTable">
+									<tr th:each="componente: ${componentsDishTableMinerales}">
+										<td th:text="${componente.groupComponent}">Grupo
+											componente</td>
+										<td th:text="${componente.nameComponent}">Nombre
+											componente</td>
+										<td th:text="${componente.amount}">Cantidad</td>
+										<td th:text="${componente.unit}">Unidad</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
-	<!-- //gallery -->  
+	<!-- //gallery -->
 	<!-- footer -->
 	<div class="footer">
 		<div class="container">
-			<div class="clearfix"> </div>
+			<div class="clearfix"></div>
 			<div class="w3agile_footer_copy">
-				<p>© 2017 Dine. All rights reserved | Design by <a href="http://w3layouts.com/" target="_blank">W3layouts.</a></p>
+				<p>
+					© 2017 Dine. All rights reserved | Design by <a
+						href="http://w3layouts.com/" target="_blank">W3layouts.</a>
+				</p>
 			</div>
 		</div>
 	</div>
+		<script>
+	$('#piechart').piechart({
+		  data: [
+		      native = [
+		          {cat: 'Native Programmiersprachen', val: 9, label: "JAVA"},
+		          {cat: 'Native Programmiersprachen', val: 8, label: "JSF"},
+		          {cat: 'Native Programmiersprachen', val: 9, label: "Primefaces"},
+		          {cat: 'Native Programmiersprachen', val: 5, label: "adg"},
+		          {cat: 'Native Programmiersprachen', val: 5, label: "Dartlang"}
+		      ],
+
+		      cms = [
+		          {cat: 'Content Management Systeme', val: 3, label: "Wordpress"},
+		          {cat: 'Content Management Systeme', val: 7, label: "Contao"},
+		          {cat: 'Content Management Systeme', val: 8, label: "TYPO3"},
+		      ],
+
+		      web = [
+		          {cat: 'Webkompetenzen', val: 9, label: "HTML5"},
+		          {cat: 'Webkompetenzen', val: 9, label: "SCSS"},
+		          {cat: 'Webkompetenzen', val: 9, label: "CSS3"},
+		          {cat: 'Webkompetenzen', val: 9, label: "asf"},
+		          {cat: 'Webkompetenzen', val: 7, label: "LESS"},
+		          {cat: 'Webkompetenzen', val: 6, label: "Javascript"},
+		          {cat: 'Webkompetenzen', val: 9, label: "jQuery"},
+		          {cat: 'Webkompetenzen', val: 5, label: "PHP"},
+		          {cat: 'Webkompetenzen', val: 7, label: "MySQL"},
+		      ],
+
+		      sonstiges = [
+		          {cat: 'Sonstiges', val: 3, label: "Linux"},
+		          {cat: 'Sonstiges', val: 5, label: "Photoshop"},
+		          {cat: 'Sonstiges', val: 3, label: "Regex"}
+		      ]
+		  ]
+		});
+	
+	$('#piechart').piechart({
+		  allCategoriesToggled: false,
+		  categoryToggled: 4,
+		  categoryToggledRandom: false,
+		  containerWidth: '100%',
+		  canvasHeight: '280px',
+		  canvasWidth: '280px',
+		  toggleBtnClass: 'piechart-category-title-row',
+		  toggleContainerClass: 'piechart-category-content-row',
+		  toggleOpenClass: 'toggle-open',
+		  pieStyle: {
+		    fillStyle: "#00B0AF",
+		    overlayStyle: "#CA0097",
+		    stroke: false,
+		    lineWidth: 0,
+		    strokeStyle: '#000000',
+		    radius: 100
+		  }
+		});
+	</script>
 	<script>
 		$('.navicon').on('click', function (e) {
 		  e.preventDefault();
 		  $(this).toggleClass('navicon--active');
 		  $('.toggle').toggleClass('toggle--active');
 		});
-	</script> 
+	</script>
 	<script>
 	$(document).ready(function(){
 	    $('a[data-toggle="tab"]').on('show.bs.tab', function(e) {
@@ -290,9 +329,9 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	});
 	</script>
 	<!-- //menu-js -->
-	<!-- jarallax -->  
-	<script src="js/SmoothScroll.min.js"></script> 
-	<script src="js/jarallax.js"></script> 
+	<!-- jarallax -->
+	<script src="js/SmoothScroll.min.js"></script>
+	<script src="js/jarallax.js"></script>
 	<script type="text/javascript">
 		/* init Jarallax */
 		$('.jarallax').jarallax({
@@ -300,11 +339,11 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 			imgWidth: 1366,
 			imgHeight: 768
 		})
-	</script>  
-	<!-- //jarallax --> 
-	<!-- start-smooth-scrolling --> 
+	</script>
+	<!-- //jarallax -->
+	<!-- start-smooth-scrolling -->
 	<script type="text/javascript" src="js/move-top.js"></script>
-	<script type="text/javascript" src="js/easing.js"></script>	
+	<script type="text/javascript" src="js/easing.js"></script>
 	<script type="text/javascript">
 			jQuery(document).ready(function($) {
 				$(".scroll").click(function(event){		
@@ -331,7 +370,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
       }
     });
 	</script>
-	<!-- //end-smooth-scrolling -->	 
+	<!-- //end-smooth-scrolling -->
 	<!-- smooth-scrolling-of-move-up -->
 	<script type="text/javascript">
 		$(document).ready(function() {
@@ -413,7 +452,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	    }
 	});
 	</script>
-		<script>
+	<script>
 	$('#completeTable').bootstrapTable({
 	    onClickRow: function (row, $element) {
 	        // row: the record corresponding to the clicked row, 
@@ -467,8 +506,8 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	        case "Hidratos de Carbono":
 		           color = "#FAB8AA" ;
 		           break;
-	        case "Azúcares":
-		           color = "#F1C7FF" ;
+	        case "de los cuales azúcares":
+		           color = "#FAB8AA" ;
 		           break;		   
 	        case "Proteínas":
 		           color = "#99CCFF" ;
@@ -478,14 +517,17 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 		           break;
 	        case "Minerales":
 		           color = "#F1C7FF" ;
-		           break;  
+		           break; 
+	        case "Sal":
+		           color = "#FCE4CA" ;
+		           break;  		           
 		    default:
 		    		color ="#ffffff"
 	     }
 	     $(this.parentNode).attr("style","background-color:"+color)
 	})
 	</script>
-	<script  th:inline="javascript">
+	<script th:inline="javascript">
 
 	/*<![CDATA[*/
 	
@@ -504,37 +546,23 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	/*]]>*/
 	var colors = Highcharts.getOptions().colors,
 	  categories = [
-	    'Energía',
 	    'Grasas',
 	    'Proteína',
-	    'Hidratos de Carbono'
+	    'Hidratos de Carbono',
+	    'Fibra'
 	  ],
 	  data = [
-	    {
-	      y: porcentajeEnergia,
-	      color:  colors[2],
-	      drilldown: {
-	        name: 'Energía',
-	        categories: [
-	          'Energía'
-	        ],
-	        data: [
-	        	porcentajeEnergia
-	        ]
-	      }
-	    },
+
 	    {
 	      y: porcentajeGrasa,
 	      color: colors[4],
 	      drilldown: {
 	        name: 'Grasas',
 	        categories: [
-		          'Ácidos grasos',
-		          'Otras grasas'
+	        	'Grasas',
 	        ],
 	        data: [
-	        	porcentajeAcGrasos,
-	        	porcentajeOtrasGrasas
+	        	porcentajeGrasa
 	          
 	        ]
 	      }
@@ -558,17 +586,26 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	      drilldown: {
 	        name: 'Hidratos de Carbono',
 	        categories: [
-	          'Fibra',
-	          'Azúcares',
-	          'Otros Hidratos de Carbono'
+	        	'Hidratos de Carbono',
 	        ],
 	        data: [
 	        	porcentajeFibra,
-	        	porcentajeAzucar,
-	        	porcentajeOtrosHC
 	        ]
 	      }
-		    }
+		    },
+	    {
+		      y: porcentajeEnergia,
+		      color:  colors[2],
+		      drilldown: {
+		        name: 'Fibra',
+		        categories: [
+		          'Fibra'
+		        ],
+		        data: [
+		        	porcentajeFibra
+		        ]
+		      }
+		    },
 	  ],
 	  salaryData = [],
 	  percentageData = [],
@@ -585,7 +622,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	  // add browser data
 	  salaryData.push({
 	    name: categories[i],
-	    y: data[i].y,
+// 	    y: data[i].y,
 	    color: data[i].color
 	  });
 
@@ -664,12 +701,6 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	  }
 	});
 	</script>
-	
-
-	<!-- //smooth-scrolling-of-move-up -->  		
-	<!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="js/bootstrap.js"></script>
+	<script src="js/bootstrap.js"></script>
 </body>
 </html>
