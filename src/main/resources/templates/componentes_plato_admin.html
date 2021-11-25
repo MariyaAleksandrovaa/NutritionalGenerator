@@ -16,53 +16,80 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 <script type="application/x-javascript">
 	 addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } 
 </script>
-<!-- Custom Theme files -->
-<link href="../../css/bootstrap.css" type="text/css" rel="stylesheet"
-	media="all">
 
-<!-- CSS only -->
-<link
-	href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
-	rel="stylesheet"
-	integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
-	crossorigin="anonymous" />
-<!-- JavaScript Bundle with Popper -->
-<script
-	src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+<link href="../../css/bootstrap.css" type="text/css" rel="stylesheet" media="all">
+
+
+<!-- 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" -->
+<!-- 	rel="stylesheet" -->
+<!-- 	integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" -->
+<!-- 	crossorigin="anonymous" /> -->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
 	integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
 	crossorigin="anonymous"></script>
 
-<link href="../../css/style.css" type="text/css" rel="stylesheet"
-	media="all">
+<link href="../../css/style.css" type="text/css" rel="stylesheet" media="all">
 <link href="../../css/font-awesome.css" rel="stylesheet">
-<!-- font-awesome icons -->
-<link rel="stylesheet" href="../../css/smoothbox.css" type='text/css'
-	media="all" />
-<!-- //Custom Theme files -->
-
-<!-- js -->
+<link rel="stylesheet" href="../../css/smoothbox.css" type='text/css'>
 <script src="../../js/jquery-2.2.3.min.js"></script>
-<script
-	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> -->
-<!-- //js -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+<link href="//fonts.googleapis.com/css?family=Playfair+Display:400,400i,700,700i,900,900i" rel="stylesheet">
+
 <script src="https://code.highcharts.com/highcharts.js"></script>
 <script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
 <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+<style>
+.highcharts-figure,
+.highcharts-data-table table {
+    min-width: 320px;
+    max-width: 800px;
+    margin: 1em auto;
+}
 
-<!-- web-fonts -->
-<link
-	href="//fonts.googleapis.com/css?family=Playfair+Display:400,400i,700,700i,900,900i"
-	rel="stylesheet">
-<!-- //web-fonts -->
+.highcharts-data-table table {
+    font-family: Verdana, sans-serif;
+    border-collapse: collapse;
+    border: 1px solid #ebebeb;
+    margin: 10px auto;
+    text-align: center;
+    width: 100%;
+    max-width: 500px;
+}
 
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-<!--     <script type="text/javascript"></script> -->
-    <script src="//code.jquery.com/jquery-3.2.0.min.js"></script>
-    <script src="js/piechart.min.js"></script>
-    <link rel="stylesheet" href="css/piechart.min.css">
+.highcharts-data-table caption {
+    padding: 1em 0;
+    font-size: 1.2em;
+    color: #555;
+}
 
+.highcharts-data-table th {
+    font-weight: 600;
+    padding: 0.5em;
+}
 
+.highcharts-data-table td,
+.highcharts-data-table th,
+.highcharts-data-table caption {
+    padding: 0.5em;
+}
+
+.highcharts-data-table thead tr,
+.highcharts-data-table tr:nth-child(even) {
+    background: #f8f8f8;
+}
+
+.highcharts-data-table tr:hover {
+    background: #f1f7ff;
+}
+
+input[type="number"] {
+    min-width: 50px;
+}
+</style>
 </head>
 
 <body>
@@ -93,7 +120,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	</div>
 	<!-- //banner -->
 	<!-- gallery -->
-	<div class="about gallery">
+	<div class="about gallery" style="font-size:12px;">
 		<div class="container">
 			<nav aria-label="breadcrumb">
 				<ol class="breadcrumb"
@@ -123,15 +150,17 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 			</ul>
 			<div class="tab-content">
 				<div role="tabpanel" class="tab-pane active" id="seccion1">
-					<h3 style="font-weight: 700; margin-top: 30px;">Porcentajes
-						sobre el total de energía</h3>
+					<h3 style="font-weight: 700; margin-top: 30px;margin-bottom:50px;">Porcentajes sobre el total de energía</h3>
 					<div id="container" style="margin-bottom: 40px;"></div>
+					<figure class="highcharts-figure">
+					    <div id="container"></div>
+					</figure>
 					<div id="piechart"></div>   
 
 					<!-- 							<b th:text="'Hidratos de carbono:   ' + ${porcentajeHC} + '%' " style="margin-left:20px;color:#964B00;font-size:1.5em;"> </b> -->
 					<!-- 							<b th:text="'Proteínas:   ' + ${porcentajeProteinas} + '%' " style="margin-left:20px;color:#4169E1;font-size:1.5em;"> </b> -->
 					<!-- 							<b th:text="'Grasas:   ' + ${porcentajeGrasa} + '%' " style="margin-left:20px;color:#8A2BE2;font-size:1.5em;"> </b> -->
-
+					<h4 style="margin-top: 30px;">Se recomienda una dieta variada y equilibrada y un estilo de vida saludable.</h4>
 				</div>
 				<div role="tabpanel" class="tab-pane " id="seccion2">
 					<label for="exampleInputEmail1" th:text="${name_menu}"
@@ -164,6 +193,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 						en el Reglamento 1169/2011 DEL PARLAMENTO EUROPEO Y DEL CONSEJO de
 						25 de octubre de 2011 sobre la información alimentaria facilitada
 						al consumidor.</h4>
+					
 				</div>
 				<div role="tabpanel" class="tab-pane " id="seccion3">
 					<label for="exampleInputEmail1" th:text="${name_menu}"
@@ -239,63 +269,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 			</div>
 		</div>
 	</div>
-		<script>
-	$('#piechart').piechart({
-		  data: [
-		      native = [
-		          {cat: 'Native Programmiersprachen', val: 9, label: "JAVA"},
-		          {cat: 'Native Programmiersprachen', val: 8, label: "JSF"},
-		          {cat: 'Native Programmiersprachen', val: 9, label: "Primefaces"},
-		          {cat: 'Native Programmiersprachen', val: 5, label: "adg"},
-		          {cat: 'Native Programmiersprachen', val: 5, label: "Dartlang"}
-		      ],
 
-		      cms = [
-		          {cat: 'Content Management Systeme', val: 3, label: "Wordpress"},
-		          {cat: 'Content Management Systeme', val: 7, label: "Contao"},
-		          {cat: 'Content Management Systeme', val: 8, label: "TYPO3"},
-		      ],
-
-		      web = [
-		          {cat: 'Webkompetenzen', val: 9, label: "HTML5"},
-		          {cat: 'Webkompetenzen', val: 9, label: "SCSS"},
-		          {cat: 'Webkompetenzen', val: 9, label: "CSS3"},
-		          {cat: 'Webkompetenzen', val: 9, label: "asf"},
-		          {cat: 'Webkompetenzen', val: 7, label: "LESS"},
-		          {cat: 'Webkompetenzen', val: 6, label: "Javascript"},
-		          {cat: 'Webkompetenzen', val: 9, label: "jQuery"},
-		          {cat: 'Webkompetenzen', val: 5, label: "PHP"},
-		          {cat: 'Webkompetenzen', val: 7, label: "MySQL"},
-		      ],
-
-		      sonstiges = [
-		          {cat: 'Sonstiges', val: 3, label: "Linux"},
-		          {cat: 'Sonstiges', val: 5, label: "Photoshop"},
-		          {cat: 'Sonstiges', val: 3, label: "Regex"}
-		      ]
-		  ]
-		});
-	
-	$('#piechart').piechart({
-		  allCategoriesToggled: false,
-		  categoryToggled: 4,
-		  categoryToggledRandom: false,
-		  containerWidth: '100%',
-		  canvasHeight: '280px',
-		  canvasWidth: '280px',
-		  toggleBtnClass: 'piechart-category-title-row',
-		  toggleContainerClass: 'piechart-category-content-row',
-		  toggleOpenClass: 'toggle-open',
-		  pieStyle: {
-		    fillStyle: "#00B0AF",
-		    overlayStyle: "#CA0097",
-		    stroke: false,
-		    lineWidth: 0,
-		    strokeStyle: '#000000',
-		    radius: 100
-		  }
-		});
-	</script>
 	<script>
 		$('.navicon').on('click', function (e) {
 		  e.preventDefault();
@@ -327,148 +301,8 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	    var anchor = location.hash || $("a[data-toggle='tab']").first().attr("href");
 	    $("a[href='" + anchor + "']").tab("show");
 	});
-	</script>
-	<!-- //menu-js -->
-	<!-- jarallax -->
-	<script src="js/SmoothScroll.min.js"></script>
-	<script src="js/jarallax.js"></script>
-	<script type="text/javascript">
-		/* init Jarallax */
-		$('.jarallax').jarallax({
-			speed: 0.5,
-			imgWidth: 1366,
-			imgHeight: 768
-		})
-	</script>
-	<!-- //jarallax -->
-	<!-- start-smooth-scrolling -->
-	<script type="text/javascript" src="js/move-top.js"></script>
-	<script type="text/javascript" src="js/easing.js"></script>
-	<script type="text/javascript">
-			jQuery(document).ready(function($) {
-				$(".scroll").click(function(event){		
-					event.preventDefault();
-			
-			$('html,body').animate({scrollTop:$(this.hash).offset().top},1000);
-				});
-			});
-	</script>
-	<script>
-    var ctxP = document.getElementById("pieChart").getContext('2d');
-    var myPieChart = new Chart(ctxP, {
-      type: 'pie',
-      data: {
-        labels: ["Red", "Green", "Yellow", "Grey", "Dark Grey"],
-        datasets: [{
-          data: [300, 50, 100, 40, 120],
-          backgroundColor: ["#F7464A", "#46BFBD", "#FDB45C", "#949FB1", "#4D5360"],
-          hoverBackgroundColor: ["#FF5A5E", "#5AD3D1", "#FFC870", "#A8B3C5", "#616774"]
-        }]
-      },
-      options: {
-        responsive: true
-      }
-    });
-	</script>
-	<!-- //end-smooth-scrolling -->
-	<!-- smooth-scrolling-of-move-up -->
-	<script type="text/javascript">
-		$(document).ready(function() {
-			/*
-			var defaults = {
-				containerID: 'toTop', // fading element id
-				containerHoverID: 'toTopHover', // fading element hover id
-				scrollSpeed: 1200,
-				easingType: 'linear' 
-			};
-			*/
-			
-			$().UItoTop({ easingType: 'easeOutQuart' });
-			
-		});
-	</script>
-	<script>
-	$(document).ready(function(){
-	  $("#myInput").on("keyup", function() {
-	    var value = $(this).val().toLowerCase();
-	    $("#myTable tr").filter(function() {
-	      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-	    });
-	  });
-	});
-	</script>
-	<script>
-    $(document).ready(function(){
-        // Open modal on page load
-        $("#myModal").modal('show');
-        // Close modal on button click
-        $(".btn").click(function(){
-            $("#modal1").modal('hide');
-        });
-    });
-	</script>
-	<script>
-	$(function(){
-	    $('#orderModal').modal({
-	        keyboard: true,
-	        backdrop: "static",
-	        show:false,
-
-	    }).on('show', function(){ //subscribe to show method
-	          var getIdFromRow = $(event.target).closest('tr').data('id'); //get the id from tr
-	        //make your ajax call populate items or what even you need
-	        $(this).find('#orderDetails').html($('<b> Order Id selected: ' + getIdFromRow  + '</b>'))
-	    });
-	});
-	</script>
-	<script>
-	var globalModal = $('.global-modal');
-    $( ".btn-green-flat-trigger" ).on( "click", function(e) {
-      e.preventDefault();
-      $( globalModal ).toggleClass('global-modal-show');
-    });
-    $( ".overlay" ).on( "click", function() {
-      $( globalModal ).toggleClass('global-modal-show');
-    });
-    $( ".global-modal_close" ).on( "click", function() {
-      $( globalModal ).toggleClass('global-modal-show');
-    });
-    $(".mobile-close").on("click", function(){
-      $( globalModal ).toggleClass('global-modal-show');
-    });
-	</script>
-	<script>
-	$('#myTable').bootstrapTable({
-	    onClickRow: function (row, $element) {
-	        // row: the record corresponding to the clicked row, 
-	        // $element: the tr element.
-	        
-	        var address = [];
-	        $(this).closest('tr').find('td').not(':last').each(function() {
-	            var textval = $(this).text(); // this will be the text of each <td>
-	           address.push(textval);
-	       });
-	        alert(address.join('\n'));
-	    }
-	});
-	</script>
-	<script>
-	$('#completeTable').bootstrapTable({
-	    onClickRow: function (row, $element) {
-	        // row: the record corresponding to the clicked row, 
-	        // $element: the tr element.
-	        
-	        var address = [];
-	        $(this).closest('tr').find('td').not(':last').each(function() {
-	            var textval = $(this).text(); // this will be the text of each <td>
-	           address.push(textval);
-	       });
-	        alert(address.join('\n'));
-	    }
-	});
-	</script>
-
-	<script>
+	</script>	
+		<script>
 	$("#completeTable td:nth-child(1)").each( function(x){
 	     const texto = this.innerHTML;
 	     switch(texto) {
@@ -527,180 +361,100 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	     $(this.parentNode).attr("style","background-color:"+color)
 	})
 	</script>
-	<script th:inline="javascript">
-
-	/*<![CDATA[*/
-	
-	    var porcentajeProteinas = /*[[${porcentajeProteinas}]]*/ 'default';
-		var porcentajeEnergia = /*[[${porcentajeEnergia}]]*/ 'default';
-		var porcentajeHC = /*[[${porcentajeHC}]]*/ 'default';
-		var porcentajeGrasa = /*[[${porcentajeGrasa}]]*/ 'default';
-		
-		var porcentajeOtrosHC= /*[[${porcentajeOtrosHC}]]*/ 'default';
-		var porcentajeFibra = /*[[${porcentajeFibra}]]*/ 'default';
-		var porcentajeAzucar = /*[[${porcentajeAzucar}]]*/ 'default';
-		
-		var porcentajeAcGrasos = /*[[${porcentajeAcGrasos}]]*/ 'default';
-		var porcentajeOtrasGrasas = /*[[${porcentajeOtrasGrasas}]]*/ 'default';
-	
-	/*]]>*/
-	var colors = Highcharts.getOptions().colors,
-	  categories = [
-	    'Grasas',
-	    'Proteína',
-	    'Hidratos de Carbono',
-	    'Fibra'
-	  ],
-	  data = [
-
-	    {
-	      y: porcentajeGrasa,
-	      color: colors[4],
-	      drilldown: {
-	        name: 'Grasas',
-	        categories: [
-	        	'Grasas',
-	        ],
-	        data: [
-	        	porcentajeGrasa
-	          
-	        ]
-	      }
-	    },
-	    {
-	      y: porcentajeProteinas,
-	      color: colors[0],
-	      drilldown: {
-	        name: 'Proteína',
-	        categories: [
-	          'Proteína'
-	        ],
-	        data: [
-	        	porcentajeProteinas
-	        ]
-	      }
-	    },
-	    {
-	      y: porcentajeHC,
-	      color: colors[3],
-	      drilldown: {
-	        name: 'Hidratos de Carbono',
-	        categories: [
-	        	'Hidratos de Carbono',
-	        ],
-	        data: [
-	        	porcentajeFibra,
-	        ]
-	      }
-		    },
-	    {
-		      y: porcentajeEnergia,
-		      color:  colors[2],
-		      drilldown: {
-		        name: 'Fibra',
-		        categories: [
-		          'Fibra'
-		        ],
-		        data: [
-		        	porcentajeFibra
-		        ]
-		      }
-		    },
-	  ],
-	  salaryData = [],
-	  percentageData = [],
-	  i,
-	  j,
-	  dataLen = data.length,
-	  drillDataLen,
-	  brightness;
-
-
-	// Build the data arrays
-	for (i = 0; i < dataLen; i += 1) {
-
-	  // add browser data
-	  salaryData.push({
-	    name: categories[i],
-// 	    y: data[i].y,
-	    color: data[i].color
-	  });
-
-	  // add percentage data
-	  drillDataLen = data[i].drilldown.data.length;
-	  for (j = 0; j < drillDataLen; j += 1) {
-	    brightness = 0.2 - (j / drillDataLen) / 5;
-	    percentageData.push({
-	      name: data[i].drilldown.categories[j],
-	      y: data[i].drilldown.data[j],
-	      color: Highcharts.color(data[i].color).brighten(brightness).get()
-	    });
-	  }
-	}
-
-	// Create the chart
-	Highcharts.chart('container', {
-	  chart: {
-	    type: 'pie'
-	  },
-	  title: {
-	    text: null
-	  },
-	  subtitle: {
-	    text: null
-	  },
-	  plotOptions: {
-	    pie: {
-	      shadow: false,
-	      center: ['50%', '50%'],
-	      startAngle: -90
+	<script>
+	$('#myTable').bootstrapTable({
+	    onClickRow: function (row, $element) {
+	        // row: the record corresponding to the clicked row, 
+	        // $element: the tr element.
+	        
+	        var address = [];
+	        $(this).closest('tr').find('td').not(':last').each(function() {
+	            var textval = $(this).text(); // this will be the text of each <td>
+	           address.push(textval);
+	       });
+	        alert(address.join('\n'));
 	    }
-	  },
-	  tooltip: {
-	    valueSuffix: '%'
-	  },
-	  series: [{
-	    name: 'Percentage',
-	    data: salaryData,
-	    size: '60%',
-	    dataLabels: {
-	      formatter: function () {
-	        return this.y > 5 ? this.point.name : null;
-	      },
-	      color: '#ffffff',
-	      distance: -30
-	    }
-	  }, {
-	    name: 'Percentage',
-	    data: percentageData,
-	    size: '80%',
-	    innerSize: '60%',
-	    dataLabels: {
-	      formatter: function () {
-	        // display only if larger than 1
-	        return this.y > 1 ? '<b>' + this.point.name + '</b> ': null;
-	      }
-	    },
-	    id: 'percentages'
-	  }],
-	  responsive: {
-	    rules: [{
-	      condition: {
-	        maxWidth: 400
-	      },
-	      chartOptions: {
-	        series: [{
-	        }, {
-	          id: 'percentages',
-	          dataLabels: {
-	            enabled: false
-	          }
-	        }]
-	      }
-	    }]
-	  }
 	});
 	</script>
-	<script src="js/bootstrap.js"></script>
+		<script>
+	$('#completeTable').bootstrapTable({
+	    onClickRow: function (row, $element) {
+	        // row: the record corresponding to the clicked row, 
+	        // $element: the tr element.
+	        
+	        var address = [];
+	        $(this).closest('tr').find('td').not(':last').each(function() {
+	            var textval = $(this).text(); // this will be the text of each <td>
+	           address.push(textval);
+	       });
+	        alert(address.join('\n'));
+	    }
+	});
+	</script>
+<script>
+Highcharts.chart('container', {
+    chart: {
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false,
+        type: 'pie'
+    },
+    title: {
+        text: ''
+    },
+    tooltip: {
+        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+    },
+    accessibility: {
+        point: {
+            valueSuffix: '%'
+        }
+    },
+    plotOptions: {
+        pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            dataLabels: {
+                enabled: true,
+                format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+            }
+        }
+    },
+    series: [{
+        name: 'Brands',
+        colorByPoint: true,
+        data: [{
+            name: 'Chrome',
+            y: 61.41,
+            sliced: true,
+            selected: true
+        }, {
+            name: 'Internet Explorer',
+            y: 11.84
+        }, {
+            name: 'Firefox',
+            y: 10.85
+        }, {
+            name: 'Edge',
+            y: 4.67
+        }, {
+            name: 'Safari',
+            y: 4.18
+        }, {
+            name: 'Sogou Explorer',
+            y: 1.64
+        }, {
+            name: 'Opera',
+            y: 1.6
+        }, {
+            name: 'QQ',
+            y: 1.2
+        }, {
+            name: 'Other',
+            y: 2.61
+        }]
+    }]
+});
+</script>
 </body>
 </html>
