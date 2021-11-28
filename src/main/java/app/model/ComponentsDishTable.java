@@ -6,6 +6,7 @@ public class ComponentsDishTable {
 	public String nameComponent;
 	public String amount;
 	public String unit;
+	public String recomendedAmount;
 
 	public ComponentsDishTable(String groupComponent, String nameComponent, String amount, String unit) {
 		this.groupComponent = groupComponent;
@@ -13,9 +14,26 @@ public class ComponentsDishTable {
 		this.amount = amount;
 		this.unit = unit;
 	}
+	
+	public ComponentsDishTable(String groupComponent, String nameComponent, String amount, String unit, String recomendedAmount) {
+		this.groupComponent = groupComponent;
+		this.nameComponent = nameComponent;
+		this.amount = amount;
+		this.unit = unit;
+		this.recomendedAmount = recomendedAmount;
+	}
 
 	public ComponentsDishTable() {
 
+	}
+
+
+	public String getRecomendedAmount() {
+		return recomendedAmount;
+	}
+
+	public void setRecomendedAmount(String recomendedAmount) {
+		this.recomendedAmount = recomendedAmount;
 	}
 
 	public String getGroupComponent() {

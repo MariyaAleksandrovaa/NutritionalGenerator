@@ -205,7 +205,7 @@ public class ControllerMVC {
 
 		for (int i = 0; i < listDishAll.size(); i++) {
 			DishView dishView = listDishAll.get(i);
-			
+
 //			if(dishView.getFecha_creacion() != null) {
 //				java.sql.Timestamp fecha_creacion = listDishAll.get(i).getFecha_creacion();
 //
@@ -563,7 +563,7 @@ public class ControllerMVC {
 		ModelAndView model = new ModelAndView("componentes");
 
 		Food food = foodRepo.findById(id_alimento).get();
-		
+
 		List<ComponentsFood> listaComponentes = obtenerBDcomponentesAlimento(food.getIdAlimento());
 
 		model.addObject("listaComponentes", listaComponentes);
@@ -911,7 +911,7 @@ public class ControllerMVC {
 		dish.setDescripcion(dishObj.getDescripcion());
 		dish.setId_tipo_platos(dishObj.getTypeDish());
 		dish.setId_empresa(obtenerUsuario().getIdEmpresa());
-		
+
 		SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Timestamp dateTime = Timestamp.valueOf(sdf3.format(Timestamp.valueOf(LocalDateTime.now())));
 		dish.setFecha_creacion(dateTime);
@@ -1676,7 +1676,7 @@ public class ControllerMVC {
 		dishDB.setDescripcion(dish.getDescripcion());
 		dishDB.setNombre_plato(dish.getNombre_plato());
 		dishDB.setId_tipo_platos(dish.getId_tipo_platos());
-		
+
 		dishRepo.save(dishDB);
 
 		return "redirect:/editor/editDish/{id_plato}";
@@ -3304,7 +3304,8 @@ public class ControllerMVC {
 					Integer quantityInt = f.intValue();
 					Integer quantityIntJul = (Integer) ((int) (quantityInt * 4.184));
 
-					componentsDishTable.setAmount(quantityIntJul.toString()+ " kJ / " + quantityInt.toString() + " kcal" );
+					componentsDishTable
+							.setAmount(quantityIntJul.toString() + " kJ / " + quantityInt.toString() + " kcal");
 //					componentsDishTable.setUnit("kcal / kJ");
 
 				}
@@ -3528,7 +3529,8 @@ public class ControllerMVC {
 						ComponentsDishTable component = listGroupComponents.getValue().get(i);
 
 						if (component.getNameComponent().equals("sodio")) {
-							etiquetaNutricional.put("Sal", String.valueOf(Double.valueOf(component.getAmount())*2.5) + " " + component.getUnit());
+							etiquetaNutricional.put("Sal", String.valueOf(Double.valueOf(component.getAmount()) * 2.5)
+									+ " " + component.getUnit());
 						}
 					}
 				}
@@ -3541,16 +3543,19 @@ public class ControllerMVC {
 	public List<LabelObj> ordenarComponentesNutri(Map<String, String> etiquetaNutri) {
 
 		List<LabelObj> etiquetaFinal = new ArrayList<LabelObj>();
-		
-		etiquetaFinal.add(new LabelObj("Valor energético", valorEtiqueta(etiquetaNutri, "Valor energético"), "8 400 kJ / 2 000 kcal"));
+
+		etiquetaFinal.add(new LabelObj("Valor energético", valorEtiqueta(etiquetaNutri, "Valor energético"),
+				"8 400 kJ / 2 000 kcal"));
 		etiquetaFinal.add(new LabelObj("Grasas", valorEtiqueta(etiquetaNutri, "Grasas"), "70 g"));
-		etiquetaFinal.add(new LabelObj("de las cuales saturadas", valorEtiqueta(etiquetaNutri, "de las cuales saturadas"), "20 g"));
-		etiquetaFinal.add(new LabelObj("Hidratos de Carbono", valorEtiqueta(etiquetaNutri, "Hidratos de Carbono"), "260 g"));
+		etiquetaFinal.add(new LabelObj("de las cuales saturadas",
+				valorEtiqueta(etiquetaNutri, "de las cuales saturadas"), "20 g"));
+		etiquetaFinal
+				.add(new LabelObj("Hidratos de Carbono", valorEtiqueta(etiquetaNutri, "Hidratos de Carbono"), "260 g"));
 		etiquetaFinal.add(new LabelObj("de los cuales azúcares", valorEtiqueta(etiquetaNutri, "Azúcares"), "90 g"));
 		etiquetaFinal.add(new LabelObj("Fibra", valorEtiqueta(etiquetaNutri, "Fibra"), "25 g **"));
 		etiquetaFinal.add(new LabelObj("Proteínas", valorEtiqueta(etiquetaNutri, "Proteínas"), "50 g"));
 		etiquetaFinal.add(new LabelObj("Sal", valorEtiqueta(etiquetaNutri, "Sal"), "6 g"));
-		
+
 		return etiquetaFinal;
 	}
 
@@ -3565,6 +3570,191 @@ public class ControllerMVC {
 		return valorEtiq;
 	}
 
+	public List<ComponentsDishTable> renameVitaminas(List<ComponentsDishTable> vitaminas) {
+
+		for (int i = 0; i < vitaminas.size(); i++) {
+
+			switch (vitaminas.get(i).getNameComponent()) {
+			case "ácido pantoténico (vitamina B5)":
+				vitaminas.get(i).setNameComponent("Ácido pantoténico (B5)");
+				vitaminas.get(i).setRecomendedAmount("6");
+				break;
+			case "biotina":
+				vitaminas.get(i).setNameComponent("Biotina");
+				vitaminas.get(i).setRecomendedAmount("50");
+				break;
+			case "equivalentes de niacina, totales":
+				vitaminas.get(i).setNameComponent("Niacina");
+				vitaminas.get(i).setRecomendedAmount("16");
+				break;
+			case "folato, total":
+				vitaminas.get(i).setNameComponent("Ácido fólico");
+				vitaminas.get(i).setRecomendedAmount("200");
+				break;
+			case "riboflavina":
+				vitaminas.get(i).setNameComponent("Riboflavina");
+				vitaminas.get(i).setRecomendedAmount("1,4");
+				break;
+			case "tiamina":
+				vitaminas.get(i).setNameComponent("Tiamna");
+				vitaminas.get(i).setRecomendedAmount("1,1");
+				break;
+			case "Viamina E equivalentes de alfa tocoferol de actividades de vitámeros E":
+				vitaminas.get(i).setNameComponent("Vitamina E");
+				vitaminas.get(i).setRecomendedAmount("12");
+				break;
+			case "Vitamina A equivalentes de retinol de actividades de retinos y carotenoides":
+				vitaminas.get(i).setNameComponent("Vitamina A");
+				vitaminas.get(i).setRecomendedAmount("800");
+				break;
+			case "Vitamina B-12":
+				vitaminas.get(i).setNameComponent("Vitamina B12");
+				vitaminas.get(i).setRecomendedAmount("2,5");
+				break;
+			case "Vitamina B-6, Total":
+				vitaminas.get(i).setNameComponent("Vitamina B6");
+				vitaminas.get(i).setRecomendedAmount("1,4");
+				break;
+			case "Vitamina C (ácido ascórbico)":
+				vitaminas.get(i).setNameComponent("Vitamina C");
+				vitaminas.get(i).setRecomendedAmount("80");
+				break;
+			case "Vitamina D":
+				vitaminas.get(i).setRecomendedAmount("5");
+				break;
+			case "Vitamina E equivalentes de alfa tocoferol de actividades de vitámeros E":
+				vitaminas.get(i).setRecomendedAmount("12");
+				vitaminas.get(i).setNameComponent("Vitamina E");
+				break;
+			}
+		}
+
+		return vitaminas;
+	}
+
+	public List<ComponentsDishTable> orderVitaminas(List<ComponentsDishTable> vitaminas) {
+
+		Map<Integer, ComponentsDishTable> mapaOrdenar = new LinkedHashMap<Integer, ComponentsDishTable>();
+		List<ComponentsDishTable> vitaminasOrdenadas = new ArrayList<ComponentsDishTable>();
+
+		for (int i = 0; i < vitaminas.size(); i++) {
+			switch (vitaminas.get(i).getNameComponent()) {
+			case "Vitamina A equivalentes de retinol de actividades de retinos y carotenoides":
+				mapaOrdenar.put(1, vitaminas.get(i));
+				break;
+			case "Vitamina D":
+				mapaOrdenar.put(2, vitaminas.get(i));
+				break;
+			case "Viamina E equivalentes de alfa tocoferol de actividades de vitámeros E":
+				mapaOrdenar.put(3, vitaminas.get(i));
+				break;
+			case "Vitamina C (ácido ascórbico)":
+				mapaOrdenar.put(4, vitaminas.get(i));
+				break;
+			case "tiamina":
+				mapaOrdenar.put(5, vitaminas.get(i));
+				break;
+			case "riboflavina":
+				mapaOrdenar.put(6, vitaminas.get(i));
+				break;
+			case "equivalentes de niacina, totales":
+				mapaOrdenar.put(7, vitaminas.get(i));
+				break;
+			case "Vitamina B-6, Total":
+				mapaOrdenar.put(8, vitaminas.get(i));
+				break;
+			case "folato, total":
+				mapaOrdenar.put(9, vitaminas.get(i));
+				break;
+			case "Vitamina B-12":
+				mapaOrdenar.put(10, vitaminas.get(i));
+				break;
+			case "biotina":
+				mapaOrdenar.put(11, vitaminas.get(i));
+				break;
+
+			case "ácido pantoténico (vitamina B5)":
+				mapaOrdenar.put(12, vitaminas.get(i));
+				break;
+
+			}
+		}
+//		Integer comp = 1;
+//		while(true) {
+//			for (Entry<Integer,ComponentsDishTable> vitamina:mapaOrdenar.entrySet()) {
+//				
+//				if(comp == vitamina.getKey()) {
+//					vitaminasOrdenadas.add(mapaOrdenar.get(vitamina));
+//					
+//				}
+//				comp++;
+//				break;
+//			}		
+//		}
+
+
+		return vitaminasOrdenadas;
+
+	}
+
+	public List<ComponentsDishTable> renameMinerales(List<ComponentsDishTable> minerales) {
+
+		for (int i = 0; i < minerales.size(); i++) {
+
+			switch (minerales.get(i).getNameComponent()) {
+
+			case "zinc (cinc)":
+				minerales.get(i).setNameComponent("Zinc");
+				minerales.get(i).setRecomendedAmount("10");
+				break;
+			case "selenio, total":
+				minerales.get(i).setNameComponent("Selenio");
+				minerales.get(i).setRecomendedAmount("55");
+				break;
+			case "ioduro":
+				minerales.get(i).setNameComponent("Yodo");
+				minerales.get(i).setRecomendedAmount("150");
+				break;
+			case "hierro, total":
+				minerales.get(i).setNameComponent("Hierro");
+				minerales.get(i).setRecomendedAmount("14");
+				break;
+				
+			case "potasio":
+				minerales.get(i).setRecomendedAmount("2000");
+				minerales.get(i).setNameComponent(minerales.get(i).getNameComponent().substring(0, 1).toUpperCase()
+						+ minerales.get(i).getNameComponent().substring(1));
+				break;
+			case "magnesio":
+				minerales.get(i).setRecomendedAmount("375");
+				minerales.get(i).setNameComponent(minerales.get(i).getNameComponent().substring(0, 1).toUpperCase()
+						+ minerales.get(i).getNameComponent().substring(1));
+				break;
+			case "fósforo":
+				minerales.get(i).setRecomendedAmount("700");
+				minerales.get(i).setNameComponent(minerales.get(i).getNameComponent().substring(0, 1).toUpperCase()
+						+ minerales.get(i).getNameComponent().substring(1));
+				break;
+			case "cobre":
+				minerales.get(i).setRecomendedAmount("1");
+				minerales.get(i).setNameComponent(minerales.get(i).getNameComponent().substring(0, 1).toUpperCase()
+						+ minerales.get(i).getNameComponent().substring(1));
+				break;
+			case "calcio":
+				minerales.get(i).setRecomendedAmount("800");
+				minerales.get(i).setNameComponent(minerales.get(i).getNameComponent().substring(0, 1).toUpperCase()
+						+ minerales.get(i).getNameComponent().substring(1));
+				break;
+			default:
+				minerales.get(i).setNameComponent(minerales.get(i).getNameComponent().substring(0, 1).toUpperCase()
+						+ minerales.get(i).getNameComponent().substring(1));
+				break;
+			}
+		}
+
+		return minerales;
+	}
+
 	@RequestMapping("/editor/ComponentesDish/{id_plato}")
 	public ModelAndView componentesPlato(@PathVariable("id_plato") int id_plato) {
 
@@ -3575,6 +3765,8 @@ public class ControllerMVC {
 		List<ComponentsDishTable> listComponentsDish = obtenerBDcomponentesPlato(id_plato);
 
 		Map<String, List<ComponentsDishTable>> mapComponents = clasificarComponentes(listComponentsDish);
+
+//		List<ComponentsDishTable> list = orderVitaminas(mapComponents.get("vitaminas"));
 
 		Map<String, String> valoresProximales = calculoProximales(mapComponents);
 //		Map<String, String> mapaComponentes = calculoEtiquetaNutricional(mapComponents);
@@ -3607,20 +3799,17 @@ public class ControllerMVC {
 
 //		Cargo datos de tablas 
 
-		model.addObject("componentsDishTableVitaminas", mapComponents.get("vitaminas"));
-		model.addObject("componentsDishTableMinerales", mapComponents.get("minerales"));
+		model.addObject("componentsDishTableVitaminas", renameVitaminas(mapComponents.get("vitaminas")));
+		model.addObject("componentsDishTableMinerales", renameMinerales(mapComponents.get("minerales")));
 
 //		Cargo datos del grafico
-		model.addObject("porcentajeGrasa", calcularPorcentaje(proporcionGrasas, total));
+
+		double db = calcularPorcentaje(proporcionGrasas, total);
+
+		model.addObject("porcentajeGrasas", db);
 		model.addObject("porcentajeProteinas", calcularPorcentaje(proporcionProteinas, total));
 		model.addObject("porcentajeHC", calcularPorcentaje(proporcionHC, total));
-//		model.addObject("porcentajeOtrosHC", calcularPorcentaje(proporcionValorOtrosHC, total));
 		model.addObject("porcentajeFibra", calcularPorcentaje(proporcionValorFibra, total));
-//		model.addObject("porcentajeAzucar", calcularPorcentaje(proporcionValorAzúcar, total));
-//		model.addObject("porcentajeAcGrasos", calcularPorcentaje(proporcionAcGrasos, total));
-
-//		model.addObject("porcentajeOtrasGrasas",
-//				round(calcularPorcentaje(proporcionGrasas, total) - calcularPorcentaje(proporcionAcGrasos, total), 2));
 
 		mostrarEmpresa(model);
 
@@ -3722,7 +3911,7 @@ public class ControllerMVC {
 
 //		Cargo datos de tabla completa
 //		model.addObject("listComponentsDish", listComponentsDishOrdered);
-		
+
 		Map<String, String> etiquetaNutri = calculoEtiquetaNutricional(mapComponents);
 
 		List<LabelObj> map = ordenarComponentesNutri(etiquetaNutri);
@@ -3826,14 +4015,13 @@ public class ControllerMVC {
 
 		List<ComponentsDishTable> listComponentsDishOrdered = ordenarPorUnidad(mapComponents);
 
-		
 		Map<String, String> etiquetaNutri = calculoEtiquetaNutricional(mapComponents);
 
-		List<LabelObj>  map = ordenarComponentesNutri(etiquetaNutri);
+		List<LabelObj> map = ordenarComponentesNutri(etiquetaNutri);
 
 //		Cargo datos de tabla completa
 		model.addObject("listComponentsDish", map);
-		
+
 //		Cargo datos de tabla completa
 //		model.addObject("listComponentsDish", listComponentsDishOrdered);
 

@@ -129,13 +129,11 @@ input[type="number"] {
 	<div class="about gallery" style="font-size:12px;font-family:Playfair Display;">
 		<div class="container">
 			<nav aria-label="breadcrumb">
-				<ol class="breadcrumb"
-					style="background-color: #ffffff; font-size: 1.5em; margin-bottom: 40px;">
+				<ol class="breadcrumb" style="background-color: #ffffff;margin-bottom: 40px;">
 					<li class="breadcrumb-item"><a th:href="@{/editor}">Página
 							principal</a></li>
 					<!-- 				  	<li class="breadcrumb-item"><a th:href="@{'/editor/escoger_platos_menu_grupal_componentes/' + ${id_menu}}">Seleccionar platos para ver componentes</a></li> -->
-					<li class="breadcrumb-item active">Información nutricional del
-						menú</li>
+					<li class="breadcrumb-item active">Información nutricional del menú</li>
 				</ol>
 			</nav>
 
@@ -144,7 +142,7 @@ input[type="number"] {
 				for="exampleInputEmail1" th:text="${dishName}"
 				style="font-size: 2em; margin-bottom: 40px;"></label>
 
-			<ul class="nav nav-tabs" role="tablist" id="myTab">
+			<ul class="nav nav-tabs" role="tablist" id="myTab" style="font-size:10px;">
 				<li role="presentation" class="nav-item"><a href="#seccion1"
 					data-toggle="tab" role="tab" class="nav-link active">Gráfico</a></li>
 				<li role="presentation" class="nav-item"><a href="#seccion2"
@@ -214,8 +212,9 @@ input[type="number"] {
 								<thead>
 									<tr>
 										<th scope="col" style="width: 20%;">Grupo componente</th>
-										<th scope="col" style="width: 40%;">Nombre componente</th>
+										<th scope="col" style="width: 25%;">Nombre componente</th>
 										<th scope="col" style="width: 20%;">Cantidad</th>
+										<th scope="col" style="width: 20%;">Cantidad recomendada</th>
 										<th scope="col" style="width: 20%;">Unidad</th>
 									</tr>
 								</thead>
@@ -226,6 +225,7 @@ input[type="number"] {
 										<td th:text="${componente.nameComponent}">Nombre
 											componente</td>
 										<td th:text="${componente.amount}">Cantidad</td>
+										<td th:text="${componente.recomendedAmount}">Cantidad recomendada</td>
 										<td th:text="${componente.unit}">Unidad</td>
 									</tr>
 								</tbody>
@@ -237,12 +237,12 @@ input[type="number"] {
 							<h4 style="margin-top: 20px;">Minerales</h4>
 							<table class="table"
 								style="margin-top: 30px; background-color: #F1C7FF;">
-
 								<thead>
 									<tr>
 										<th scope="col" style="width: 20%;">Grupo componente</th>
 										<th scope="col" style="width: 40%;">Nombre componente</th>
 										<th scope="col" style="width: 20%;">Cantidad</th>
+										<th scope="col" style="width: 20%;">Cantidad recomendada</th>
 										<th scope="col" style="width: 20%;">Unidad</th>
 									</tr>
 								</thead>
@@ -253,6 +253,7 @@ input[type="number"] {
 										<td th:text="${componente.nameComponent}">Nombre
 											componente</td>
 										<td th:text="${componente.amount}">Cantidad</td>
+										<td th:text="${componente.recomendedAmount}">Cantidad recomendada</td>
 										<td th:text="${componente.unit}">Unidad</td>
 									</tr>
 								</tbody>
@@ -398,70 +399,68 @@ input[type="number"] {
 	    }
 	});
 	</script>
-<script>
-Highcharts.chart('container', {
-    chart: {
-        plotBackgroundColor: null,
-        plotBorderWidth: null,
-        plotShadow: false,
-        type: 'pie'
-    },
-    title: {
-        text: ''
-    },
-    tooltip: {
-        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-    },
-    accessibility: {
-        point: {
-            valueSuffix: '%'
-        }
-    },
-    plotOptions: {
-        pie: {
-            allowPointSelect: true,
-            cursor: 'pointer',
-            dataLabels: {
-                enabled: true,
-                format: '<b>{point.name}</b>: {point.percentage:.1f} %'
-            }
-        }
-    },
-    series: [{
-        name: 'Brands',
-        colorByPoint: true,
-        data: [{
-            name: 'Chrome',
-            y: 61.41,
-            sliced: true,
-            selected: true
-        }, {
-            name: 'Internet Explorer',
-            y: 11.84
-        }, {
-            name: 'Firefox',
-            y: 10.85
-        }, {
-            name: 'Edge',
-            y: 4.67
-        }, {
-            name: 'Safari',
-            y: 4.18
-        }, {
-            name: 'Sogou Explorer',
-            y: 1.64
-        }, {
-            name: 'Opera',
-            y: 1.6
-        }, {
-            name: 'QQ',
-            y: 1.2
-        }, {
-            name: 'Other',
-            y: 2.61
-        }]
-    }]
-});
-</script>
+	<script type="text/javascript">
+	
+// 	var porcentajeProteinas = /*[[${porcentajeProteinas}]]*/ 'default';
+// 	var porcentajeHC = /*[[${porcentajeHC}]]*/ 'default';
+// 	var porcentajeFibra = /*[[${porcentajeFibra}]]*/ 'default';
+// 	var porcentajeGrasas = /*[[${porcentajeGrasas}]]*/ 'default';
+// 	var porcentajeSal = /*[[${porcentajeSal}]]*/ 'default';
+	
+	var responseObject= "[[${gameSchList}]]";
+	
+	Highcharts.chart('container', {
+	    chart: {
+	        plotBackgroundColor: null,
+	        plotBorderWidth: null,
+	        plotShadow: false,
+	        type: 'pie'
+	    },
+	    title: {
+	        text: ''
+	    },
+	    tooltip: {
+	        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+	    },
+	    accessibility: {
+	        point: {
+	            valueSuffix: '%'
+	        }
+	    },
+	    plotOptions: {
+	        pie: {
+	            allowPointSelect: true,
+	            cursor: 'pointer',
+	            dataLabels: {
+	                enabled: true,
+	                format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+	            }
+	        }
+	    },
+	    series: [{
+	        name: 'Brands',
+	        colorByPoint: true,
+	        data: 
+	        	[
+			        {
+			            name: 'Proteína',
+			            y: 20
+			        }, {
+			            name: 'Grasas',
+			            y: 20
+			        }, {
+			            name: 'Hidratos de Carbono',
+			            y: 20
+			        }, {
+			            name: 'Fibra',
+			            y: 20
+			        }, {
+			            name: 'Sal',
+			            y: 20
+			        }
+	        	]
+	    }]
+	});
+	</script>
 </body>
 </html>
