@@ -1868,7 +1868,7 @@ public class ControllerMVC {
 	@RequestMapping("/editor/AlergenosDish/{id_plato}")
 	public ModelAndView mostrarAlergenosPlato(@PathVariable("id_plato") int id_plato) {
 
-		ModelAndView model = new ModelAndView("alergenos_plato");
+		ModelAndView model = new ModelAndView("alergenos_plato2");
 
 		Map<String, String> mapAlergensDish = obtenerAlergenosPlato(id_plato);
 
