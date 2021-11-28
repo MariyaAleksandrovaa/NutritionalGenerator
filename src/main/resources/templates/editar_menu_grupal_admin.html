@@ -54,7 +54,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 		font-size: 20px;
 	    display: flex;
 	    justify-content: center;
-	    height: 150px;
+	    height: -webkit-fill-available;
 	    padding: 10% 10%;
 	}
 	.modal-header{
@@ -65,7 +65,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	</style>
 </head>
 
-<body> 
+<body style="font-family:Playfair Display;"> 
 	<div class="banner">
 		<p style="float: left;margin-top:10px;font-size:1.5em;margin-left:20px;">
 			Bienvenido <b>[[${#request.userPrincipal.principal.username}]]</b> 
@@ -112,7 +112,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 					</div>								
 					<div class="form-group" style="margin-top:30px;">
 						<label for="exampleInputEmail1">Escoge plato para añadir a menú grupal</label> 
-						<select class="form-select" th:field="*{id_dish}" aria-label="Default select example" style="margin-top:10px;width:40%">
+						<select class="form-select" th:field="*{id_dish}" aria-label="Default select example" style="margin-top:10px;width:40%;height:34px;">
 							<option selected th:value="${select}">Escoge un plato</option>
 							<option th:each="dish:${listDish}"
 								th:value="${dish.id_plato}"

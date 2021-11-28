@@ -3890,24 +3890,24 @@ public class ControllerMVC {
 
 		Map<String, List<ComponentsDishTable>> mapComponents = clasificarComponentes(
 				obtenerComponentesMenuGrupal(listDishes));
-		Map<String, String> valoresProximales = calculoProximales(mapComponents);
-		Map<String, Double> valoresHC = calculoHC(mapComponents);
+//		Map<String, String> valoresProximales = calculoProximales(mapComponents);
+//		Map<String, Double> valoresHC = calculoHC(mapComponents);
+//
+//		Double hcTotales = valoresHC.get("fibra") + valoresHC.get("azucar") + valoresHC.get("otrosHC");
+//		Double acGrasos = calcularAcGrasos(mapComponents);
 
-		Double hcTotales = valoresHC.get("fibra") + valoresHC.get("azucar") + valoresHC.get("otrosHC");
-		Double acGrasos = calcularAcGrasos(mapComponents);
+//		Double proporcionGrasas = Double.valueOf(valoresProximales.get("grasa")) * 9;
+//		Double proporcionProteinas = Double.valueOf(valoresProximales.get("proteina")) * 4;
+//		Double proporcionHC = hcTotales * 4;
+//		Double proporcionValorOtrosHC = valoresHC.get("otrosHC") * 4;
+//
+//		Double proporcionValorFibra = valoresHC.get("fibra") * 4;
+//		Double proporcionValorAzúcar = valoresHC.get("azucar") * 4;
+//		Double proporcionAcGrasos = acGrasos * 9;
 
-		Double proporcionGrasas = Double.valueOf(valoresProximales.get("grasa")) * 9;
-		Double proporcionProteinas = Double.valueOf(valoresProximales.get("proteina")) * 4;
-		Double proporcionHC = hcTotales * 4;
-		Double proporcionValorOtrosHC = valoresHC.get("otrosHC") * 4;
+//		Double total = /* valoresProximales.get("energia") + */ proporcionGrasas + proporcionProteinas + proporcionHC;
 
-		Double proporcionValorFibra = valoresHC.get("fibra") * 4;
-		Double proporcionValorAzúcar = valoresHC.get("azucar") * 4;
-		Double proporcionAcGrasos = acGrasos * 9;
-
-		Double total = /* valoresProximales.get("energia") + */ proporcionGrasas + proporcionProteinas + proporcionHC;
-
-		List<ComponentsDishTable> listComponentsDishOrdered = ordenarPorUnidad(mapComponents);
+//		List<ComponentsDishTable> listComponentsDishOrdered = ordenarPorUnidad(mapComponents);
 
 //		Cargo datos de tabla completa
 //		model.addObject("listComponentsDish", listComponentsDishOrdered);
@@ -3920,24 +3920,21 @@ public class ControllerMVC {
 		model.addObject("listComponentsDish", map);
 
 //		Cargo datos de tablas 
-		model.addObject("componentsDishTableProximal", mapComponents.get("proximales"));
-		model.addObject("componentsDishTableHcarbono", mapComponents.get("hc"));
-		model.addObject("componentsDishTableGrasa", mapComponents.get("grasas"));
 		model.addObject("componentsDishTableVitaminas", mapComponents.get("vitaminas"));
 		model.addObject("componentsDishTableMinerales", mapComponents.get("minerales"));
 
-//	Cargo datos del grafico
-		model.addObject("porcentajeGrasa", calcularPorcentaje(proporcionGrasas, total));
-		model.addObject("porcentajeProteinas", calcularPorcentaje(proporcionProteinas, total));
-		model.addObject("porcentajeHC", calcularPorcentaje(proporcionHC, total));
-//		model.addObject("porcentajeEnergia", calcularPorcentaje(valoresProximales.get("energia"), total));
-		model.addObject("porcentajeOtrosHC", calcularPorcentaje(proporcionValorOtrosHC, total));
-		model.addObject("porcentajeFibra", calcularPorcentaje(proporcionValorFibra, total));
-		model.addObject("porcentajeAzucar", calcularPorcentaje(proporcionValorAzúcar, total));
-		model.addObject("porcentajeAcGrasos", calcularPorcentaje(proporcionAcGrasos, total));
-
-		model.addObject("porcentajeOtrasGrasas",
-				round(calcularPorcentaje(proporcionGrasas, total) - calcularPorcentaje(proporcionAcGrasos, total), 2));
+////	Cargo datos del grafico
+//		model.addObject("porcentajeGrasa", calcularPorcentaje(proporcionGrasas, total));
+//		model.addObject("porcentajeProteinas", calcularPorcentaje(proporcionProteinas, total));
+//		model.addObject("porcentajeHC", calcularPorcentaje(proporcionHC, total));
+////		model.addObject("porcentajeEnergia", calcularPorcentaje(valoresProximales.get("energia"), total));
+//		model.addObject("porcentajeOtrosHC", calcularPorcentaje(proporcionValorOtrosHC, total));
+//		model.addObject("porcentajeFibra", calcularPorcentaje(proporcionValorFibra, total));
+//		model.addObject("porcentajeAzucar", calcularPorcentaje(proporcionValorAzúcar, total));
+//		model.addObject("porcentajeAcGrasos", calcularPorcentaje(proporcionAcGrasos, total));
+//
+//		model.addObject("porcentajeOtrasGrasas",
+//				round(calcularPorcentaje(proporcionGrasas, total) - calcularPorcentaje(proporcionAcGrasos, total), 2));
 
 		mostrarEmpresa(model);
 
@@ -3996,24 +3993,24 @@ public class ControllerMVC {
 
 		Map<String, List<ComponentsDishTable>> mapComponents = clasificarComponentes(
 				obtenerComponentesMenuGrupal(listDishes));
-		Map<String, String> valoresProximales = calculoProximales(mapComponents);
-		Map<String, Double> valoresHC = calculoHC(mapComponents);
+//		Map<String, String> valoresProximales = calculoProximales(mapComponents);
+//		Map<String, Double> valoresHC = calculoHC(mapComponents);
+//
+//		Double hcTotales = valoresHC.get("fibra") + valoresHC.get("azucar") + valoresHC.get("otrosHC");
+//		Double acGrasos = calcularAcGrasos(mapComponents);
+//
+//		Double proporcionGrasas = Double.valueOf(valoresProximales.get("grasa")) * 9;
+//		Double proporcionProteinas = Double.valueOf(valoresProximales.get("proteina")) * 4;
+//		Double proporcionHC = hcTotales * 4;
+//		Double proporcionValorOtrosHC = valoresHC.get("otrosHC") * 4;
+//
+//		Double proporcionValorFibra = valoresHC.get("fibra") * 4;
+//		Double proporcionValorAzúcar = valoresHC.get("azucar") * 4;
+//		Double proporcionAcGrasos = acGrasos * 9;
+//
+//		Double total = /* valoresProximales.get("energia") + */ proporcionGrasas + proporcionProteinas + proporcionHC;
 
-		Double hcTotales = valoresHC.get("fibra") + valoresHC.get("azucar") + valoresHC.get("otrosHC");
-		Double acGrasos = calcularAcGrasos(mapComponents);
-
-		Double proporcionGrasas = Double.valueOf(valoresProximales.get("grasa")) * 9;
-		Double proporcionProteinas = Double.valueOf(valoresProximales.get("proteina")) * 4;
-		Double proporcionHC = hcTotales * 4;
-		Double proporcionValorOtrosHC = valoresHC.get("otrosHC") * 4;
-
-		Double proporcionValorFibra = valoresHC.get("fibra") * 4;
-		Double proporcionValorAzúcar = valoresHC.get("azucar") * 4;
-		Double proporcionAcGrasos = acGrasos * 9;
-
-		Double total = /* valoresProximales.get("energia") + */ proporcionGrasas + proporcionProteinas + proporcionHC;
-
-		List<ComponentsDishTable> listComponentsDishOrdered = ordenarPorUnidad(mapComponents);
+//		List<ComponentsDishTable> listComponentsDishOrdered = ordenarPorUnidad(mapComponents);
 
 		Map<String, String> etiquetaNutri = calculoEtiquetaNutricional(mapComponents);
 
@@ -4026,24 +4023,22 @@ public class ControllerMVC {
 //		model.addObject("listComponentsDish", listComponentsDishOrdered);
 
 //		Cargo datos de tablas 
-		model.addObject("componentsDishTableProximal", mapComponents.get("proximales"));
-		model.addObject("componentsDishTableHcarbono", mapComponents.get("hc"));
-		model.addObject("componentsDishTableGrasa", mapComponents.get("grasas"));
-		model.addObject("componentsDishTableVitaminas", mapComponents.get("vitaminas"));
-		model.addObject("componentsDishTableMinerales", mapComponents.get("minerales"));
 
-//	Cargo datos del grafico
-		model.addObject("porcentajeGrasa", calcularPorcentaje(proporcionGrasas, total));
-		model.addObject("porcentajeProteinas", calcularPorcentaje(proporcionProteinas, total));
-		model.addObject("porcentajeHC", calcularPorcentaje(proporcionHC, total));
-//		model.addObject("porcentajeEnergia", calcularPorcentaje(valoresProximales.get("energia"), total));
-		model.addObject("porcentajeOtrosHC", calcularPorcentaje(proporcionValorOtrosHC, total));
-		model.addObject("porcentajeFibra", calcularPorcentaje(proporcionValorFibra, total));
-		model.addObject("porcentajeAzucar", calcularPorcentaje(proporcionValorAzúcar, total));
-		model.addObject("porcentajeAcGrasos", calcularPorcentaje(proporcionAcGrasos, total));
+		model.addObject("componentsDishTableVitaminas", renameVitaminas(mapComponents.get("vitaminas")));
+		model.addObject("componentsDishTableMinerales", renameMinerales(mapComponents.get("minerales")));
 
-		model.addObject("porcentajeOtrasGrasas",
-				round(calcularPorcentaje(proporcionGrasas, total) - calcularPorcentaje(proporcionAcGrasos, total), 2));
+////	Cargo datos del grafico
+//		model.addObject("porcentajeGrasa", calcularPorcentaje(proporcionGrasas, total));
+//		model.addObject("porcentajeProteinas", calcularPorcentaje(proporcionProteinas, total));
+//		model.addObject("porcentajeHC", calcularPorcentaje(proporcionHC, total));
+////		model.addObject("porcentajeEnergia", calcularPorcentaje(valoresProximales.get("energia"), total));
+//		model.addObject("porcentajeOtrosHC", calcularPorcentaje(proporcionValorOtrosHC, total));
+//		model.addObject("porcentajeFibra", calcularPorcentaje(proporcionValorFibra, total));
+//		model.addObject("porcentajeAzucar", calcularPorcentaje(proporcionValorAzúcar, total));
+//		model.addObject("porcentajeAcGrasos", calcularPorcentaje(proporcionAcGrasos, total));
+//
+//		model.addObject("porcentajeOtrasGrasas",
+//				round(calcularPorcentaje(proporcionGrasas, total) - calcularPorcentaje(proporcionAcGrasos, total), 2));
 
 		mostrarEmpresa(model);
 
@@ -4074,15 +4069,15 @@ public class ControllerMVC {
 
 				ComponentsDishTable componentsDishTable_1 = new ComponentsDishTable();
 
-				Double toKJul = 4.184;
-				Double res = Double.parseDouble(componentsDishTable.getAmount()) * toKJul;
-				Double res_1 = Double.parseDouble(componentsDishTable.getAmount());
+//				Double toKJul = 4.184;
+//				Double res = Double.parseDouble(componentsDishTable.getAmount()) * toKJul;
+//				Double res_1 = Double.parseDouble(componentsDishTable.getAmount());
+//
+//				Integer intkJul = res.intValue();
+//				Integer intkCal = res_1.intValue();
 
-				Integer intkJul = res.intValue();
-				Integer intkCal = res_1.intValue();
-
-				componentsDishTable_1.setAmount(intkCal.toString() + " / " + intkJul.toString());
-				componentsDishTable_1.setUnit("kCal / kJul");
+				componentsDishTable_1.setAmount(componentsDishTable.getAmount());
+//				componentsDishTable_1.setUnit("kCal / kJul");
 				componentsDishTable_1.setGroupComponent(componentsDishTable.getGroupComponent());
 				componentsDishTable_1.setNameComponent(componentsDishTable.getNameComponent());
 
