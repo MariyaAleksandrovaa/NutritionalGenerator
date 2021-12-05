@@ -144,21 +144,10 @@ input[type="number"] {
 					<div role="tabpanel" class="tab-pane active" id="seccion1">
 						<h3 style="font-weight: 700;margin-bottom:50px;">Porcentajes sobre el total de energía</h3>
 					    <div id="container" style="margin-bottom:40px;"></div>
-					    					<figure class="highcharts-figure">
-					    <div id="container"></div>
-							</figure>
-							<div id="piechart"></div>   
-		
-							<!-- 							<b th:text="'Hidratos de carbono:   ' + ${porcentajeHC} + '%' " style="margin-left:20px;color:#964B00;font-size:1.5em;"> </b> -->
-							<!-- 							<b th:text="'Proteínas:   ' + ${porcentajeProteinas} + '%' " style="margin-left:20px;color:#4169E1;font-size:1.5em;"> </b> -->
-							<!-- 							<b th:text="'Grasas:   ' + ${porcentajeGrasa} + '%' " style="margin-left:20px;color:#8A2BE2;font-size:1.5em;"> </b> -->
-							<h4 style="margin-top: 30px;">Se recomienda una dieta variada y equilibrada y un estilo de vida saludable.</h4>
-					    
-<!-- <!-- 						<b th:text="'Energía:   ' + ${porcentajeEnergia} + '%' " style="margin-left:20px;color:#00b347;font-size:1.5em;"> </b> --> -->
-<!-- 						<b th:text="'Hidratos de carbono:   ' + ${porcentajeHC} + '%' " style="margin-left:20px;color:#964B00;font-size:1.5em;"> </b> -->
-<!-- 						<b th:text="'Proteínas:   ' + ${porcentajeProteinas} + '%' " style="margin-left:20px;color:#4169E1;font-size:1.5em;"> </b> -->
-<!-- 						<b th:text="'Grasas:   ' + ${porcentajeGrasa} + '%' " style="margin-left:20px;color:#8A2BE2;font-size:1.5em;"> </b> -->
-					
+					    <figure class="highcharts-figure">
+					    	<div id="container"></div>
+						</figure>
+						<h4 style="margin-top: 30px;">Se recomienda una dieta variada y equilibrada y un estilo de vida saludable.</h4>
 					</div>
 					<div role="tabpanel" class="tab-pane " id="seccion2">
 						<div class="row"
@@ -208,6 +197,7 @@ input[type="number"] {
 								  <th scope="col">Grupo componente</th>
 							      <th scope="col">Nombre componente</th>
 							      <th scope="col">Cantidad </th>
+							      <th scope="col" style="width: 20%;">Cantidad recomendada</th>
 							      <th scope="col">Unidad</th>
 							    </tr>
 							  </thead>
@@ -216,6 +206,7 @@ input[type="number"] {
 				                    <td th:text="${componente.groupComponent}">Grupo componente</td>
 				                    <td th:text="${componente.nameComponent}">Nombre componente</td>
 				                    <td th:text="${componente.amount}">Cantidad</td>
+				                    <td th:text="${componente.recomendedAmount}">Cantidad recomendada</td>
 				                    <td th:text="${componente.unit}">Unidad</td>
 							    </tr>
 							  </tbody>
@@ -231,6 +222,7 @@ input[type="number"] {
 								  <th scope="col">Grupo componente</th>
 							      <th scope="col">Nombre componente</th>
 							      <th scope="col">Cantidad </th>
+							      <th scope="col" style="width: 20%;">Cantidad recomendada</th>
 							      <th scope="col">Unidad</th>
 							    </tr>
 							  </thead>
@@ -239,6 +231,7 @@ input[type="number"] {
 				                    <td th:text="${componente.groupComponent}">Grupo componente</td>
 				                    <td th:text="${componente.nameComponent}">Nombre componente</td>
 				                    <td th:text="${componente.amount}">Cantidad</td>
+				                    <td th:text="${componente.recomendedAmount}">Cantidad recomendada</td>
 				                    <td th:text="${componente.unit}">Unidad</td>
 							    </tr>
 							  </tbody>
@@ -253,8 +246,6 @@ input[type="number"] {
 
 		</div>
 	</div>
-	<!-- //gallery -->  
-	<!-- footer -->
 	<div class="footer">
 		<div class="container">
 			<div class="clearfix"> </div>

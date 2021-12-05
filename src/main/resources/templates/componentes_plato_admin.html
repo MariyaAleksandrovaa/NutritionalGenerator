@@ -285,17 +285,17 @@ input[type="number"] {
 		  $('.toggle').toggleClass('toggle--active');
 		});
 	</script>
-	<script>
-	$(document).ready(function(){
-	    $('a[data-toggle="tab"]').on('show.bs.tab', function(e) {
-	        localStorage.setItem('activeTab', $(e.target).attr('href'));
-	    });
-	    var activeTab = localStorage.getItem('activeTab');
-	    if(activeTab){
-	        $('#myTab a[href="' + activeTab + '"]').tab('show');
-	    }
-	});
-	</script>
+<!-- 	<script> -->
+<!-- // 	$(document).ready(function(){ -->
+<!-- // 	    $('a[data-toggle="tab"]').on('show.bs.tab', function(e) { -->
+<!-- // 	        localStorage.setItem('activeTab', $(e.target).attr('href')); -->
+<!-- // 	    }); -->
+<!-- // 	    var activeTab = localStorage.getItem('activeTab'); -->
+<!-- // 	    if(activeTab){ -->
+<!-- // 	        $('#myTab a[href="' + activeTab + '"]').tab('show'); -->
+<!-- // 	    } -->
+<!-- // 	}); -->
+<!-- 	</script> -->
 	<script>
 	$(document).ready(function() {
 	    if (location.hash) {
@@ -370,42 +370,122 @@ input[type="number"] {
 	})
 	</script>
 	<script>
-	$('#myTable').bootstrapTable({
-	    onClickRow: function (row, $element) {
-	        // row: the record corresponding to the clicked row, 
-	        // $element: the tr element.
+// 	$('#myTable').bootstrapTable({
+// 	    onClickRow: function (row, $element) {
+// 	        // row: the record corresponding to the clicked row, 
+// 	        // $element: the tr element.
 	        
-	        var address = [];
-	        $(this).closest('tr').find('td').not(':last').each(function() {
-	            var textval = $(this).text(); // this will be the text of each <td>
-	           address.push(textval);
-	       });
-	        alert(address.join('\n'));
-	    }
-	});
+// 	        var address = [];
+// 	        $(this).closest('tr').find('td').not(':last').each(function() {
+// 	            var textval = $(this).text(); // this will be the text of each <td>
+// 	           address.push(textval);
+// 	       });
+// 	        alert(address.join('\n'));
+// 	    }
+// 	});
 	</script>
-		<script>
-	$('#completeTable').bootstrapTable({
-	    onClickRow: function (row, $element) {
-	        // row: the record corresponding to the clicked row, 
-	        // $element: the tr element.
+<!-- 		<script> -->
+<!-- // 	$('#completeTable').bootstrapTable({ -->
+<!-- // 	    onClickRow: function (row, $element) { -->
+<!-- // 	        // row: the record corresponding to the clicked row,  -->
+<!-- // 	        // $element: the tr element. -->
 	        
-	        var address = [];
-	        $(this).closest('tr').find('td').not(':last').each(function() {
-	            var textval = $(this).text(); // this will be the text of each <td>
-	           address.push(textval);
-	       });
-	        alert(address.join('\n'));
-	    }
-	});
-	</script>
+<!-- // 	        var address = []; -->
+<!-- // 	        $(this).closest('tr').find('td').not(':last').each(function() { -->
+<!-- // 	            var textval = $(this).text(); // this will be the text of each <td> -->
+<!-- // 	           address.push(textval); -->
+<!-- // 	       }); -->
+<!-- // 	        alert(address.join('\n')); -->
+<!-- // 	    } -->
+<!-- // 	}); -->
+<!-- 	</script> -->
+	<script>
+	
+// 	var porcentajeProteinas = "[[${porcentajeProteinas}]]";
+// 	var porcentajeHC = "[[${porcentajeHC}]]";
+// 	var porcentajeFibra = "[[${porcentajeFibra}]]";
+// 	var porcentajeGrasas = "[[${porcentajeGrasas}]]";
+// 	var porcentajeSal = "[[${porcentajeSal}]]";
+	
+// 	var responseObject= "[[${gameSchList}]]";
+	
+// 	var yValues = ["[[${pass}]]", "[[${fail}]]", 0, 0, 0];
+	
+// 	Highcharts.chart('container', {
+// 	    chart: {
+// 	        plotBackgroundColor: null,
+// 	        plotBorderWidth: null,
+// 	        plotShadow: false,
+// 	        type: 'pie'
+// 	    },
+// 	    title: {
+// 	        text: ''
+// 	    },
+// 	    tooltip: {
+// 	        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+// 	    },
+// 	    accessibility: {
+// 	        point: {
+// 	            valueSuffix: '%'
+// 	        }
+// 	    },
+// 	    plotOptions: {
+// 	        pie: {
+// 	            allowPointSelect: true,
+// 	            cursor: 'pointer',
+// 	            dataLabels: {
+// 	                enabled: true,
+// 	                format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+// 	            }
+// 	        }
+// 	    },
+// 	    series: [{
+// 	        name: 'Brands',
+// 	        colorByPoint: true,
+// // 	        data : [ 
+	        	
+// // 	        	[ 'Success', "[[${pass}]]" ], [ 'Failure', "[[${fail}]]" ]  ]
+	        	
+	        	
+	        	
+// // 	        	{'Success', [[${pass}]] }, [ 'Failure', [[${fail}]] 
+// // 	        	}]
+// 	        data: 
+// 	        	[
+// 			        {
+// 			            name: 'Proteína',
+// 			            y: porcentajeProteinas
+// 			        }, {
+// 			            name: 'Grasas',
+// 			            y: porcentajeGrasas
+// 			        }, {
+// 			            name: 'Hidratos de Carbono',
+// 			            y: 
+// 			        }, {
+// 			            name: 'Fibra',
+// 			            y: 20
+// 			        }, {
+// 			            name: 'Sal',
+// 			            y: 20
+// 			        }
+// 	        	]
+// 	    }]
+// 	});
+</script> 
+
+
 	<script type="text/javascript">
 	
-// 	var porcentajeProteinas = /*[[${porcentajeProteinas}]]*/ 'default';
+// 	var porcentajeProteinas = [[${porcentajeProteinas}]];
 // 	var porcentajeHC = /*[[${porcentajeHC}]]*/ 'default';
 // 	var porcentajeFibra = /*[[${porcentajeFibra}]]*/ 'default';
 // 	var porcentajeGrasas = /*[[${porcentajeGrasas}]]*/ 'default';
 // 	var porcentajeSal = /*[[${porcentajeSal}]]*/ 'default';
+
+// 	var fail = "[[${fail}]]";
+// 	var pass = "[[${pass}]]";
+
+	var modelAttributeValue = "[[${porcentajeProteinas}]]";
 	
 	var responseObject= "[[${gameSchList}]]";
 	
@@ -444,7 +524,7 @@ input[type="number"] {
 	        	[
 			        {
 			            name: 'Proteína',
-			            y: 20
+			            y: parseFloat(modelAttributeValue)
 			        }, {
 			            name: 'Grasas',
 			            y: 20

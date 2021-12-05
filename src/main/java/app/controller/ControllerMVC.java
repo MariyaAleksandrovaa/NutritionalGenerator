@@ -3806,8 +3806,10 @@ public class ControllerMVC {
 
 		double db = calcularPorcentaje(proporcionGrasas, total);
 
+		model.addObject("pass", 50);
+		model.addObject("fail", 50);
 		model.addObject("porcentajeGrasas", db);
-		model.addObject("porcentajeProteinas", calcularPorcentaje(proporcionProteinas, total));
+		model.addObject("porcentajeProteinas", 10);
 		model.addObject("porcentajeHC", calcularPorcentaje(proporcionHC, total));
 		model.addObject("porcentajeFibra", calcularPorcentaje(proporcionValorFibra, total));
 
@@ -3920,8 +3922,8 @@ public class ControllerMVC {
 		model.addObject("listComponentsDish", map);
 
 //		Cargo datos de tablas 
-		model.addObject("componentsDishTableVitaminas", mapComponents.get("vitaminas"));
-		model.addObject("componentsDishTableMinerales", mapComponents.get("minerales"));
+		model.addObject("componentsDishTableVitaminas", renameVitaminas(mapComponents.get("vitaminas")));
+		model.addObject("componentsDishTableMinerales", renameMinerales(mapComponents.get("minerales")));
 
 ////	Cargo datos del grafico
 //		model.addObject("porcentajeGrasa", calcularPorcentaje(proporcionGrasas, total));
@@ -4018,6 +4020,7 @@ public class ControllerMVC {
 
 //		Cargo datos de tabla completa
 		model.addObject("listComponentsDish", map);
+
 
 //		Cargo datos de tabla completa
 //		model.addObject("listComponentsDish", listComponentsDishOrdered);
