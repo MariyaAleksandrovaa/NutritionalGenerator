@@ -3780,13 +3780,18 @@ public class ControllerMVC {
 		double proporcionGrasas = Double.valueOf(valoresProximales.get("grasa")) * 9;
 		double proporcionProteinas = Double.valueOf(valoresProximales.get("proteina")) * 4;
 		double proporcionHC = hcTotales * 4;
-		double proporcionValorOtrosHC = valoresHC.get("otrosHC") * 4;
+		double proporcionValorFibra = valoresHC.get("fibra") * 2;
+		List<ComponentsDishTable> listaMinerales = mapComponents.get("minerales");
+		
+		double amountSodio = 0.0f;
+		for(int i = 0; i< listaMinerales.size();i++) {
+			if(listaMinerales.get(i).getNameComponent().equals("sodio")){
+				amountSodio = Double.valueOf(listaMinerales.get(i).getAmount());
+			}
+		}
+		double proporcionSal = amountSodio/1000 * 2.5;
 
-		double proporcionValorFibra = valoresHC.get("fibra") * 4;
-		double proporcionValorAzúcar = valoresHC.get("azucar") * 4;
-		double proporcionAcGrasos = acGrasos * 9;
-
-		double total = /* valoresProximales.get("energia") + */ proporcionGrasas + proporcionProteinas + proporcionHC;
+		double total = proporcionGrasas + proporcionProteinas + proporcionHC + proporcionValorFibra + proporcionSal;
 
 //		List<ComponentsDishTable> listComponentsDishOrdered = ordenarPorUnidad(mapComponents);
 
@@ -3804,14 +3809,18 @@ public class ControllerMVC {
 
 //		Cargo datos del grafico
 
-		double db = calcularPorcentaje(proporcionGrasas, total);
-
-		model.addObject("pass", 50);
-		model.addObject("fail", 50);
-		model.addObject("porcentajeGrasas", db);
-		model.addObject("porcentajeProteinas", 10);
+		double pGrasas = calcularPorcentaje(proporcionGrasas, total);
+		double pProteínas = calcularPorcentaje(proporcionProteinas, total);
+		double pHC = calcularPorcentaje(proporcionHC, total);
+		double pFibra = calcularPorcentaje(proporcionValorFibra, total);
+		double pSal = calcularPorcentaje(proporcionSal, total);
+		
+		
+		model.addObject("porcentajeGrasas", calcularPorcentaje(proporcionGrasas, total));
+		model.addObject("porcentajeProteinas", calcularPorcentaje(proporcionProteinas, total));
 		model.addObject("porcentajeHC", calcularPorcentaje(proporcionHC, total));
 		model.addObject("porcentajeFibra", calcularPorcentaje(proporcionValorFibra, total));
+		model.addObject("porcentajeSal", calcularPorcentaje(proporcionSal, total));
 
 		mostrarEmpresa(model);
 
