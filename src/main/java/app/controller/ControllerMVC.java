@@ -3522,6 +3522,7 @@ public class ControllerMVC {
 							}
 
 						}
+
 					}
 				} else if (listGroupComponents.getKey().equals("minerales")) {
 					for (int i = 0; i < listGroupComponents.getValue().size(); i++) {
@@ -3529,8 +3530,16 @@ public class ControllerMVC {
 						ComponentsDishTable component = listGroupComponents.getValue().get(i);
 
 						if (component.getNameComponent().equals("sodio")) {
-							etiquetaNutricional.put("Sal", String.valueOf(Double.valueOf(component.getAmount()) * 2.5)
-									+ " " + component.getUnit());
+
+							// Calculo de cantidad de sal en mg
+							double saltMg = (Double.valueOf(component.getAmount())) * 2.5;
+
+							double saltG = saltMg / 1000;
+
+							double round2decimals = Math.round(saltG * 100.0) / 100.0;
+
+							int a = 0;
+							etiquetaNutricional.put("Sal", String.valueOf(round2decimals) + " g");
 						}
 					}
 				}
@@ -3692,7 +3701,6 @@ public class ControllerMVC {
 //			}		
 //		}
 
-
 		return vitaminasOrdenadas;
 
 	}
@@ -3719,7 +3727,7 @@ public class ControllerMVC {
 				minerales.get(i).setNameComponent("Hierro");
 				minerales.get(i).setRecomendedAmount("14");
 				break;
-				
+
 			case "potasio":
 				minerales.get(i).setRecomendedAmount("2000");
 				minerales.get(i).setNameComponent(minerales.get(i).getNameComponent().substring(0, 1).toUpperCase()
@@ -3782,14 +3790,14 @@ public class ControllerMVC {
 		double proporcionHC = hcTotales * 4;
 		double proporcionValorFibra = valoresHC.get("fibra") * 2;
 		List<ComponentsDishTable> listaMinerales = mapComponents.get("minerales");
-		
+
 		double amountSodio = 0.0f;
-		for(int i = 0; i< listaMinerales.size();i++) {
-			if(listaMinerales.get(i).getNameComponent().equals("sodio")){
+		for (int i = 0; i < listaMinerales.size(); i++) {
+			if (listaMinerales.get(i).getNameComponent().equals("sodio")) {
 				amountSodio = Double.valueOf(listaMinerales.get(i).getAmount());
 			}
 		}
-		double proporcionSal = amountSodio/1000 * 2.5;
+		double proporcionSal = amountSodio / 1000 * 2.5;
 
 		double total = proporcionGrasas + proporcionProteinas + proporcionHC + proporcionValorFibra + proporcionSal;
 
@@ -3814,8 +3822,7 @@ public class ControllerMVC {
 		double pHC = calcularPorcentaje(proporcionHC, total);
 		double pFibra = calcularPorcentaje(proporcionValorFibra, total);
 		double pSal = calcularPorcentaje(proporcionSal, total);
-		
-		
+
 		model.addObject("porcentajeGrasas", calcularPorcentaje(proporcionGrasas, total));
 		model.addObject("porcentajeProteinas", calcularPorcentaje(proporcionProteinas, total));
 		model.addObject("porcentajeHC", calcularPorcentaje(proporcionHC, total));
@@ -4029,7 +4036,6 @@ public class ControllerMVC {
 
 //		Cargo datos de tabla completa
 		model.addObject("listComponentsDish", map);
-
 
 //		Cargo datos de tabla completa
 //		model.addObject("listComponentsDish", listComponentsDishOrdered);
