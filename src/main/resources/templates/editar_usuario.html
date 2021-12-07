@@ -96,7 +96,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 					<div role="tabpanel" class="tab-pane active" id="seccion1"
 						style="width: 50%; margin: 0 auto;"></div>
 
-					<form th:action="@{'/admin/guardarUser/' + ${user_id} + '/' + ${rol}}"
+					<form th:action="@{'/admin/guardarUser/' + ${user_id}}"
 						th:object="${user}" method="post">
 						<div class="form-group" style="margin-top: 25px;">
 							<label for="exampleInputEmail1">Nombre de usuario</label> <input
@@ -142,10 +142,12 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 								th:value="${company.nombre}" th:text="${company.nombre}" />
 						</select>
 						<!-- 							    <input type="text" class="form-control" th:field="*{grupo}"  style="margin-top:8px;width:40%;" aria-describedby="emailHelp" placeholder="Introduce CIF"> -->
-						<label for="exampleInputEmail1">Rol</label> <select
+						<label for="exampleInputEmail1">Rol</label> 
+						<select
 							class="form-select" th:field="*{rol}"
 							aria-label="Default select example"
 							style="margin-top: 10px; width: 40%;height:34px;margin-bottom:20px;">
+							
 							<option selected text="Escoge un rol" value="" th:disabled="disabled">Escoge un rol</option>
 							<option th:each="rol:${listRoles}" th:value="${rol.name}"
 								th:text="${rol.name}" />

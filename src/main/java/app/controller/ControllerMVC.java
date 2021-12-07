@@ -769,21 +769,12 @@ public class ControllerMVC {
 		return model;
 	}
 
-	@PostMapping("/admin/guardarUser/{user_id}/{rol}")
-	public String guardarUsuario(@PathVariable("user_id") int user_id, @PathVariable("rol") String role,
-			UserView userView) {
+	@PostMapping("/admin/guardarUser/{user_id}")
+	public String guardarUsuario(@PathVariable("user_id") int user_id, UserView userView) {
 
 		Optional<User> user = userRepo.findById(userView.getUser_id());
 		User usr = user.get();
 
-		if (!password.equals(userView.getPassword())) {
-
-			BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-			String encodedPassword = encoder.encode(userView.getPassword());
-
-			usr.setPassword(encodedPassword);
-
-		}
 		Empresa empresa = companyRepo.findByNameCompany(userView.getNombre());
 		if (empresa != null) {
 			usr.setIdEmpresa(empresa.getId_empresa());
