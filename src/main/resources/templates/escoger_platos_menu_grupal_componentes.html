@@ -78,7 +78,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 							method="post" >			
 											
 							<div class="form-group" style="margin-top:30px;">
-								<label for="exampleInputEmail1">Escoge el primer plato de este menú para calcular sus componentes</label> 
+								<label for="exampleInputEmail1">Escoge el primer plato de este menú para calcular sus componentes*</label> 
 								<select class="form-select" th:field="*{first_dish}" aria-label="Default select example" style="margin-top:10px;width:60%" required>
 									<option selected value="">Escoge un plato</option>
 									<option th:each="dish:${mapaPlatosTipo1Menu}"
@@ -88,7 +88,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 								</select>
 							</div>
 							<div class="form-group" style="margin-top:30px;">
-								<label for="exampleInputEmail1">Escoge el segundo plato de este menú para calcular sus componentes</label> 
+								<label for="exampleInputEmail1">Escoge el segundo plato de este menú para calcular sus componentes*</label> 
 								<select class="form-select" th:field="*{second_dish}" aria-label="Default select example" style="margin-top:10px;width:60%" required>
 									<option selected value="">Escoge un plato</option>
 									<option th:each="dish:${mapaPlatosTipo2Menu}"
@@ -98,14 +98,15 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 								</select>
 							</div>
 							<div class="form-group" style="margin-top:30px;">
-								<label for="exampleInputEmail1">Escoge el postre de este menú para calcular sus componentes (Opcional)</label> 
-								<select class="form-select" th:field="*{third_dish}" aria-label="Default select example" style="margin-top:10px;width:60%">
+								<label for="exampleInputEmail1">Escoge el postre de este menú para calcular sus componentes</label> 
+								<select class="form-select" th:field="*{third_dish}" aria-label="Default select example" style="margin-top:10px;margin-bottom:20px;width:60%">
 									<option selected value="">Escoge un plato</option>
 									<option th:each="dish:${mapaPlatosTipo3Menu}"
 										th:value="${dish.key}"
 										th:text="${dish.value}"										
 									/>
 								</select>
+								<small id="emailHelp" class="form-text text-muted">(*) Campos obligatorios</small>
 							</div>														
 							<button type="submit" class="btn btn-primary" >Aceptar</button>
 						</form>

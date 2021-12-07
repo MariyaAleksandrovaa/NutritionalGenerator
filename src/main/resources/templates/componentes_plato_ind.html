@@ -338,16 +338,14 @@ input[type="number"] {
 	     $(this.parentNode).attr("style","background-color:"+color)
 	})
 	</script>
-		<script type="text/javascript">
+	<script type="text/javascript">
 	
-// 	var porcentajeProteinas = /*[[${porcentajeProteinas}]]*/ 'default';
-// 	var porcentajeHC = /*[[${porcentajeHC}]]*/ 'default';
-// 	var porcentajeFibra = /*[[${porcentajeFibra}]]*/ 'default';
-// 	var porcentajeGrasas = /*[[${porcentajeGrasas}]]*/ 'default';
-// 	var porcentajeSal = /*[[${porcentajeSal}]]*/ 'default';
-	
-	var responseObject= "[[${gameSchList}]]";
-	
+	var porcentajeProteinas = "[[${porcentajeProteinas}]]";
+	var porcentajeHC = "[[${porcentajeHC}]]";
+	var porcentajeFibra = "[[${porcentajeFibra}]]";
+	var porcentajeGrasas = "[[${porcentajeGrasas}]]";
+	var porcentajeSal = "[[${porcentajeSal}]]";
+
 	Highcharts.chart('container', {
 	    chart: {
 	        plotBackgroundColor: null,
@@ -372,30 +370,30 @@ input[type="number"] {
 	            cursor: 'pointer',
 	            dataLabels: {
 	                enabled: true,
-	                format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+	                format: '<b>{point.name}</b>: {point.percentage:.2f} %'
 	            }
 	        }
 	    },
 	    series: [{
-	        name: 'Brands',
+	        name: 'Macronutriente',
 	        colorByPoint: true,
 	        data: 
 	        	[
 			        {
 			            name: 'Proteína',
-			            y: 20
+			            y: parseFloat(porcentajeProteinas)
 			        }, {
 			            name: 'Grasas',
-			            y: 20
+			            y: parseFloat(porcentajeGrasas)
 			        }, {
 			            name: 'Hidratos de Carbono',
-			            y: 20
+			            y: parseFloat(porcentajeHC)
 			        }, {
 			            name: 'Fibra',
-			            y: 20
+			            y: parseFloat(porcentajeFibra)
 			        }, {
 			            name: 'Sal',
-			            y: 20
+			            y: parseFloat(porcentajeSal)
 			        }
 	        	]
 	    }]

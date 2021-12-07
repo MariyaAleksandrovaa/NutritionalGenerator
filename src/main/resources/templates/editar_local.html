@@ -90,14 +90,13 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 				<div class="tab-content" style="margin-left: 40%;">
 					<div role="tabpanel" class="tab-pane active" id="seccion1"
 						style="width:30%; margin: 0 auto;"></div>
-<!-- 						@{'/editor/guardarFood/' + ${foodView.nombre}} -->
 					<form th:action="@{'/admin/editar_local_exito/' + ${id_local}}"
-						th:object="${localView}" method="post" style="margin-left: 0%;">
+						th:object="${localObj}" method="post" style="margin-left: 0%;">
 
 						<div class="form-group" style="margin-top: 25px;">
 							<label for="exampleInputEmail1">Nombre del local</label> <input
 								type="text" class="form-control" id="id_cif"
-								th:field="*{local}" style="margin-top: 8px; width: 40%;"
+								th:field="*{local_name}" style="margin-top: 8px; width: 40%;"
 								aria-describedby="emailHelp"
 								placeholder="Introduce nombre del local">
 						</div>
@@ -105,18 +104,16 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 						<div class="form-group">
 							<label for="exampleInputEmail1">Dirección del local</label> <input
 								type="text" class="form-control" id="id_nombre"
-								th:field="*{direccion}" style="margin-top: 8px; width: 40%;"
+								th:field="*{direction}" style="margin-top: 8px; width: 40%;"
 								aria-describedby="emailHelp"
 								placeholder="Introduce la dirección del local" required>
 						</div>
 
 						<div class="form-group">
 							<label for="exampleInputEmail1">Empresa a la que
-								pertenece</label> <select class="form-select" 
-								th:field="*{empresa}"
-								aria-label="Default select example"
-								style="margin-top: 10px; width: 40%;height:34px;">
-								<option selected th:value="${empresa}"></option>
+								pertenece</label> 
+							<select class="form-select" th:field="*{company_id}" aria-label="Default select example" style="margin-top: 10px; width: 40%;height:34px;">
+								<option selected th:text="*{company_name}" th:value="${company_id}"></option>
 								<option th:each="company:${listCompanies}"
 									th:value="${company.id_empresa}" th:text="${company.nombre}" />
 							</select>

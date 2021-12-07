@@ -119,9 +119,9 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 								</select>
 							</div>
 							<div class="form-group" style="margin-top:30px;">
-								<label for="exampleInputEmail1">Escoge el postre del menú (Opcional)</label> 
+								<label for="exampleInputEmail1">Escoge el postre del menú</label> 
 								<select class="form-select" th:field="*{third_dish}" aria-label="Default select example" style="margin-top:10px;width:60%;height:34px;">
-									<option selected value="" class="disabled">Postre (Opcional)</option>
+									<option selected value="" class="disabled">Postre</option>
 									<option th:each="dish:${listDishCompany3}"
 										th:value="${dish.id_plato}"
 										th:text="${dish.nombre_plato}"
