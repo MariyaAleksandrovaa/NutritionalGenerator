@@ -255,12 +255,6 @@ public class ControllerMVC {
 		model.addAttribute("listUsers", listUsers);
 		model.addAttribute("listLocals", listLocals);
 
-		Integer id = obtenerUsuario().getIdEmpresa();
-		if (id != null) {
-			String company = companyRepo.findById(id).get().getNombre();
-			model.addAttribute("company", company);
-		}
-
 		return "admin";
 	}
 
@@ -759,12 +753,6 @@ public class ControllerMVC {
 		model.addObject("user", user.get());
 		model.addObject("empresa", user.get().getNombre());
 		model.addObject("select", -1);
-
-		Integer id = obtenerUsuario().getIdEmpresa();
-		if (id != null) {
-			String company = companyRepo.findById(id).get().getNombre();
-			model.addObject("company", company);
-		}
 
 		return model;
 	}
