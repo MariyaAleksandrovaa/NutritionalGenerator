@@ -889,16 +889,24 @@ public class ControllerMVC {
 
 		ModelAndView model = new ModelAndView("/restablecer_contraseña");
 		ResetPwdObj resetPwdObj = new ResetPwdObj();
+		
+		String error1 = "";
+		String error2 = "";
 
 		model.addObject("resetPwdObj", resetPwdObj);
+		model.addObject("error1", error1);
+		model.addObject("error2", error2);
 
 		return model;
 	}
 
-	@RequestMapping("/restablecer_contraseña/exito")
+	@RequestMapping("/restablecer_contraseña_exito")
 	public ModelAndView restablecerContraseñaExito(ResetPwdObj resetPwdObj) {
 
-		ModelAndView model = new ModelAndView("inicio_sesion");
+		ModelAndView model = new ModelAndView();
+
+		String error1 = "";
+		String error2 = "";
 
 		User user = userRepo.findByUsername(resetPwdObj.getUsername());
 
@@ -909,8 +917,22 @@ public class ControllerMVC {
 				user.setPassword(encoder.encode(resetPwdObj.getPwd()));
 				userRepo.save(user);
 
+				model.setViewName("inicio_sesion");
+
 			}
+		} else {
+			model.setViewName("restablecer_contraseña");
+			error2 = "Error de usuario inexistente";
+			model.setViewName("restablecer_contraseña");
 		}
+		
+		if(!resetPwdObj.getPwd().equals(resetPwdObj.getResetPwd())) {
+			error1 = "Error de contraseñas no coincidentes";
+			model.setViewName("restablecer_contraseña");
+		}
+		
+		model.addObject("error1", error1);
+		model.addObject("error2", error2);
 
 		return model;
 	}

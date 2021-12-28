@@ -82,33 +82,39 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	<div class="about gallery">
 		<div class="container">
 			<div role="tabpanel">
-				<form th:action="@{/restablecer_contraseña/exito}"
+				<form th:action="@{/restablecer_contraseña_exito}"
 					th:object="${resetPwdObj}" method="post" style="margin-left: 35%;">
 
 					<div class="form-group" style="margin-top: 25px;">
-						<label for="exampleInputEmail1">Nombre de usuario</label> 
+						<label for="exampleInputEmail1">Nombre de usuario*</label> 
 						<input type="text" class="form-control" id="id_cif" th:field="*{username}" style="margin-top: 8px; width: 40%;"aria-describedby="emailHelp" placeholder="Introduce el nombre de usuario " required>
 					</div>
 					<div class="form-group" style="display: flex;flex-direction: column;margin-top: 8px; ">
-						<label for="exampleInputEmail1">Contraseña</label>
+						<label for="exampleInputEmail1">Contraseña*</label>
 						<div style="display:flex; flex-direction:row;">
 							<input type="password" id="password-field" name="passwordOri"  th:field="*{pwd}"  placeholder="Introduce contraseña" required autocomplete="new-password" style="height:34px;width: 40%;margin-top:8px;">
 							<i class="bi bi-eye-slash" id="togglePasswordOri" style="padding:15px;"></i>
 						</div>
 					</div>
 					<div class="form-group" style="display: flex;flex-direction: column;margin-top: 8px; ">
-						<label for="exampleInputEmail1">Repite contraseña</label>
+						<label for="exampleInputEmail1">Repite contraseña* </label>
 						<div style="display:flex; flex-direction:row;">
 							<input type="password"  id="password" th:field="*{resetPwd}" name="password"  placeholder="Introduce contraseña" required autocomplete="new-password" style="height:34px;width: 40%;margin-top:8px;">
 							<i class="bi bi-eye-slash" id="togglePassword" style="padding:15px;"></i>
 						</div>
 					</div>					
 					<small id="emailHelp" class="form-text text-muted">Todos los campos son obligatorios</small>
+					
+
 			</div>
 			<button type="submit" class="btn btn-primary"
 				style="margin-left: 460px; margin-top: 20px;">Aceptar</button>
 			</form>
-
+			<h4 th:inline="text" th:text="${error1}" style="color:red; margin-top:2%;margin-left:35%;"></h4>
+			<h4 th:inline="text" th:text="${error2}" style="color:red; margin-top:2%;margin-left:35%;"></h4>
+			
+<!-- 		     <label th:text = "${error1}"/> -->
+<!-- 		     <label th:text = "${error2}"/> -->
 		</div>
 	</div>
 	</div>
