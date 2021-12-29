@@ -334,12 +334,6 @@ public class ControllerMVC {
 		model.addObject("empresa", empresa);
 		model.setViewName("registrar_nueva_empresa");
 
-		Integer id = obtenerUsuario().getIdEmpresa();
-		if (id != null) {
-			String company = companyRepo.findById(id).get().getNombre();
-			model.addObject("company", company);
-		}
-
 		return model;
 	}
 
@@ -405,11 +399,6 @@ public class ControllerMVC {
 
 		} catch (CompanyNotfound e) {
 			e.printStackTrace();
-		}
-		Integer idComp = obtenerUsuario().getIdEmpresa();
-		if (idComp != null) {
-			String company = companyRepo.findById(idComp).get().getNombre();
-			model.addObject("company", company);
 		}
 
 		return model;
@@ -674,27 +663,55 @@ public class ControllerMVC {
 
 	// Funciones para ventana usuario (admin)
 
-	@RequestMapping("/admin/registrar_nuevo_usuario/exito")
-	public String viewRegistrarNuevoUsuario(User user, BindingResult bindingResult, ModelMap modelMap) {
+	@RequestMapping(value = "/admin/registrar_nuevo_usuario_exito")
+	public String viewRegistrarNuevoUsuario(Model model, User user, ModelMap modelMap) {
 
-//		ModelAndView model = new ModelAndView("registrar_usuario_exito");
-//
+		String modelName = "admin";
+		String error1 = "";
+		String error2 = "";
+		String error3 = "";
+		
 		String encodedPassword = new BCryptPasswordEncoder().encode(user.getPassword());
 		user.setPassword(encodedPassword);
 
-		if (user.getIdEmpresa() == -1) {
-			user.setIdEmpresa(null);
+		if (userRepo.findByUsername(user.getUsername()) != null) {
+			error3 = "Ya existe este nombre de usuario en el sistema.";
+			modelName = "registrar_nuevo_usuario";
 		}
 
-		userRepo.save(user);
+		
+		for (Role obj : user.getRoles()) {
 
-//		Integer id = obtenerUsuario().getIdEmpresa();
-//		if (id != null) {
-//			String company = companyRepo.findById(id).get().getNombre();
-//			model.addObject("company", company);
-//		}
+//	    	  Cuando es admin
+			if (obj.getId().equals(2)) {
+				error1 = "Usuarios de tipo administrador no deben pertenecer a ninguna empresa";
+				modelName = "registrar_nuevo_usuario";
 
-		return "redirect:/admin";
+//	          Resto de roles  
+			} else {
+				if (user.getIdEmpresa() != null) {
+					userRepo.save(user);
+				} else {
+					error2 = "Hay que especificar empresa a la que va a pertenecer el usuario. Solo administradores no pertenecen a ninguna.";
+					modelName = "registrar_nuevo_usuario";
+				}
+
+			}
+			break;
+		}
+		
+		
+		List<Empresa> listCompanies = companyRepo.findAll();
+		List<Role> listRoles = roleRepo.findAll();
+		
+		model.addAttribute("listCompanies", listCompanies);
+		model.addAttribute("listRoles", listRoles);
+		model.addAttribute("usuario", user);
+		model.addAttribute("error1", error1);
+		model.addAttribute("error2", error2);
+		model.addAttribute("error3", error3);
+
+		return modelName;
 	}
 
 	@GetMapping("/admin/registrar_nuevo_usuario")
@@ -718,13 +735,9 @@ public class ControllerMVC {
 		model.addObject("companyMsg", companyMsg);
 		model.addObject("select", select);
 		model.addObject("role", role);
-
-		Integer id = obtenerUsuario().getIdEmpresa();
-		if (id != null) {
-			String company = companyRepo.findById(id).get().getNombre();
-			model.addObject("company", company);
-		}
-
+		model.addObject("error1", "");
+		model.addObject("error2", "");
+		
 		return model;
 	}
 
@@ -889,7 +902,7 @@ public class ControllerMVC {
 
 		ModelAndView model = new ModelAndView("/restablecer_contraseña");
 		ResetPwdObj resetPwdObj = new ResetPwdObj();
-		
+
 		String error1 = "";
 		String error2 = "";
 
@@ -925,12 +938,12 @@ public class ControllerMVC {
 			error2 = "Error de usuario inexistente";
 			model.setViewName("restablecer_contraseña");
 		}
-		
-		if(!resetPwdObj.getPwd().equals(resetPwdObj.getResetPwd())) {
+
+		if (!resetPwdObj.getPwd().equals(resetPwdObj.getResetPwd())) {
 			error1 = "Error de contraseñas no coincidentes";
 			model.setViewName("restablecer_contraseña");
 		}
-		
+
 		model.addObject("error1", error1);
 		model.addObject("error2", error2);
 
