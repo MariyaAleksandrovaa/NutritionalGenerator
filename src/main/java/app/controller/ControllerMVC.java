@@ -437,12 +437,6 @@ public class ControllerMVC {
 		model.addObject("local", local);
 		model.addObject("select", select);
 
-		Integer id = obtenerUsuario().getIdEmpresa();
-		if (id != null) {
-			String company = companyRepo.findById(id).get().getNombre();
-			model.addObject("company", company);
-		}
-
 		return model;
 	}
 
@@ -607,12 +601,6 @@ public class ControllerMVC {
 		model.addObject("porcentajeFibra", calcularPorcentaje(proporcionValorFibra, total));
 		model.addObject("porcentajeSal", calcularPorcentaje(proporcionSal, total));
 		model.addObject("alimento", food.getNombre());
-
-		Integer id = obtenerUsuario().getIdEmpresa();
-		if (id != null) {
-			String company = companyRepo.findById(id).get().getNombre();
-			model.addObject("company", company);
-		}
 
 		return model;
 	}

@@ -94,16 +94,16 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 						th:object="${localObj}" method="post" style="margin-left: 0%;">
 
 						<div class="form-group" style="margin-top: 25px;">
-							<label for="exampleInputEmail1">Nombre del local</label> <input
-								type="text" class="form-control" id="id_cif"
+							<label for="exampleInputEmail1">Nombre del local*</label> <input
+								type="text" class="form-control" id="id_cif" required
 								th:field="*{local_name}" style="margin-top: 8px; width: 40%;"
 								aria-describedby="emailHelp"
 								placeholder="Introduce nombre del local">
 						</div>
 
 						<div class="form-group">
-							<label for="exampleInputEmail1">Dirección del local</label> <input
-								type="text" class="form-control" id="id_nombre"
+							<label for="exampleInputEmail1">Dirección del local*</label> <input
+								type="text" class="form-control" id="id_nombre" 
 								th:field="*{direction}" style="margin-top: 8px; width: 40%;"
 								aria-describedby="emailHelp"
 								placeholder="Introduce la dirección del local" required>
@@ -111,15 +111,16 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 
 						<div class="form-group">
 							<label for="exampleInputEmail1">Empresa a la que
-								pertenece</label> 
-							<select class="form-select" th:field="*{company_id}" aria-label="Default select example" style="margin-top: 10px; width: 40%;height:34px;">
+								pertenece*</label> 
+							<select class="form-select" th:field="*{company_id}" required aria-label="Default select example" style="margin-top: 10px; width: 40%;height:34px;">
 								<option selected th:text="*{company_name}" th:value="${company_id}"></option>
 								<option th:each="company:${listCompanies}"
 									th:value="${company.id_empresa}" th:text="${company.nombre}" />
 							</select>
 						</div>
-
-						<button type="submit" class="btn btn-primary">Guardar cambios</button>
+						<small id="emailHelp" class="form-text text-muted" style="font-size:12px;">(*) Campos obligatorios</small>
+						<br>
+						<button type="submit" class="btn btn-primary" style="margin-top:10px;">Guardar cambios</button>
 					</form>
 				</div>
 			</div>
