@@ -99,61 +99,63 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 					<form th:action="@{'/admin/guardarUser/' + ${user_id}}"
 						th:object="${user}" method="post">
 						<div class="form-group" style="margin-top: 25px;">
-							<label for="exampleInputEmail1">Nombre de usuario</label> <input
+							<label for="exampleInputEmail1">Nombre de usuario*</label> <input
 								type="text" class="form-control" th:field="*{username}"
 								style="margin-top: 8px; width: 40%;"
 								aria-describedby="emailHelp"
-								placeholder="Introduce nombre de empresa" required>
+								placeholder="Introduce nombre de usuario" required>
 						</div>
-<!-- 						<div class="form-group"> -->
-<!-- 							<label for="exampleInputEmail1">Contraseña</label> <input -->
-<!-- 								type="text" class="form-control" th:attr="value = *{password}" -->
-<!-- 								style="margin-top: 8px; width: 40%;" -->
-<!-- 								aria-describedby="emailHelp" -->
-<!-- 								placeholder="Introduce correo electrónico"> -->
-<!-- 						</div> -->
 						<div class="form-group">
 							<label for="exampleInputEmail1">Nombre personal</label> <input
 								type="tel" class="form-control" th:field="*{name}"
 								style="margin-top: 8px; width: 40%;"
 								aria-describedby="emailHelp"
-								placeholder="Introduce teléfono de empresa">
+								placeholder="Introduce nombre personal">
 						</div>
 						<div class="form-group">
 							<label for="exampleInputEmail1">Apellidos</label> <input
 								type="text" class="form-control" th:field="*{surname}"
 								style="margin-top: 8px; width: 40%;"
 								aria-describedby="emailHelp"
-								placeholder="Introduce correo electrónico">
+								placeholder="Introduce apellidos">
 						</div>
 						<div class="form-group">
 							<label for="exampleInputEmail1">Correo elecrónico</label> <input
 								type="tel" class="form-control" th:field="*{email}"
 								style="margin-top: 8px; width: 40%;"
 								aria-describedby="emailHelp"
-								placeholder="Introduce teléfono de empresa">
+								placeholder="Introduce correo electrónico">
 						</div>
 						<label for="exampleInputEmail1">Empresa</label> <select
 							class="form-select" th:field="*{nombre}"
 							aria-label="Default select example"
 							style="margin-top: 10px; width: 40%;height:34px;margin-bottom:20px;">
-							<option selected text="Escoge una empresa" value="" th:disabled="disabled">Escoge una empresa</option>
+							<option selected text="Escoge una empresa" value="" >Escoge una empresa</option>
 							<option th:each="company:${listCompanies}"
 								th:value="${company.nombre}" th:text="${company.nombre}" />
 						</select>
 						<!-- 							    <input type="text" class="form-control" th:field="*{grupo}"  style="margin-top:8px;width:40%;" aria-describedby="emailHelp" placeholder="Introduce CIF"> -->
-						<label for="exampleInputEmail1">Rol</label> 
+						<label for="exampleInputEmail1">Rol*</label> 
 						<select
 							class="form-select" th:field="*{rol}"
 							aria-label="Default select example"
-							style="margin-top: 10px; width: 40%;height:34px;margin-bottom:20px;">
+							style="margin-top: 10px; width: 40%;height:34px;margin-bottom:20px;" required>
 							
 							<option selected text="Escoge un rol" value="" th:disabled="disabled">Escoge un rol</option>
 							<option th:each="rol:${listRoles}" th:value="${rol.name}"
 								th:text="${rol.name}" />
 						</select>
+						<div style="width:40%;font-size:12px; padding-top:10px;">
+						    <small id="emailHelp" class="form-text text-muted" style="font-size:12px;">(*) Campos obligatorios</small>
+						  	<br>
+						  	<small id="emailHelp" class="form-text text-muted" style="font-size:12px;padding-top:10px;">Todos los tipos de usuarios, excepto administradores deben pertenecer a una empresa</small>	  
+					    </div>
 						<button type="submit" class="btn btn-primary" style="margin-top:20px;">Aceptar</button>
 					</form>
+					
+						<h4 th:inline="text" th:text="${error1}" style="color:red; margin-top:2%;width:40%;"></h4>
+						<h4 th:inline="text" th:text="${error2}" style="color:red; margin-top:2%;width:40%;"></h4>
+						<h4 th:inline="text" th:text="${error3}" style="color:red; margin-top:2%;width:40%;"></h4>
 				</div>
 			</div>
 		</div>

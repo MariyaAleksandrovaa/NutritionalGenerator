@@ -38,6 +38,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
 import app.Application;
 import app.model.ComponentsDishTable;
@@ -458,12 +459,6 @@ public class ControllerMVC {
 		model.addObject("listGroupFood", listGroupFood);
 		model.addObject("foodView", food);
 
-		Integer id = obtenerUsuario().getIdEmpresa();
-		if (id != null) {
-			String company = companyRepo.findById(id).get().getNombre();
-			model.addObject("company", company);
-		}
-
 		return model;
 	}
 
@@ -500,12 +495,7 @@ public class ControllerMVC {
 
 		model.addObject("listaAlergenos", listaAlergenos);
 		model.addObject("name_food", food.getNombre());
-		Integer id = obtenerUsuario().getIdEmpresa();
-		if (id != null) {
-			String company = companyRepo.findById(id).get().getNombre();
-			model.addObject("company", company);
-		}
-
+		
 		return model;
 	}
 
@@ -670,7 +660,7 @@ public class ControllerMVC {
 		String error1 = "";
 		String error2 = "";
 		String error3 = "";
-		
+
 		String encodedPassword = new BCryptPasswordEncoder().encode(user.getPassword());
 		user.setPassword(encodedPassword);
 
@@ -679,7 +669,6 @@ public class ControllerMVC {
 			modelName = "registrar_nuevo_usuario";
 		}
 
-		
 		for (Role obj : user.getRoles()) {
 
 //	    	  Cuando es admin
@@ -699,11 +688,10 @@ public class ControllerMVC {
 			}
 			break;
 		}
-		
-		
+
 		List<Empresa> listCompanies = companyRepo.findAll();
 		List<Role> listRoles = roleRepo.findAll();
-		
+
 		model.addAttribute("listCompanies", listCompanies);
 		model.addAttribute("listRoles", listRoles);
 		model.addAttribute("usuario", user);
@@ -737,7 +725,7 @@ public class ControllerMVC {
 		model.addObject("role", role);
 		model.addObject("error1", "");
 		model.addObject("error2", "");
-		
+
 		return model;
 	}
 
@@ -770,50 +758,111 @@ public class ControllerMVC {
 		return model;
 	}
 
+
 	@PostMapping("/admin/guardarUser/{user_id}")
-	public String guardarUsuario(@PathVariable("user_id") int user_id, UserView userView) {
+	public ModelAndView guardarUsuario(@PathVariable("user_id") int user_id, UserView userView) {
 
-		Optional<User> user = userRepo.findById(userView.getUser_id());
-		User usr = user.get();
+		
+			ModelAndView model = new ModelAndView();
 
-		Empresa empresa = companyRepo.findByNameCompany(userView.getNombre());
-		if (empresa != null) {
-			usr.setIdEmpresa(empresa.getId_empresa());
-		}
+			String error1 = "";
+			String error2 = "";
+			String error3 = "";
 
-		usr.setEmail(userView.getEmail());
+//		    	  Cuando es admin
+			if (userView.getRol().equals("ADMIN") && userView.getNombre() != null) {
+				error1 = "Usuarios de tipo administrador no deben pertenecer a ninguna empresa";
+				model.setViewName("editar_usuario");
+				model.addObject("error1", error1);
+				model.addObject("user", userView);
+				model.addObject("listCompanies", companyRepo.findAll());
+				model.addObject("listRoles", roleRepo.findAll());
+				return model;
 
-		usr.setName(userView.getName());
-		usr.setUsername(userView.getUsername());
-		usr.setSurname(userView.getSurname());
-
-		try {
-
-			Statement st = Application.con.createStatement();
-
-			int rol = 0;
-
-			if (userView.getRol().equals("USER")) {
-				rol = 1;
-
-			} else if (userView.getRol().equals("ADMIN")) {
-				rol = 2;
-
-			} else if (userView.getRol().equals("admin")) {
-				rol = 3;
+//		          Resto de roles  
+			} else if (!userView.getRol().equals("ADMIN") && userView.getNombre().equals("")) {
+				error2 = "Hay que especificar empresa a la que va a pertenecer el usuario. Solo administradores no pertenecen a ninguna.";
+				model.addObject("error2", error2);
+				model.addObject("user", userView);
+				model.addObject("listCompanies", companyRepo.findAll());
+				model.addObject("listRoles", roleRepo.findAll());
+				model.setViewName("editar_usuario");
+				return model;
 
 			}
-			st.execute("update users_roles set role_id = " + rol + " where user_id = " + usr.getId() + ";");
 
-			st.close();
+			try {
+				if (userRepo.findByUsername(userView.getUsername()) != null) {
 
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+				}
 
-		userRepo.save(usr);
+			} catch (Exception ex) {
+				error3 = "Ya existe este nombre de usuario en el sistema.";
+				model.addObject("error3", error3);
+				model.addObject("user", userView);
+				model.setViewName("editar_usuario");
+				model.addObject("listCompanies", companyRepo.findAll());
+				model.addObject("listRoles", roleRepo.findAll());
+				model.addObject("user_id", user_id);
+				return model;
+			}
+			
+			
+			
+			Optional<User> user = userRepo.findById(userView.getUser_id());
+			User usr = user.get();
 
-		return "redirect:/admin";
+			Empresa empresa = companyRepo.findByNameCompany(userView.getNombre());
+			if (empresa != null) {
+				usr.setIdEmpresa(empresa.getId_empresa());
+			}
+
+			usr.setEmail(userView.getEmail());
+
+			usr.setName(userView.getName());
+			usr.setUsername(userView.getUsername());
+			usr.setSurname(userView.getSurname());
+
+			try {
+
+				Statement st = Application.con.createStatement();
+
+				int rol = 0;
+
+				if (userView.getRol().equals("USER")) {
+					rol = 1;
+
+				} else if (userView.getRol().equals("ADMIN")) {
+					rol = 2;
+
+				} else if (userView.getRol().equals("admin")) {
+					rol = 3;
+
+				}
+				st.execute("update users_roles set role_id = " + rol + " where user_id = " + usr.getId() + ";");
+
+				st.close();
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+
+			userRepo.save(usr);
+	//
+//			List<FoodView> listFood = foodViewRepo.findAll();
+//			List<Empresa> listCompanies = companyRepo.findAll();
+//			List<UserView> listUsers = userViewRepo.findAll();
+//			List<LocalView> listLocals = localViewRepo.findAll();
+	//
+//			model.addObject("listFood", listFood);
+//			model.addObject("listCompanies", listCompanies);
+//			model.addObject("listUsers", listUsers);
+//			model.addObject("listLocals", listLocals);
+		
+
+
+			return new ModelAndView(new RedirectView("/admin"));
+//		return "redirect:/admin";
 	}
 
 	@RequestMapping("/admin/deleteLocal/{local}")
