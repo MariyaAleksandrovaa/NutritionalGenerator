@@ -143,7 +143,7 @@ public class ControllerMVC {
 		return ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUser();
 	}
 
-	@RequestMapping(value = { "/prueba", "/" }, method = RequestMethod.GET)
+	@RequestMapping(value = { "/prueba", "/" , "/logout"}, method = RequestMethod.GET)
 	public ModelAndView viewHomePage2() {
 
 		ModelAndView model = new ModelAndView();
@@ -642,8 +642,9 @@ public class ControllerMVC {
 	// Funciones para ventana usuario (admin)
 
 	@RequestMapping(value = "/admin/registrar_nuevo_usuario_exito")
-	public String viewRegistrarNuevoUsuario(Model model, User user, ModelMap modelMap) {
+	public ModelAndView viewRegistrarNuevoUsuario( User user, ModelMap modelMap) {
 
+		ModelAndView model = new ModelAndView();
 		String modelName = "admin";
 		String error1 = "";
 		String error2 = "";
@@ -668,6 +669,7 @@ public class ControllerMVC {
 			} else {
 				if (user.getIdEmpresa() != null) {
 					userRepo.save(user);
+					return new ModelAndView(new RedirectView("/admin"));
 				} else {
 					error2 = "Hay que especificar empresa a la que va a pertenecer el usuario. Solo administradores no pertenecen a ninguna.";
 					modelName = "registrar_nuevo_usuario";
@@ -680,14 +682,15 @@ public class ControllerMVC {
 		List<Empresa> listCompanies = companyRepo.findAll();
 		List<Role> listRoles = roleRepo.findAll();
 
-		model.addAttribute("listCompanies", listCompanies);
-		model.addAttribute("listRoles", listRoles);
-		model.addAttribute("usuario", user);
-		model.addAttribute("error1", error1);
-		model.addAttribute("error2", error2);
-		model.addAttribute("error3", error3);
+		model.addObject("listCompanies", listCompanies);
+		model.addObject("listRoles", listRoles);
+		model.addObject("usuario", user);
+		model.addObject("error1", error1);
+		model.addObject("error2", error2);
+		model.addObject("error3", error3);
+//		model.setViewName(modelName);
 
-		return modelName;
+		return model;
 	}
 
 	@GetMapping("/admin/registrar_nuevo_usuario")
@@ -1780,16 +1783,29 @@ public class ControllerMVC {
 	}
 
 	@PostMapping("/editor/saveDish/{id_plato}")
-	public String guardarPlato(Dish dish) {
+	public ModelAndView  guardarPlato(Dish dish) {
 
+		ModelAndView model = new ModelAndView("editar_plato");
 		Dish dishDB = dishRepo.findById(dish.getId_plato()).get();
-		dishDB.setDescripcion(dish.getDescripcion());
-		dishDB.setNombre_plato(dish.getNombre_plato());
+		String error = "";
+		
+		if(dish.getDescripcion().length() > 300) {
+			error = "Descripción demasiado larga. No debe contener más de 300 caracteres.";
+			
+			model.addObject("error", error);
+			model.addObject("dish", dish);
+			return model;
+		}else {
+			dishDB.setDescripcion(dish.getDescripcion());
+		}
+		
+		//dishDB.setNombre_plato(dish.getNombre_plato());
 		dishDB.setId_tipo_platos(dish.getId_tipo_platos());
 
 		dishRepo.save(dishDB);
+		
+		return new ModelAndView(new RedirectView("/editor/editDish/{id_plato}"));
 
-		return "redirect:/editor/editDish/{id_plato}";
 	}
 
 //	@RequestMapping("/admin/ComponentesDish/{id_plato}")

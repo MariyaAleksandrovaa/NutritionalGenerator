@@ -129,7 +129,8 @@ button {
 						<button type="submit" class="btn btn-primary" style="font-size:1.5em;margin-top:3%;">Guardar cambios</button>
 					</form>				
 				</div>
-
+				<h4 th:inline="text" th:text="${error}" style="color:red; margin-top:2%;margin-left:35%;"></h4>
+				
 					<a th:href="@{'/editor/addDish/' + ${id_plato}}" class="btn btn-info btn-lg" style="background-color: #6c757d;border-color: #6c757d;color:#ffffff;;font-size:15px;margin-left: 44%;
     margin-top: 2%;
     margin-bottom: 1%;">Añadir nuevo ingrediente</a>
