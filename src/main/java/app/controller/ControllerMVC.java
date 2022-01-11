@@ -338,33 +338,15 @@ public class ControllerMVC {
 		return model;
 	}
 
-	@RequestMapping(value = "/admin/registrar_nueva_empresa/registrar_empresa_exito", method = RequestMethod.POST)
-	public String viewRegistrarNuevaEmpresa2Page(@Valid Empresa empresa, BindingResult bindingResult,
+	@RequestMapping(value = "/admin/registrar_nueva_empresa_registrar_empresa_exito", method = RequestMethod.POST)
+	public ModelAndView  viewRegistrarNuevaEmpresa2Page(@Valid Empresa empresa, BindingResult bindingResult,
 			ModelMap modelMap) {
 
-//		ModelAndView model = new ModelAndView();
-
-//		if (bindingResult.hasErrors()) {
-//			model.addObject("sucessMessage", "Por favor, corrige los errores");
-//			model.addObject("bindingResult", bindingResult);
-//
-//		} else if (companyService.isCompanyAlreadyPresent(empresa)) {
-//			model.addObject("sucessMessage", "Empresa ya existe!");
-//
-//		} else {
-//			companyService.saveCompany(empresa);
-//			model.addObject("sucessMessage", "Empresa registrada con éxito!");
-//		}
-//		model.addObject("empresa", empresa);
-//
-//		model.setViewName("registrar_empresa_exito");
-
-//		Integer id = obtenerUsuario().getIdEmpresa();
-//		if (id != null) {
-//			String company = companyRepo.findById(id).get().getNombre();
-//			model.addObject("company", company);
-//		}
-
+		String error1 = "";
+		String error2 = "";
+		
+		ModelAndView model = new ModelAndView();
+		
 		try {
 
 			Statement st = Application.con.createStatement();
@@ -374,19 +356,45 @@ public class ControllerMVC {
 				String cif = rs.getString(1);
 
 				if (cif != null) {
-					return "redirect:/admin";
-
+					error1 = "Ya existe empresa con este CIF";
+					
+					model.addObject("error1", error1);
+					model.addObject("error2", error2);
+					model.setViewName("registrar_nueva_empresa");
+					
+					return model;
 				}
 			}
 			rs.close();
 			st.close();
+			
+			Statement st2 = Application.con.createStatement();
+			ResultSet rs2 = st2.executeQuery("SELECT nombre FROM empresas" + " where nombre = '" + empresa.getNombre() + "';");
+
+			while (rs2.next()) {
+				String nombre = rs2.getString(1);
+
+				if (nombre != null) {
+					
+					error2 = "Ya existe empresa con este nombre";
+					
+					model.addObject("error1", error1);
+					model.addObject("error2", error2);					
+					model.setViewName("registrar_nueva_empresa");
+					
+					return model;
+
+				}
+			}
+			rs2.close();
+			st2.close();
 
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
 		companyRepo.save(empresa);
-		return "redirect:/admin";
+		return new ModelAndView("redirect:/admin");
 	}
 
 	@RequestMapping("/admin/edit/{id_empresa}")
@@ -653,31 +661,53 @@ public class ControllerMVC {
 		String encodedPassword = new BCryptPasswordEncoder().encode(user.getPassword());
 		user.setPassword(encodedPassword);
 
-		if (userRepo.findByUsername(user.getUsername()) != null) {
-			error3 = "Ya existe este nombre de usuario en el sistema.";
-			modelName = "registrar_nuevo_usuario";
-		}
+		try {
 
-		for (Role obj : user.getRoles()) {
+			Statement st = Application.con.createStatement();
+			ResultSet rs = st
+					.executeQuery("SELECT count(*) FROM USERS WHERE USERNAME = '" + user.getUsername()+  "';");
 
-//	    	  Cuando es admin
-			if (obj.getId().equals(2)) {
-				error1 = "Usuarios de tipo administrador no deben pertenecer a ninguna empresa";
-				modelName = "registrar_nuevo_usuario";
-
-//	          Resto de roles  
-			} else {
-				if (user.getIdEmpresa() != null) {
-					userRepo.save(user);
-					return new ModelAndView(new RedirectView("/admin"));
-				} else {
-					error2 = "Hay que especificar empresa a la que va a pertenecer el usuario. Solo administradores no pertenecen a ninguna.";
+			while (rs.next()) {
+				int numUsers = rs.getInt(1);
+				
+				if(numUsers > 0) {
+					error3 = "Ya existe este nombre de usuario en el sistema.";
 					modelName = "registrar_nuevo_usuario";
+				}else {
+					for (Role obj : user.getRoles()) {
+
+//				    	  Cuando es admin
+						if (obj.getId().equals(2)) {
+							if(user.getIdEmpresa() != null) {
+								error1 = "Usuarios de tipo administrador no deben pertenecer a ninguna empresa";
+								modelName = "registrar_nuevo_usuario";
+							}
+
+
+//				          Resto de roles  
+						} else {
+							if (user.getIdEmpresa() != null) {
+								userRepo.save(user);
+								return new ModelAndView(new RedirectView("/admin"));
+							} else {
+								error2 = "Hay que especificar empresa a la que va a pertenecer el usuario. Solo administradores no pertenecen a ninguna.";
+								modelName = "registrar_nuevo_usuario";
+							}
+
+						}
+						break;
+					}
 				}
 
 			}
-			break;
+			rs.close();
+			st.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
+
+
 
 		List<Empresa> listCompanies = companyRepo.findAll();
 		List<Role> listRoles = roleRepo.findAll();
@@ -688,7 +718,7 @@ public class ControllerMVC {
 		model.addObject("error1", error1);
 		model.addObject("error2", error2);
 		model.addObject("error3", error3);
-//		model.setViewName(modelName);
+		model.setViewName(modelName);
 
 		return model;
 	}
@@ -872,12 +902,45 @@ public class ControllerMVC {
 		return "redirect:/admin";
 	}
 
-	@RequestMapping("/admin/registrar_nuevo_local/exito")
-	public String viewRegistrarNuevoLocal(Local local, BindingResult bindingResult, ModelMap modelMap) {
+	@RequestMapping("/admin/registrar_nuevo_local_exito")
+	public ModelAndView viewRegistrarNuevoLocal(Local local, BindingResult bindingResult, ModelMap modelMap) {
 
+		ModelAndView model = new ModelAndView();
+		String error1 = "";
+		
+		List<Empresa> listCompanies = companyRepo.findAll();
+		
+		try {
+
+			Statement st = Application.con.createStatement();
+			ResultSet rs = st.executeQuery("SELECT nombre from locales where nombre='" + local.getNombre() + "';");
+
+			while (rs.next()) {
+
+				String nom_local = rs.getString(1);
+				
+				if(nom_local != null) {
+					error1 = "Ya existe local con este nombre";
+					model.addObject("error1", error1);
+					model.addObject("listCompanies", listCompanies);
+					model.setViewName("registrar_nuevo_local");
+					return model;
+				}
+
+			}
+
+			rs.close();
+			st.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
 		localRepo.save(local);
+		
+		model.setViewName("redirect:/admin");
 
-		return "redirect:/admin";
+		return model;
 	}
 
 	@RequestMapping("/admin/editLocal/{id_local}")

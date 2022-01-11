@@ -101,7 +101,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 							  <div class="form-group">
 								    <label for="exampleInputEmail1">Empresa</label>
 							    		<select class="form-select" th:field="*{idEmpresa}" aria-label="Default select example" style="margin-top:10px;width:60%;height:34px;">
-											<option hidden value="">Escoge una empresa</option>
+											<option value="">Escoge una empresa</option>
 											<option th:each="company:${listCompanies}"
 												th:value="${company.id_empresa}"
 												th:text="${company.nombre}"

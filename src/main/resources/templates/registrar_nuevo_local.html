@@ -92,7 +92,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 						style="width: 50%;margin: 0 auto;"></div>
 
 					<form
-						th:action="@{/admin/registrar_nuevo_local/exito}"
+						th:action="@{/admin/registrar_nuevo_local_exito}"
 						th:object="${local}" method="post" style="margin-left:35%;width:60%;">
 						
 						<div class="form-group" style="margin-top: 25px;">
@@ -126,6 +126,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 						</div>
 						<button type="submit" class="btn btn-primary" style="margin-top:20px;">Aceptar</button>
 					</form>
+					<h4 th:inline="text" th:text="${error1}" style="color:red; margin-top:2%;margin-left: 35%;"></h4>
 				</div>
 			</div>
 		</div>

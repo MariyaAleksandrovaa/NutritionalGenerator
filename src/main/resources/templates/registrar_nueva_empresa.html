@@ -74,7 +74,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 					<div role="tabpanel" class="tab-pane active" id="seccion1" style="width: 50%;margin: 0 auto;">
 					</div>
 
-						<form th:action="@{/admin/registrar_nueva_empresa/registrar_empresa_exito}" th:object="${empresa}" method="post">
+						<form th:action="@{/admin/registrar_nueva_empresa_registrar_empresa_exito}" th:object="${empresa}" method="post">
 						  <div class="form-group" style="margin-top:25px;">
 						    <label for="exampleInputEmail1" >CIF*</label>
 						    <input type="text" class="form-control" id="id_cif" th:field="*{cif}"  style="margin-top:8px;width:40%;" aria-describedby="emailHelp" placeholder="Introduce CIF" required>
@@ -101,8 +101,8 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 
 						  <button type="submit" class="btn btn-primary">Aceptar</button>
 						</form>
-						<h4 th:inline="text" th:text="${error1}" style="color:red; margin-top:2%;margin-left:35%;"></h4>
-						<h4 th:inline="text" th:text="${error2}" style="color:red; margin-top:2%;margin-left:35%;"></h4>
+						<h4 th:inline="text" th:text="${error1}" style="color:red; margin-top:2%;"></h4>
+						<h4 th:inline="text" th:text="${error2}" style="color:red; margin-top:2%;"></h4>
 				</div>
 			</div>
 		</div>
