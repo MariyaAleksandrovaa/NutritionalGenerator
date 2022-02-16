@@ -10,13 +10,13 @@ Comprobar previamente que el servicio de la base de datos está iniciado.
 
 Credenciales de acceso:
   - Rol administrador: <br />
-      Usuario:  admin1 <br />
-      Contraseña: admin1 <br />
+ &ensp;     Usuario:  admin1 <br />
+ &ensp;     Contraseña: admin1 <br />
       
   - Rol editor:
-      Usuario:  editor3 <br />
-      Contraseña: editor3 <br />
+&ensp;      Usuario:  editor3 <br />
+&ensp;      Contraseña: editor3 <br />
       
   - Rol usuario <br />
-      Usuario: user3 <br />
-      Contraseña: user3 <br />
+ &ensp;     Usuario: user3 <br />
+ &ensp;    Contraseña: user3 <br />
