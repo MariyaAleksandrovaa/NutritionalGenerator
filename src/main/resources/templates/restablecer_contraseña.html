@@ -55,65 +55,66 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 <link
 	href="//fonts.googleapis.com/css?family=Playfair+Display:400,400i,700,700i,900,900i"
 	rel="stylesheet">
-<!-- //web-fonts -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css" />
 </head>
 
 <body>
 	<!-- banner -->
 	<div class="banner">
+		<form th:action="@{/volver_inicio}" method="post" style="font-size:1.5em;margin-left:93%;">
+			<input type="submit" style="margin-top:10px;float: left;" value="Volver a inicio" />					
+		</form>
 		<!-- header -->
 		<div class="header">
 			<div class="container">
 				<div class="logo">
 					<h1>NutriApp</h1>
-					<div class="banner-text w3labout-bnr">
-							<h2>Restablecimiento de contraseña</h2>
-					</div>
+
+				</div>
+				<div class="banner-text w3labout-bnr">
+						<h2>Restablecimiento de contraseña</h2>
 				</div>
 			</div>
 		</div>
-		<!-- //header -->
-		<!-- banner-text -->
-
-		<!-- //banner-text -->
 	</div>
 	<!-- //banner -->
 	<!-- gallery -->
 	<div class="about gallery">
 		<div class="container">
 			<div role="tabpanel">
-				<form th:action="@{/restablecer_contraseña/exito}"
+				<form th:action="@{/restablecer_contraseña_exito}"
 					th:object="${resetPwdObj}" method="post" style="margin-left: 35%;">
 
 					<div class="form-group" style="margin-top: 25px;">
-						<label for="exampleInputEmail1">Nombre de usuario</label> <input
-							type="text" class="form-control" id="id_cif"
-							th:field="*{username}" style="margin-top: 8px; width: 40%;"
-							aria-describedby="emailHelp"
-							placeholder="Introduce el nombre de usuario " required>
+						<label for="exampleInputEmail1">Nombre de usuario*</label> 
+						<input type="text" class="form-control" id="id_cif" th:field="*{username}" style="margin-top: 8px; width: 40%;"aria-describedby="emailHelp" placeholder="Introduce el nombre de usuario " required>
 					</div>
-					<div class="form-group">
-						<label for="exampleInputEmail1">Contraseña</label> <input
-							type="text" class="form-control" id="id_nombre" th:field="*{pwd}"
-							style="margin-top: 8px; width: 40%;" aria-describedby="emailHelp"
-							placeholder="Introduce contraseña" required>
+					<div class="form-group" style="display: flex;flex-direction: column;margin-top: 8px; ">
+						<label for="exampleInputEmail1">Contraseña*</label>
+						<div style="display:flex; flex-direction:row;">
+							<input type="password" id="password-field" name="passwordOri"  th:field="*{pwd}"  placeholder="Introduce contraseña" required autocomplete="new-password" style="height:34px;width: 40%;margin-top:8px;">
+							<i class="bi bi-eye-slash" id="togglePasswordOri" style="padding:15px;"></i>
+						</div>
 					</div>
-					<div class="form-group">
-						<label for="exampleInputEmail1">Repite contraseña</label> <input
-							type="text" class="form-control" id="id_correo"
-							th:field="*{resetPwd}" style="margin-top: 8px; width: 40%;"
-							aria-describedby="emailHelp"
-							placeholder="Repite contraseña introducida" required>
-					</div>
+					<div class="form-group" style="display: flex;flex-direction: column;margin-top: 8px; ">
+						<label for="exampleInputEmail1">Repite contraseña* </label>
+						<div style="display:flex; flex-direction:row;">
+							<input type="password"  id="password" th:field="*{resetPwd}" name="password"  placeholder="Introduce contraseña" required autocomplete="new-password" style="height:34px;width: 40%;margin-top:8px;">
+							<i class="bi bi-eye-slash" id="togglePassword" style="padding:15px;"></i>
+						</div>
+					</div>					
+					<small id="emailHelp" class="form-text text-muted">Todos los campos son obligatorios</small>
+					
 
-
-					<small id="emailHelp" class="form-text text-muted">Todos
-						los campos son obligatorios</small>
 			</div>
 			<button type="submit" class="btn btn-primary"
 				style="margin-left: 460px; margin-top: 20px;">Aceptar</button>
 			</form>
-
+			<h4 th:inline="text" th:text="${error1}" style="color:red; margin-top:2%;margin-left:35%;"></h4>
+			<h4 th:inline="text" th:text="${error2}" style="color:red; margin-top:2%;margin-left:35%;"></h4>
+			
+<!-- 		     <label th:text = "${error1}"/> -->
+<!-- 		     <label th:text = "${error2}"/> -->
 		</div>
 	</div>
 	</div>
@@ -130,8 +131,31 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 			</div>
 		</div>
 	</div>
-	<!-- //footer -->
-	<!-- menu-js -->
+	<script>
+	const togglePassword = document.querySelector('#togglePasswordOri');
+	const password = document.querySelector('#password-field');
+	
+	togglePassword.addEventListener('click', function (e) {
+	    // toggle the type attribute
+	    const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+	    password.setAttribute('type', type);
+	    // toggle the eye / eye slash icon
+	    this.classList.toggle('bi-eye');
+	});
+	</script>
+	<script>
+	const togglePassword2 = document.querySelector('#togglePassword');
+	const password2 = document.querySelector('#password');
+	
+	togglePassword2.addEventListener('click', function (e) {
+		
+	    // toggle the type attribute
+	    const type = password2.getAttribute('type') === 'password' ? 'text' : 'password';
+	    password2.setAttribute('type', type);
+	    // toggle the eye / eye slash icon
+	    this.classList.toggle('bi-eye');
+	});
+	</script>
 	<script>
 		$('.navicon').on('click', function(e) {
 			e.preventDefault();
@@ -169,8 +193,6 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 			}
 		});
 	</script>
-	<!-- //menu-js -->
-	<!-- jarallax -->
 	<script src="js/SmoothScroll.min.js"></script>
 	<script src="js/jarallax.js"></script>
 	<script type="text/javascript">
@@ -181,8 +203,6 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 			imgHeight : 768
 		})
 	</script>
-	<!-- //jarallax -->
-	<!-- start-smooth-scrolling -->
 	<script type="text/javascript" src="js/move-top.js"></script>
 	<script type="text/javascript" src="js/easing.js"></script>
 	<script type="text/javascript">
@@ -196,8 +216,6 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 			});
 		});
 	</script>
-	<!-- //end-smooth-scrolling -->
-	<!-- smooth-scrolling-of-move-up -->
 	<script type="text/javascript">
 		$(document).ready(function() {
 			/*

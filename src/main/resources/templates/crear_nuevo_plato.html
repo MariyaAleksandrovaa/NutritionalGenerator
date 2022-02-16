@@ -40,57 +40,65 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 </head>
 
 <body> 
-	<!-- banner -->
 	<div class="banner">
+		<p style="float: left;margin-top:10px;font-size:1.5em;margin-left:20px;">
+			Bienvenido <b>[[${#request.userPrincipal.principal.username}]]</b> 
+		</p>
+		<form th:action="@{/logout}" method="post" style="font-size:1.5em;margin-left:93%;">
+			<input type="submit" style="margin-top:10px;float: left;" value="Cerrar sesión" />					
+		</form>		
 		<!-- header -->
 		<div class="header">
 			<div class="container">
 				<div class="logo">
 					<h1>NutriApp</h1>
-
 				</div> 
-					<div class="banner-text w3labout-bnr"> 
-							<h2>Cuenta de editor</h2>   
-					</div>
+				<div class="banner-text w3labout-bnr" > 
+						<h2 >Cuenta de editor</h2>   
+				</div>
 			</div>
 		</div>
-		<!-- //header --> 
-		<!-- banner-text -->
-
-		<!-- //banner-text -->
+		<b th:text="${company}" style="margin-left:20px;color:#000000;font-size:2em;"></b>
 	</div>
-	<!-- //banner -->   
-	<!-- gallery -->
 	<div class="about gallery">
 		<div class="container">
+				<nav aria-label="breadcrumb">
+				  <ol class="breadcrumb" style="background-color:#ffffff;font-size:1.5em;margin-bottom:40px;">
+				  	<li class="breadcrumb-item"><a th:href="@{/editor}">Página principal</a></li>
+				    <li class="breadcrumb-item active">Crear nuevo plato</li>
+				  </ol>
+				</nav>		
+		  
 			<div role="tabpanel">
 				<div class="tab-content" style="margin-left: 20%;">
 						<div role="tabpanel" class="tab-pane active" id="seccion1" style="width: 50%;margin: 0 auto;">
 						<form
-							th:action="@{/admin/crear_nuevo_plato/ingredientes}"
+							th:action="@{/editor/crear_nuevo_plato/ingredientes}"
 							th:object="${dishObj}" 
 							method="post" >
 							
 						    <div class="form-group" style="margin-top:25px;">
-						    	<label for="exampleInputEmail1" >Nombre del plato</label>
-						    	<input type="text" class="form-control" id="id_cif" th:field="*{nombre_plato}"  style="margin-top:8px;width:60%;" aria-describedby="emailHelp" placeholder="Introduce nombre que le quieras dar al plato">
+						    	<label for="exampleInputEmail1" >Nombre del plato*</label>
+						    	<input type="text" class="form-control" id="id_cif" th:field="*{nombre_plato}"  style="margin-top:8px;width:60%;" aria-describedby="emailHelp" placeholder="Introduce nombre que le quieras dar al plato" required>
 						    </div>
 						    <div class="form-group">
 						   		 <label for="exampleInputEmail1">Descripción</label>
-						  		 <input type="text" class="form-control" id="id_nombre" th:field="*{descripcion}" style="margin-top:8px;width:60%;"  aria-describedby="emailHelp" placeholder="Introduce descripción" required>
+						  		 <input type="text" class="form-control" id="id_nombre" th:field="*{descripcion}" style="margin-top:8px;width:60%;"  aria-describedby="emailHelp" placeholder="Introduce descripción" >
 						    </div>
 							
 							<div class="form-group" style="margin-top:30px;">
-								<label for="exampleInputEmail1">Escoge el tipo de plato</label> 
-								<select class="form-select" th:field="*{typeDish}" aria-label="Default select example" style="margin-top:10px;width:60%">
-<!-- 									<option selected th:value="${select}">Escoge una empresa</option> -->
+								<label for="exampleInputEmail1">Escoge el tipo de plato*</label> 
+								<select class="form-select" th:field="*{typeDish}" aria-label="Default select example" style="margin-top:10px;width:60%;height:34px;" required>
+									<option selected value="">Escoge el tipo de plato</option>
 									<option th:each="typeDish:${listTypeDishes}"
 										th:value="${typeDish.id_tipos_platos}"
 										th:text="${typeDish.descripcion}"
 									/>
 								</select>
 							</div>
-	
+							<div style="width:100%;height:30px;"> 
+								<small id="emailHelp" class="form-text text-muted">(*) Campos obligatorios</small>
+							</div>
 							<button type="submit" class="btn btn-primary">Proceder a escoger ingredientes</button>
 						</form>
 					</div>

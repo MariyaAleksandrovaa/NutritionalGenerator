@@ -25,6 +25,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 
 <link href="../css/style.css" type="text/css" rel="stylesheet" media="all">   
 <link href="../css/font-awesome.css" rel="stylesheet"> <!-- font-awesome icons --> 
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="../css/smoothbox.css" type='text/css' media="all" /> 
 <!-- //Custom Theme files --> 
 
@@ -33,7 +34,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> -->
 <!-- //js -->
-
+<script type="text/javascript"> $('.fa-calendar-plus-o:before').datepicker({ format: 'dd/mm/yyyy', todayHighlight:'TRUE', startDate: '-0d', autoclose: true, })></script>
 <!-- web-fonts -->   
 <link href="//fonts.googleapis.com/css?family=Playfair+Display:400,400i,700,700i,900,900i" rel="stylesheet">
 <!-- //web-fonts -->
@@ -42,86 +43,96 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 <body> 
 	<!-- banner -->
 	<div class="banner">
+		<p style="float: left;margin-top:10px;font-size:1.5em;margin-left:20px;">
+			Bienvenido <b>[[${#request.userPrincipal.principal.username}]]</b> 
+		</p>
+		<form th:action="@{/logout}" method="post" style="font-size:1.5em;margin-left:93%;">
+			<input type="submit" style="margin-top:10px;float: left;" value="Cerrar sesión" />					
+		</form>		
 		<!-- header -->
 		<div class="header">
 			<div class="container">
 				<div class="logo">
 					<h1>NutriApp</h1>
-
 				</div> 
-					<div class="banner-text w3labout-bnr"> 
-							<h2>Cuenta de editor</h2>   
-					</div>
+				<div class="banner-text w3labout-bnr" > 
+						<h2 >Cuenta de editor</h2>   
+				</div>
 			</div>
 		</div>
-		<!-- //header --> 
-		<!-- banner-text -->
-
-		<!-- //banner-text -->
+		<b th:text="${company}" style="margin-left:20px;color:#000000;font-size:2em;"></b>
 	</div>
-	<!-- //banner -->   
-	<!-- gallery -->
 	<div class="about gallery">
 		<div class="container">
+			<nav aria-label="breadcrumb">
+			  <ol class="breadcrumb" style="background-color:#ffffff;font-size:1.5em;margin-bottom:40px;">
+			  	<li class="breadcrumb-item"><a th:href="@{/editor}">Página principal</a></li>
+			    <li class="breadcrumb-item active">Crear menú individual</li>
+			  </ol>
+			</nav>
 			<div role="tabpanel">
 				<div class="tab-content" style="margin-left: 20%;">
 						<div role="tabpanel" class="tab-pane active" id="seccion1" style="width: 50%;margin: 0 auto;">
 						<form
-							th:action="@{/admin/crear_menu_individual/guardar}"
+							th:action="@{/editor/crear_menu_individual/guardar}"
 							th:object="${menuObj}" 
 							method="post" >
 							
 						    <div class="form-group" style="margin-top:25px;">
-						    	<label for="exampleInputEmail1" >Nombre del menú</label>
-						    	<input type="text" class="form-control"  th:field="*{name_menu}"  style="margin-top:8px;width:60%;" aria-describedby="emailHelp" placeholder="Introduce nombre del menú">
+						    	<label for="exampleInputEmail1" >Nombre del menú*</label>
+						    	<input type="text" class="form-control"  th:field="*{name_menu}"  style="margin-top:8px;width:60%;" aria-describedby="emailHelp" placeholder="Introduce nombre del menú" required>
 						    </div>
-						    
-						    <div class="form-group" style="margin-top:30px;">
-								<label for="exampleInputEmail1">Escoge el local al que pertenece menú</label> 
-								<select class="form-select" th:field="*{id_local}" aria-label="Default select example" style="margin-top:10px;width:60%">
-									<option selected th:value="${select}">Escoge el local al que va a pertenecer este menú</option>
-									<option th:each="local:${listLocals}"
-										th:value="${local.id_local}"
-										th:text="${local.nombre}"
-									/>
-								</select>
-							</div>
-						    
-						    
+						    <div  class="checkbox-group required" style="margin-top:30px;" >
+								<label for="exampleInputEmail1" class="form-label select-label">Escoge local/es al que pertenece menú*</label> 
+								    <ul style="margin-left:20px;" >
+								        <li th:each="local : ${listLocals}">
+								            <input type="checkbox" name="searchValues" th:value="${local.id_local}" th:field="*{list_id_local}"/>
+								            <label th:text="${local.nombre}"></label>
+								        </li>
+								    </ul>
+						    </div>
 							<div class="form-group" style="margin-top:30px;">
-								<label for="exampleInputEmail1">Escoge el primer plato del menú</label> 
-								<select class="form-select" th:field="*{first_dish}" aria-label="Default select example" style="margin-top:10px;width:60%">
-									<option selected th:value="${select}">Primer plato</option>
+								<div class="col" style="width:60%">
+									<label for="exampleInputEmail1" class="form-label select-label" style="width:100%;margin-bottom:12px;">Selecciona fecha de publicación del menú*</label> 
+									<input id="date" type="date" style="width:100%;height:33px;" th:field="*{date_publish}" required>
+								</div>
+
+							</div>
+							<div class="form-group" style="margin-top:30px;">
+								<label for="exampleInputEmail1">Escoge el primer plato del menú*</label> 
+								<select class="form-select" th:field="*{first_dish}" aria-label="Default select example" style="margin-top:10px;width:60%;height:34px;" required>
+									<option selected value="">Primer plato</option>
 									<option th:each="dish:${listDishCompany1}"
 										th:value="${dish.id_plato}"
 										th:text="${dish.nombre_plato}"
 									/>
 								</select>
 							</div>
-							
 							<div class="form-group" style="margin-top:30px;">
-								<label for="exampleInputEmail1">Escoge el segundo plato del menú</label> 
-								<select class="form-select" th:field="*{second_dish}" aria-label="Default select example" style="margin-top:10px;width:60%">
-									<option selected th:value="${select}" >Segundo plato</option>
+								<label for="exampleInputEmail1">Escoge el segundo plato del menú*</label> 
+								<select class="form-select" th:field="*{second_dish}" aria-label="Default select example" style="margin-top:10px;width:60%;height:34px;" required>
+									<option selected value="">Segundo plato</option>
 									<option th:each="dish:${listDishCompany2}"
 										th:value="${dish.id_plato}"
 										th:text="${dish.nombre_plato}"
 									/>
 								</select>
 							</div>
-							
 							<div class="form-group" style="margin-top:30px;">
-								<label for="exampleInputEmail1">Escoge el postre del menú (opcional)</label> 
-								<select class="form-select" th:field="*{third_dish}" aria-label="Default select example" style="margin-top:10px;width:60%">
-									<option selected th:value="${select}">Postre</option>
+								<label for="exampleInputEmail1">Escoge el postre del menú</label> 
+								<select class="form-select" th:field="*{third_dish}" aria-label="Default select example" style="margin-top:10px;width:60%;height:34px;">
+									<option selected value="" class="disabled">Postre</option>
 									<option th:each="dish:${listDishCompany3}"
 										th:value="${dish.id_plato}"
 										th:text="${dish.nombre_plato}"
 									/>
 								</select>
 							</div>
-	
-							<button type="submit" class="btn btn-primary">Confirmar menú</button>
+							<div style="width:100%;margin-bottom:20px;">
+								<small id="emailHelp" class="form-text text-muted">(*) Campos obligatorios</small>
+							</div>
+							
+							<button type="submit" class="btn btn-primary"  id="elID">Confirmar menú</button>
 						</form>
 					</div>
 
@@ -264,6 +275,32 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	    el.onfocus = function(){this.type="number";};
 	    el.onblur = function(){this.type="text";};
 	});
+	</script>
+	<script>
+	$("#elID").click( e => {
+	    const activos = $("[type='checkbox']:checked").length
+	    if( activos == 0 ){
+	       e.preventDefault();
+	       alert("Tienes que escoger al menos un local al que pertenezca el menú") 
+	    }
+	})
+	</script>
+	<script type="text/javascript">
+	var today = new Date();
+	var dd = today.getDate();
+	var mm = today.getMonth() + 1; 
+	var yyyy = today.getFullYear();
+
+	if (dd < 10) {
+	   dd = '0' + dd;
+	}
+
+	if (mm < 10) {
+	   mm = '0' + mm;
+	} 
+	    
+	today = yyyy + '-' + mm + '-' + dd;
+	document.getElementById("date").setAttribute("min", today);
 	</script>
 
 	

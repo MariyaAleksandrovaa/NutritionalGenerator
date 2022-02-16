@@ -5,12 +5,12 @@ import java.util.Map;
 
 public class DishObj {
 
-	public String typeDish;
+	public Integer typeDish;
 	public Map<String, BigDecimal> listFood;
 	public String nombre_plato;
 	public String descripcion;
 
-	public DishObj(String typeDish, Map<String, BigDecimal> listFood, String nombre_plato, String descripcion) {
+	public DishObj(Integer typeDish, Map<String, BigDecimal> listFood, String nombre_plato, String descripcion) {
 		this.typeDish = typeDish;
 		this.listFood = listFood;
 		this.nombre_plato = nombre_plato;
@@ -21,11 +21,11 @@ public class DishObj {
 
 	}
 
-	public String getTypeDish() {
+	public Integer getTypeDish() {
 		return typeDish;
 	}
 
-	public void setTypeDish(String typeDish) {
+	public void setTypeDish(Integer typeDish) {
 		this.typeDish = typeDish;
 	}
 

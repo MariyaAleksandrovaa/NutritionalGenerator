@@ -73,11 +73,13 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 		<!-- banner-text -->
 		<!-- <div class="banner-text">  -->
 		<div class="container">
-			<div class="banner-w3lstext">
+			<div class="banner-w3lstext" style="margin-top:8%;">
 				<div class="logo">
-					<h1>Inicio Sesión</h1>
+					<h1 style="margin-bottom:20px;">Inicio Sesión</h1>
 				</div>
 				<!-- <h2>Inicio Sesión</h2> -->
+				<!--/*@thymesVar id="errorMessage" type="java.lang.String"*/-->
+				
 				<form th:action="@{/prueba}" class="inputBoxes" method="post">
 
 					<div th:if="${param.error}">
@@ -94,6 +96,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 							href="/restablecer_contraseña" style="color: #A9A9A9;">¿Has
 							olvidado tu contraseña?</a>
 					</div>
+					<div th:if="${errorMessage}" th:text="${errorMessage}" style="color:#FFA500;margin-top:20px;"></div>
 					<button type="submit" class="btn btn-primary"
 						style="margin-top: 20px;">Acceder</button>
 				</form>

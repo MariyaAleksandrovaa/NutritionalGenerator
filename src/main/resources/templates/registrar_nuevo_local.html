@@ -57,51 +57,53 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 </head>
 
 <body>
-	<!-- banner -->
 	<div class="banner">
+		<p style="float: left;margin-top:10px;font-size:1.5em;margin-left:20px;">
+			Bienvenido <b>[[${#request.userPrincipal.principal.username}]]</b> 
+		</p>
+		<form th:action="@{/logout}" method="post" style="font-size:1.5em;margin-left:93%;">
+			<input type="submit" style="margin-top:10px;float: left;" value="Cerrar sesión" />					
+		</form>		
 		<!-- header -->
 		<div class="header">
 			<div class="container">
 				<div class="logo">
 					<h1>NutriApp</h1>
+				</div> 
+				<div class="banner-text w3labout-bnr" > 
+						<h2 >Cuenta de administrador</h2>   
 				</div>
-				
-					<div class="banner-text w3labout-bnr">
-							<h2>Cuenta de editor</h2>
-					</div>
 			</div>
 		</div>
-		<!-- //header -->
-		<!-- banner-text -->
-
-		<!-- //banner-text -->
+		<b th:text="${company}" style="margin-left:20px;color:#000000;font-size:2em;"></b>
 	</div>
-	<!-- //banner -->
-	<!-- gallery -->
 	<div class="about gallery">
 		<div class="container">
+
 			<div role="tabpanel">
-				<ul class="nav nav-tabs" role="tablist">
-					<li role="presentation" class="active"><a href="#seccion1"
-						data-toggle="tab" role="tab">Registrar nuevo local</a></li>
-				</ul>
 				<div class="tab-content">
+					<nav aria-label="breadcrumb">
+					  <ol class="breadcrumb" style="background-color:#ffffff;font-size:1.5em;margin-bottom:40px;">
+					  	<li class="breadcrumb-item"><a th:href="@{/admin}">Página principal</a></li>
+					  	<li class="breadcrumb-item active">Registrar nuevo local</li>
+					  </ol>
+					</nav>
 					<div role="tabpanel" class="tab-pane active" id="seccion1"
 						style="width: 50%;margin: 0 auto;"></div>
 
 					<form
-						th:action="@{/editor/registrar_nuevo_local/exito}"
-						th:object="${local}" method="post" style="margin-left:35%;">
+						th:action="@{/admin/registrar_nuevo_local_exito}"
+						th:object="${local}" method="post" style="margin-left:35%;width:60%;">
 						
 						<div class="form-group" style="margin-top: 25px;">
-							<label for="exampleInputEmail1">Nombre del local</label> <input type="text"
+							<label for="exampleInputEmail1">Nombre del local*</label> <input type="text"
 								class="form-control" id="id_cif" th:field="*{nombre}"
 								style="margin-top:8px;width:60%;"
-								aria-describedby="emailHelp" placeholder="Introduce nombre del local">
+								aria-describedby="emailHelp" placeholder="Introduce nombre del local" required>
 						</div>
 						
 						<div class="form-group">
-							<label for="exampleInputEmail1">Dirección del local</label> <input
+							<label for="exampleInputEmail1">Dirección del local*</label> <input
 								type="text" class="form-control" id="id_nombre"
 								th:field="*{direccion}" style="margin-top:8px;width:60%;"
 								aria-describedby="emailHelp"
@@ -109,18 +111,22 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 						</div>
 						
 						<div class="form-group">
-							<label for="exampleInputEmail1">Empresa a la que pertenece</label> 
-							<select class="form-select" th:field="*{idEmpresa}" aria-label="Default select example" style="margin-top:10px;width:60%">
-								<option selected th:value="${select}">Escoge una empresa</option>
+							<label for="exampleInputEmail1">Empresa a la que pertenece*</label> 
+							<select required class="form-select" th:field="*{idEmpresa}" aria-label="Default select example" style="margin-top:10px;width:60%;height:34px;" >
+								<option hidden value="">Escoge una empresa</option>
 								<option th:each="company:${listCompanies}"
 									th:value="${company.id_empresa}"
-									th:text="${company.nombre}"
+									th:text="${company.nombre}" 
 								/>
 							</select>
 						</div>
-
-						<button type="submit" class="btn btn-primary">Aceptar</button>
+						<div>
+							<small id="emailHelp" class="form-text text-muted" style="margin-bottom:20px;">(*) Campos obligatorios</small>
+							
+						</div>
+						<button type="submit" class="btn btn-primary" style="margin-top:20px;">Aceptar</button>
 					</form>
+					<h4 th:inline="text" th:text="${error1}" style="color:red; margin-top:2%;margin-left: 35%;"></h4>
 				</div>
 			</div>
 		</div>
@@ -174,8 +180,38 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 			});
 		});
 	</script>
-	<!-- //end-smooth-scrolling -->
-	<!-- smooth-scrolling-of-move-up -->
+	<script>
+		$('.navicon').on('click', function (e) {
+		  e.preventDefault();
+		  $(this).toggleClass('navicon--active');
+		  $('.toggle').toggleClass('toggle--active');
+		});
+	</script> 
+	<script>
+	$(document).ready(function() {
+	    if (location.hash) {
+	        $("a[href='" + location.hash + "']").tab("show");
+	    }
+	    $(document.body).on("click", "a[data-toggle='tab']", function(event) {
+	        location.hash = this.getAttribute("href");
+	    });
+	});
+	$(window).on("popstate", function() {
+	    var anchor = location.hash || $("a[data-toggle='tab']").first().attr("href");
+	    $("a[href='" + anchor + "']").tab("show");
+	});
+	</script>
+	<script>
+	$(document).ready(function(){
+	    $('a[data-toggle="tab"]').on('show.bs.tab', function(e) {
+	        localStorage.setItem('activeTab', $(e.target).attr('href'));
+	    });
+	    var activeTab = localStorage.getItem('activeTab');
+	    if(activeTab){
+	        $('#myTab a[href="' + activeTab + '"]').tab('show');
+	    }
+	});
+	</script>
 	<script type="text/javascript">
 		$(document).ready(function() {
 			/*

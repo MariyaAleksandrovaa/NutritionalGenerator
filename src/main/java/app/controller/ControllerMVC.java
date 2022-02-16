@@ -2,22 +2,31 @@ package app.controller;
 
 import java.math.BigDecimal;
 
-
 import java.sql.ResultSet;
 
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.WebAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -28,6 +37,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
 import app.Application;
 import app.model.ComponentsDishTable;
@@ -40,10 +51,15 @@ import app.model.Menu;
 import app.model.Role;
 import app.model.TypeDish;
 import app.model.User;
+import app.objects.DishIngredient;
+import app.objects.DishIngredients;
 import app.objects.DishObj;
 import app.objects.FoodAmountObj;
 import app.objects.GroupUnitObj;
 import app.objects.GroupalDish;
+import app.objects.LabelObj;
+import app.objects.LocalEnable;
+import app.objects.LocalObj;
 import app.objects.MenuLocalObj;
 import app.objects.MenuObj;
 import app.objects.ResetPwdObj;
@@ -55,7 +71,6 @@ import app.repository.FoodRepository;
 import app.repository.GroupFoodRepository;
 import app.repository.LocalRepository;
 import app.repository.MenuRepository;
-//import app.repository.LocalRepository;
 import app.repository.RoleRepository;
 import app.repository.TypeDishRepository;
 import app.repository.UserRepository;
@@ -128,7 +143,7 @@ public class ControllerMVC {
 		return ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUser();
 	}
 
-	@RequestMapping(value = { "/prueba", "/" }, method = RequestMethod.GET)
+	@RequestMapping(value = { "/prueba", "/" , "/logout"}, method = RequestMethod.GET)
 	public ModelAndView viewHomePage2() {
 
 		ModelAndView model = new ModelAndView();
@@ -136,11 +151,37 @@ public class ControllerMVC {
 		return model;
 
 	}
+//	@RequestMapping("/loginError")
+//	  public String loginError(Model model) {
+//	    model.addAttribute("login?error", true);
+//	    return "redirect:/";
+//	  }
+
+	@GetMapping("/loginError")
+	public String login(HttpServletRequest request, Model model) {
+		HttpSession session = request.getSession(false);
+		String errorMessage = "";
+		if (session != null) {
+			AuthenticationException ex = (AuthenticationException) session
+					.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
+			if (ex != null) {
+				errorMessage = "Usuario o contraseña incorrectos!";
+			}
+		}
+		model.addAttribute("errorMessage", errorMessage);
+		return "inicio_sesion";
+	}
+
+	@RequestMapping(value = { "/volver_inicio" }, method = RequestMethod.POST)
+	public String viewInicio() {
+
+		return "redirect:/";
+	}
 
 	// NutriApp para administrador
 
-	@GetMapping("/admin")
-	public String viewAdminPage(Model model) {
+	@GetMapping("/editor")
+	public String viewEditorPage(Model model) {
 
 		int id_empresa = obtenerUsuario().getIdEmpresa();
 
@@ -150,7 +191,13 @@ public class ControllerMVC {
 		model.addAttribute("listMenus", listMenus);
 		model.addAttribute("listDish", listDish);
 
-		return "admin";
+		Integer id = obtenerUsuario().getIdEmpresa();
+		if (id != null) {
+			String company = companyRepo.findById(id).get().getNombre();
+			model.addAttribute("company", company);
+		}
+
+		return "editor";
 	}
 
 	private List<DishView> obtenerPlatosUsuario(int id_empresa) {
@@ -160,6 +207,14 @@ public class ControllerMVC {
 
 		for (int i = 0; i < listDishAll.size(); i++) {
 			DishView dishView = listDishAll.get(i);
+
+//			if(dishView.getFecha_creacion() != null) {
+//				java.sql.Timestamp fecha_creacion = listDishAll.get(i).getFecha_creacion();
+//
+//				SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//				Timestamp dateTime = Timestamp.valueOf(sdf3.format(fecha_creacion));
+//				dishView.setFecha_creacion(dateTime);				
+//			}
 
 			if (dishView.getId_empresa() == id_empresa) {
 				listDish.add(dishView);
@@ -171,8 +226,7 @@ public class ControllerMVC {
 
 	private List<Menu> obtenerMenusUsuario(int id_empresa) {
 
-		List<Menu> listMenusAll = menuRepo.findAll();
-
+		List<Menu> listMenusAll = menuRepo.findAllOrderByDate();
 		List<Menu> listMenu = new ArrayList<Menu>();
 
 		for (int i = 0; i < listMenusAll.size(); i++) {
@@ -187,10 +241,10 @@ public class ControllerMVC {
 
 	}
 
-	// NutriApp para editor
+	// NutriApp para admin
 
-	@GetMapping("/editor")
-	public String viewEditorPage(Model model) {
+	@GetMapping("/admin")
+	public String viewadminPage(Model model) {
 
 		List<FoodView> listFood = foodViewRepo.findAll();
 		List<Empresa> listCompanies = companyRepo.findAll();
@@ -202,8 +256,39 @@ public class ControllerMVC {
 		model.addAttribute("listUsers", listUsers);
 		model.addAttribute("listLocals", listLocals);
 
-		return "editor";
+		return "admin";
 	}
+
+//	public List<DishView> obtenerPlatosUsuario(int id_empresa) {
+//
+//		List<DishView> listDishes = new ArrayList<DishView>();
+//		
+//		try {
+//
+//			Statement st = Application.con.createStatement();
+//			ResultSet rs = st.executeQuery(
+//					"SELECT fecha_creacion, plato, nombre_plato, descripcion FROM view_gestionplatos where id_empresa= "
+//							+ id_empresa + " order by fecha_creacion desc;");
+//
+//			while (rs.next()) {
+//				java.sql.Timestamp fecha_creacion = rs.getTimestamp(1);
+//				String nombre_plato = rs.getString(2);
+//				String nombre = rs.getString(3);
+//				String descripcion = rs.getString(4);
+//
+//				SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//				Timestamp dateTime = Timestamp.valueOf(sdf3.format(fecha_creacion));
+//				
+//				listDishes.add(new DishView(dateTime, nombre_plato, nombre, descripcion ));
+//			}
+//			rs.close();
+//			st.close();
+//
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+//		return listDishes;
+//	}
 
 	// NutriApp para usuario normal
 
@@ -218,9 +303,11 @@ public class ControllerMVC {
 		model.addAttribute("listMenus", listMenus);
 		model.addAttribute("listDish", listDish);
 
-//		List<MenuView> listMenus = menuViewRepo.findAll();
-//
-//		model.addAttribute("listMenus", listMenus);
+		Integer id = obtenerUsuario().getIdEmpresa();
+		if (id != null) {
+			String company = companyRepo.findById(id).get().getNombre();
+			model.addAttribute("company", company);
+		}
 
 		return "user";
 	}
@@ -237,9 +324,9 @@ public class ControllerMVC {
 		return "alergenos";
 	}
 
-	// Funciones para ventana empresa (EDITOR)
+	// Funciones para ventana empresa (admin)
 
-	@RequestMapping(value = "/editor/registrar_nueva_empresa", method = RequestMethod.GET)
+	@RequestMapping(value = "/admin/registrar_nueva_empresa", method = RequestMethod.GET)
 	public ModelAndView viewRegistrarNuevaEmpresaPage() {
 
 		ModelAndView model = new ModelAndView();
@@ -251,31 +338,66 @@ public class ControllerMVC {
 		return model;
 	}
 
-	@RequestMapping(value = "/editor/registrar_nueva_empresa/registrar_empresa_exito", method = RequestMethod.POST)
-	public ModelAndView viewRegistrarNuevaEmpresa2Page(@Valid Empresa empresa, BindingResult bindingResult,
+	@RequestMapping(value = "/admin/registrar_nueva_empresa_registrar_empresa_exito", method = RequestMethod.POST)
+	public ModelAndView  viewRegistrarNuevaEmpresa2Page(@Valid Empresa empresa, BindingResult bindingResult,
 			ModelMap modelMap) {
 
+		String error1 = "";
+		String error2 = "";
+		
 		ModelAndView model = new ModelAndView();
+		
+		try {
 
-		if (bindingResult.hasErrors()) {
-			model.addObject("sucessMessage", "Por favor, corrige los errores");
-			model.addObject("bindingResult", bindingResult);
+			Statement st = Application.con.createStatement();
+			ResultSet rs = st.executeQuery("SELECT cif FROM empresas" + " where cif = '" + empresa.getCif() + "';");
 
-		} else if (companyService.isCompanyAlreadyPresent(empresa)) {
-			model.addObject("sucessMessage", "Empresa ya existe!");
+			while (rs.next()) {
+				String cif = rs.getString(1);
 
-		} else {
-			companyService.saveCompany(empresa);
-			model.addObject("sucessMessage", "Empresa registrada con éxito!");
+				if (cif != null) {
+					error1 = "Ya existe empresa con este CIF";
+					
+					model.addObject("error1", error1);
+					model.addObject("error2", error2);
+					model.setViewName("registrar_nueva_empresa");
+					
+					return model;
+				}
+			}
+			rs.close();
+			st.close();
+			
+			Statement st2 = Application.con.createStatement();
+			ResultSet rs2 = st2.executeQuery("SELECT nombre FROM empresas" + " where nombre = '" + empresa.getNombre() + "';");
+
+			while (rs2.next()) {
+				String nombre = rs2.getString(1);
+
+				if (nombre != null) {
+					
+					error2 = "Ya existe empresa con este nombre";
+					
+					model.addObject("error1", error1);
+					model.addObject("error2", error2);					
+					model.setViewName("registrar_nueva_empresa");
+					
+					return model;
+
+				}
+			}
+			rs2.close();
+			st2.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
-		model.addObject("empresa", empresa);
 
-		model.setViewName("registrar_empresa_exito");
-
-		return model;
+		companyRepo.save(empresa);
+		return new ModelAndView("redirect:/admin");
 	}
 
-	@RequestMapping("/editor/edit/{id_empresa}")
+	@RequestMapping("/admin/edit/{id_empresa}")
 	public ModelAndView editarEmpresa(@PathVariable("id_empresa") int id) {
 
 		ModelAndView model = new ModelAndView("editar_empresa");
@@ -291,31 +413,26 @@ public class ControllerMVC {
 		return model;
 	}
 
-	@PostMapping("/editor/guardar/{id_empresa}")
+	@PostMapping("/admin/guardar/{id_empresa}")
 	public String guardarEmpresa(@PathVariable("id_empresa") int id, Empresa empresa) {
 
 		empresa.setId_empresa(id);
 		companyService.saveCompany(empresa);
 
-		return "redirect:/editor";
+		return "redirect:/admin";
 	}
 
-	@RequestMapping("/editor/delete/{id_empresa}")
+	@RequestMapping("/admin/delete/{id_empresa}")
 	public String eliminarEmpresa(@PathVariable("id_empresa") int id) {
 
-		try {
-			companyRepo.delete(companyService.get(id));
+		companyRepo.delete(companyRepo.findById(id).get());
 
-		} catch (CompanyNotfound e) {
-			e.printStackTrace();
-		}
-
-		return "redirect:/editor";
+		return "redirect:/admin";
 	}
 
-	// Funciones para ventana local (EDITOR)
+	// Funciones para ventana local (admin)
 
-	@GetMapping("/editor/registrar_nuevo_local")
+	@GetMapping("/admin/registrar_nuevo_local")
 	public ModelAndView viewRegistrarNuevoLocalPage() {
 
 		ModelAndView model = new ModelAndView("registrar_nuevo_local");
@@ -331,59 +448,56 @@ public class ControllerMVC {
 		return model;
 	}
 
-	// Funciones para ventana alimento (EDITOR)
+	// Funciones para ventana alimento (admin)
 
-	@RequestMapping("/editor/editFood/{nombre}")
-	public ModelAndView editarAlimento(@PathVariable("nombre") String nombre) {
+	@RequestMapping("/admin/editFood/{id_alimento}")
+	public ModelAndView editarAlimento(@PathVariable("id_alimento") int id_alimento) {
 
-		FoodView foodView = foodViewRepo.findByNameAlimento(nombre);
+		Food food = foodRepo.findById(id_alimento).get();
 		List<GroupFood> listGroupFood = groupFoodRepo.findAll();
 
 		ModelAndView model = new ModelAndView("editar_alimento");
 
 		model.addObject("listGroupFood", listGroupFood);
-		model.addObject("foodView", foodView);
+		model.addObject("foodView", food);
 
 		return model;
 	}
 
-	@PostMapping("/editor/guardarFood/{nombre}")
-	public String guardarAlimento(@PathVariable("nombre") String nombre, FoodView foodView) {
+	@PostMapping("/admin/guardarFood/{id_alimento}")
+	public String guardarAlimento(@PathVariable("id_alimento") int id_alimento, Food foodView) {
 
-		Food foodOld = foodRepo.findByNameAlimento(nombre);
-		GroupFood groupfood = groupFoodRepo.findGroupByName(foodView.getGrupo());
+		Food foodOld = foodRepo.findById(id_alimento).get();
 
-		foodOld.setIdGrupo(groupfood.getId_grupos_alimentos());
 		foodOld.setNombre(foodView.getNombre());
 		foodOld.setIngles(foodView.getIngles());
-		foodOld.setEdible_portion(foodView.getEdible_portion());
 
 		foodRepo.save(foodOld);
 
-		return "redirect:/editor";
+		return "redirect:/admin";
 	}
 
-	@RequestMapping("/editor/deleteFood/{nombre}")
-	public String eliminarAlimento(@PathVariable("nombre") String nombre) {
+	@RequestMapping("/admin/deleteFood/{id_alimento}")
+	public String eliminarAlimento(@PathVariable("id_alimento") int id_alimento) {
 
-		Food food = foodRepo.findByNameAlimento(nombre);
-
+		Food food = foodRepo.findById(id_alimento).get();
 		foodRepo.delete(food);
 
-		return "redirect:/editor";
+		return "redirect:/admin";
 	}
 
-	@RequestMapping("/editor/AlergenosFood/{nombre}")
-	public ModelAndView mostrarAlergenos(@PathVariable("nombre") String nombre) {
+	@RequestMapping("/admin/AlergenosFood/{id_alimento}")
+	public ModelAndView mostrarAlergenos(@PathVariable("id_alimento") int id_alimento) {
 
 		ModelAndView model = new ModelAndView("alergenos");
 
-		Food food = foodRepo.findByNameAlimento(nombre);
+		Food food = foodRepo.findByIdAlimento(id_alimento);
 
 		List<AlergensFood> listaAlergenos = obtenerBDalergenosAlimento(food.getIdAlimento());
 
 		model.addObject("listaAlergenos", listaAlergenos);
-
+		model.addObject("name_food", food.getNombre());
+		
 		return model;
 	}
 
@@ -414,16 +528,87 @@ public class ControllerMVC {
 		return listaAlergenos;
 	}
 
-	@RequestMapping("/editor/ComponentesFood/{nombre}")
-	public ModelAndView mostrarComponentes(@PathVariable("nombre") String nombre) {
+	@RequestMapping("/admin/ComponentesFood/{id_alimento}")
+	public ModelAndView mostrarComponentes(@PathVariable("id_alimento") int id_alimento) {
 
 		ModelAndView model = new ModelAndView("componentes");
 
-		Food food = foodRepo.findByNameAlimento(nombre);
+		Food food = foodRepo.findById(id_alimento).get();
 
-		List<ComponentsFood> listaComponentes = obtenerBDcomponentesAlimento(food.getIdAlimento());
+//		List<ComponentsFood> listaComponentes = obtenerBDcomponentesAlimento(food.getIdAlimento());
+//
+//		model.addObject("listaComponentes", listaComponentes);
 
-		model.addObject("listaComponentes", listaComponentes);
+		List<ComponentsDishTable> listComponentsDish = new ArrayList<ComponentsDishTable>();
+		try {
+
+			Statement st = Application.con.createStatement();
+			ResultSet rs = st
+					.executeQuery("SELECT g.nombre, ac.c_ori_name, ac.best_location, ac.v_unit, ac.mu_descripcion  \r\n"
+							+ "FROM nutri_db.alimentos_componentesquimicos as ac left join componentesquimicos as c on ac.c_ori_name = c.c_ori_name \r\n"
+							+ "left join gruposcomponentes as g on c.componentgroup_id = g.idGruposComponentes\r\n"
+							+ "where idAlimento = " + id_alimento + "\r\n" + "and ac.best_location > 0\r\n"
+							+ "order by best_location desc;");
+
+			while (rs.next()) {
+				String nombreComponente = rs.getString(1);
+				String descripcionComponente = rs.getString(2);
+				Float valor = rs.getFloat(3);
+				String unidad = rs.getString(4);
+				String descripcion = rs.getString(5);
+
+				ComponentsDishTable componente = new ComponentsDishTable(nombreComponente, descripcionComponente,
+						valor.toString(), unidad, descripcion);
+				listComponentsDish.add(componente);
+			}
+			rs.close();
+			st.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		Map<String, List<ComponentsDishTable>> mapComponents = clasificarComponentes(listComponentsDish);
+		Map<String, String> valoresProximales = calculoProximales(mapComponents);
+		Map<String, Double> valoresHC = calculoHC(mapComponents);
+
+		Double hcTotales = valoresHC.get("fibra") + valoresHC.get("azucar") + valoresHC.get("otrosHC");
+
+		double proporcionGrasas = Double.valueOf(valoresProximales.get("grasa")) * 9;
+		double proporcionProteinas = Double.valueOf(valoresProximales.get("proteina")) * 4;
+		double proporcionHC = hcTotales * 4;
+		double proporcionValorFibra = valoresHC.get("fibra") * 2;
+		List<ComponentsDishTable> listaMinerales = mapComponents.get("minerales");
+
+		double amountSodio = 0.0f;
+		for (int i = 0; i < listaMinerales.size(); i++) {
+			if (listaMinerales.get(i).getNameComponent().equals("sodio")) {
+				amountSodio = Double.valueOf(listaMinerales.get(i).getAmount());
+			}
+		}
+		double proporcionSal = amountSodio * 2.5 / 1000;
+
+		double total = proporcionGrasas + proporcionProteinas + proporcionHC + proporcionValorFibra + proporcionSal;
+
+		Map<String, String> etiquetaNutri = calculoEtiquetaNutricional(mapComponents);
+		List<LabelObj> map = ordenarComponentesNutri(etiquetaNutri);
+
+//		Cargo datos de tabla completa
+		model.addObject("listComponentsDish", map);
+
+//		Cargo datos de tablas 
+
+		model.addObject("componentsDishTableVitaminas", renameVitaminas(mapComponents.get("vitaminas")));
+		model.addObject("componentsDishTableMinerales", renameMinerales(mapComponents.get("minerales")));
+
+//		Cargo datos del grafico
+
+		model.addObject("porcentajeGrasas", calcularPorcentaje(proporcionGrasas, total));
+		model.addObject("porcentajeProteinas", calcularPorcentaje(proporcionProteinas, total));
+		model.addObject("porcentajeHC", calcularPorcentaje(proporcionHC, total));
+		model.addObject("porcentajeFibra", calcularPorcentaje(proporcionValorFibra, total));
+		model.addObject("porcentajeSal", calcularPorcentaje(proporcionSal, total));
+		model.addObject("alimento", food.getNombre());
 
 		return model;
 	}
@@ -462,26 +647,83 @@ public class ControllerMVC {
 		return listaComponentes;
 	}
 
-	// Funciones para ventana usuario (EDITOR)
+	// Funciones para ventana usuario (admin)
 
-	@RequestMapping("/editor/registrar_nuevo_usuario/exito")
-	public ModelAndView viewRegistrarNuevoUsuario(User user, BindingResult bindingResult, ModelMap modelMap) {
+	@RequestMapping(value = "/admin/registrar_nuevo_usuario_exito")
+	public ModelAndView viewRegistrarNuevoUsuario( User user, ModelMap modelMap) {
 
-		ModelAndView model = new ModelAndView("registrar_usuario_exito");
+		ModelAndView model = new ModelAndView();
+		String modelName = "admin";
+		String error1 = "";
+		String error2 = "";
+		String error3 = "";
 
 		String encodedPassword = new BCryptPasswordEncoder().encode(user.getPassword());
 		user.setPassword(encodedPassword);
 
-		if (user.getIdEmpresa() == -1) {
-			user.setIdEmpresa(null);
+		try {
+
+			Statement st = Application.con.createStatement();
+			ResultSet rs = st
+					.executeQuery("SELECT count(*) FROM USERS WHERE USERNAME = '" + user.getUsername()+  "';");
+
+			while (rs.next()) {
+				int numUsers = rs.getInt(1);
+				
+				if(numUsers > 0) {
+					error3 = "Ya existe este nombre de usuario en el sistema.";
+					modelName = "registrar_nuevo_usuario";
+				}else {
+					for (Role obj : user.getRoles()) {
+
+//				    	  Cuando es admin
+						if (obj.getId().equals(2)) {
+							if(user.getIdEmpresa() != null) {
+								error1 = "Usuarios de tipo administrador no deben pertenecer a ninguna empresa";
+								modelName = "registrar_nuevo_usuario";
+							}
+
+
+//				          Resto de roles  
+						} else {
+							if (user.getIdEmpresa() != null) {
+								userRepo.save(user);
+								return new ModelAndView(new RedirectView("/admin"));
+							} else {
+								error2 = "Hay que especificar empresa a la que va a pertenecer el usuario. Solo administradores no pertenecen a ninguna.";
+								modelName = "registrar_nuevo_usuario";
+							}
+
+						}
+						break;
+					}
+				}
+
+			}
+			rs.close();
+			st.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 
-		userRepo.save(user);
+
+
+		List<Empresa> listCompanies = companyRepo.findAll();
+		List<Role> listRoles = roleRepo.findAll();
+
+		model.addObject("listCompanies", listCompanies);
+		model.addObject("listRoles", listRoles);
+		model.addObject("usuario", user);
+		model.addObject("error1", error1);
+		model.addObject("error2", error2);
+		model.addObject("error3", error3);
+		model.setViewName(modelName);
 
 		return model;
 	}
 
-	@GetMapping("/editor/registrar_nuevo_usuario")
+	@GetMapping("/admin/registrar_nuevo_usuario")
 	public ModelAndView viewRegistrarNuevoUsuarioPage() {
 
 		ModelAndView model = new ModelAndView("registrar_nuevo_usuario");
@@ -502,20 +744,22 @@ public class ControllerMVC {
 		model.addObject("companyMsg", companyMsg);
 		model.addObject("select", select);
 		model.addObject("role", role);
+		model.addObject("error1", "");
+		model.addObject("error2", "");
 
 		return model;
 	}
 
-	@RequestMapping("/editor/deleteUser/{user_id}")
+	@RequestMapping("/admin/deleteUser/{user_id}")
 	public String eliminarUsuario(@PathVariable("user_id") int user_id) {
 
 		Optional<User> user = userRepo.findById(user_id);
 		userRepo.delete(user.get());
 
-		return "redirect:/editor";
+		return "redirect:/admin";
 	}
 
-	@RequestMapping("/editor/editUser/{user_id}")
+	@RequestMapping("/admin/editUser/{user_id}")
 	public ModelAndView editarUsuario(@PathVariable("user_id") int user_id) {
 
 		ModelAndView model = new ModelAndView("editar_usuario");
@@ -535,100 +779,196 @@ public class ControllerMVC {
 		return model;
 	}
 
-	@PostMapping("/editor/guardarUser/{user_id}/{rol}")
-	public String guardarUsuario(@PathVariable("user_id") int user_id, @PathVariable("rol") String role,
-			UserView userView) {
 
-		Optional<User> user = userRepo.findById(userView.getUser_id());
-		User usr = user.get();
+	@PostMapping("/admin/guardarUser/{user_id}")
+	public ModelAndView guardarUsuario(@PathVariable("user_id") int user_id, UserView userView) {
 
-		if (!password.equals(userView.getPassword())) {
+		
+			ModelAndView model = new ModelAndView();
 
-			BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-			String encodedPassword = encoder.encode(userView.getPassword());
+			String error1 = "";
+			String error2 = "";
+			String error3 = "";
 
-			usr.setPassword(encodedPassword);
+//		    	  Cuando es admin
+			if (userView.getRol().equals("ADMIN") && !userView.getNombre().equals("")) {
+				error1 = "Usuarios de tipo administrador no deben pertenecer a ninguna empresa";
+				model.setViewName("editar_usuario");
+				model.addObject("error1", error1);
+				model.addObject("user", userView);
+				model.addObject("listCompanies", companyRepo.findAll());
+				model.addObject("listRoles", roleRepo.findAll());
+				return model;
 
-		}
-		Empresa empresa = companyRepo.findByNameCompany(userView.getNombre());
-		if (empresa != null) {
-			usr.setIdEmpresa(empresa.getId_empresa());
-		}
-
-		usr.setEmail(userView.getEmail());
-
-		usr.setName(userView.getName());
-		usr.setUsername(userView.getUsername());
-		usr.setSurname(userView.getSurname());
-
-		try {
-
-			Statement st = Application.con.createStatement();
-
-			int rol = 0;
-
-			if (userView.getRol().equals("USER")) {
-				rol = 1;
-
-			} else if (userView.getRol().equals("ADMIN")) {
-				rol = 2;
-
-			} else if (userView.getRol().equals("EDITOR")) {
-				rol = 3;
+//		          Resto de roles  
+			} else if (!userView.getRol().equals("ADMIN") && userView.getNombre().equals("")) {
+				error2 = "Hay que especificar empresa a la que va a pertenecer el usuario. Solo administradores no pertenecen a ninguna.";
+				model.addObject("error2", error2);
+				model.addObject("user", userView);
+				model.addObject("listCompanies", companyRepo.findAll());
+				model.addObject("listRoles", roleRepo.findAll());
+				model.setViewName("editar_usuario");
+				return model;
 
 			}
-			st.execute("update users_roles set role_id = " + rol + " where user_id = " + usr.getId() + ";");
 
-			st.close();
+			try {
+				if (userRepo.findByUsername(userView.getUsername()) != null) {
 
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+				}
 
-		userRepo.save(usr);
+			} catch (Exception ex) {
+				error3 = "Ya existe este nombre de usuario en el sistema.";
+				model.addObject("error3", error3);
+				model.addObject("user", userView);
+				model.setViewName("editar_usuario");
+				model.addObject("listCompanies", companyRepo.findAll());
+				model.addObject("listRoles", roleRepo.findAll());
+				model.addObject("user_id", user_id);
+				return model;
+			}
+			
+			
+			
+			Optional<User> user = userRepo.findById(userView.getUser_id());
+			User usr = user.get();
 
-		return "redirect:/editor";
+			Empresa empresa = companyRepo.findByNameCompany(userView.getNombre());
+			if (empresa != null) {
+				usr.setIdEmpresa(empresa.getId_empresa());
+			}
+
+			usr.setEmail(userView.getEmail());
+
+			usr.setName(userView.getName());
+			usr.setUsername(userView.getUsername());
+			usr.setSurname(userView.getSurname());
+
+			try {
+
+				Statement st = Application.con.createStatement();
+
+				int rol = 0;
+
+				if (userView.getRol().equals("USER")) {
+					rol = 1;
+
+				} else if (userView.getRol().equals("ADMIN")) {
+					rol = 2;
+					usr.setIdEmpresa(null);
+
+				} else if (userView.getRol().equals("EDITOR")) {
+					rol = 3;
+
+				}
+				st.execute("update users_roles set role_id = " + rol + " where user_id = " + usr.getId() + ";");
+
+				st.close();
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+
+			userRepo.save(usr);
+	//
+//			List<FoodView> listFood = foodViewRepo.findAll();
+//			List<Empresa> listCompanies = companyRepo.findAll();
+//			List<UserView> listUsers = userViewRepo.findAll();
+//			List<LocalView> listLocals = localViewRepo.findAll();
+	//
+//			model.addObject("listFood", listFood);
+//			model.addObject("listCompanies", listCompanies);
+//			model.addObject("listUsers", listUsers);
+//			model.addObject("listLocals", listLocals);
+		
+
+
+			return new ModelAndView(new RedirectView("/admin"));
+//		return "redirect:/admin";
 	}
 
-	@RequestMapping("/editor/deleteLocal/{local}")
+	@RequestMapping("/admin/deleteLocal/{local}")
 	public String eliminarLocal(@PathVariable("local") String local) {
 
 		try {
 
 			Statement st = Application.con.createStatement();
-			st.execute("delete from locales where nombre='" + local + "';");
+			st.execute("delete from locales where id_local=" + local + ";");
 
 			st.close();
 
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return "redirect:/editor";
+		return "redirect:/admin";
 	}
 
-	@RequestMapping("/editor/registrar_nuevo_local/exito")
+	@RequestMapping("/admin/registrar_nuevo_local_exito")
 	public ModelAndView viewRegistrarNuevoLocal(Local local, BindingResult bindingResult, ModelMap modelMap) {
 
-		ModelAndView model = new ModelAndView("registrar_local_exito");
+		ModelAndView model = new ModelAndView();
+		String error1 = "";
+		
+		List<Empresa> listCompanies = companyRepo.findAll();
+		
+		try {
 
+			Statement st = Application.con.createStatement();
+			ResultSet rs = st.executeQuery("SELECT nombre from locales where nombre='" + local.getNombre() + "';");
+
+			while (rs.next()) {
+
+				String nom_local = rs.getString(1);
+				
+				if(nom_local != null) {
+					error1 = "Ya existe local con este nombre";
+					model.addObject("error1", error1);
+					model.addObject("listCompanies", listCompanies);
+					model.setViewName("registrar_nuevo_local");
+					return model;
+				}
+
+			}
+
+			rs.close();
+			st.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
 		localRepo.save(local);
+		
+		model.setViewName("redirect:/admin");
 
 		return model;
 	}
 
-	@RequestMapping("/editor/editLocal/{id_local}")
+	@RequestMapping("/admin/editLocal/{id_local}")
 	public ModelAndView editarLocal(@PathVariable("id_local") int id_local) {
 
 		ModelAndView model = new ModelAndView("editar_local");
+
+		List<Empresa> listCompanies = companyRepo.findAll();
+		model.addObject("listCompanies", listCompanies);
+
 		try {
 
 			Statement st = Application.con.createStatement();
-			ResultSet rs = st.executeQuery("SELECT * from view_gestionlocales where id_local=" + id_local + ";");
+			ResultSet rs = st.executeQuery("SELECT * from locales where id_local=" + id_local + ";");
 
 			while (rs.next()) {
 
-				LocalView localView = new LocalView(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4));
-				model.addObject("localView", localView);
+				String nom_local = rs.getString(1);
+				String dir_local = rs.getString(2);
+				Integer emp = rs.getInt(4);
+
+				LocalObj localObj = new LocalObj(id_local, localRepo.findById(id_local).get().getNombre(), emp,
+						companyRepo.findById(emp).get().getNombre(), nom_local, dir_local);
+
+//				LocalView localView = new LocalView(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4));
+				model.addObject("localObj", localObj);
+//				model.addObject("empresa_id", localView);
 			}
 
 			rs.close();
@@ -638,46 +978,27 @@ public class ControllerMVC {
 			e.printStackTrace();
 		}
 
-		List<Empresa> listCompanies = companyRepo.findAll();
-		int select = -1;
-
-		model.addObject("listCompanies", listCompanies);
-		model.addObject("select", select);
+//		Integer id = obtenerUsuario().getIdEmpresa();
+//		if (id != null) {
+//			String company = companyRepo.findById(id).get().getNombre();
+//			model.addObject("company", company);
+//		}
 
 		return model;
 	}
 
-	@RequestMapping("/editor/editar_local_exito/{id_local}")
-	public String guardarLocal(LocalView localObj, @PathVariable("id_local") int id_local) {
+	@RequestMapping("/admin/editar_local_exito/{id_local}")
+	public String guardarLocal(LocalObj localObj, @PathVariable("id_local") int id_local) {
 
-		try {
-			Statement st = Application.con.createStatement();
-			ResultSet rs = st.executeQuery("SELECT * from locales where id_local=" + id_local + ";");
+		Local local = localRepo.findById(id_local).get();
 
-			while (rs.next()) {
-				String nombre = rs.getString(1);
-				String direccion = rs.getString(2);
-				int id_localObj = rs.getInt(3);
-				int id_empresa = rs.getInt(4);
+		local.setDireccion(localObj.getDirection());
+		local.setNombre(localObj.getLocal_name());
+		local.setIdEmpresa(localObj.getCompany_id());
 
-				Local local = new Local(nombre, direccion, id_localObj, id_empresa);
-				Empresa empresa = companyRepo.findByNameCompany(localObj.getEmpresa());
+		localRepo.save(local);
 
-				local.setDireccion(localObj.getDireccion());
-				local.setNombre(localObj.getLocal());
-				local.setIdEmpresa(empresa.getId_empresa());
-
-				localRepo.save(local);
-
-				rs.close();
-				st.close();
-
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		return "redirect:/editor";
+		return "redirect:/admin";
 	}
 
 	@RequestMapping("/restablecer_contraseña")
@@ -686,15 +1007,23 @@ public class ControllerMVC {
 		ModelAndView model = new ModelAndView("/restablecer_contraseña");
 		ResetPwdObj resetPwdObj = new ResetPwdObj();
 
+		String error1 = "";
+		String error2 = "";
+
 		model.addObject("resetPwdObj", resetPwdObj);
+		model.addObject("error1", error1);
+		model.addObject("error2", error2);
 
 		return model;
 	}
 
-	@RequestMapping("/restablecer_contraseña/exito")
+	@RequestMapping("/restablecer_contraseña_exito")
 	public ModelAndView restablecerContraseñaExito(ResetPwdObj resetPwdObj) {
 
-		ModelAndView model = new ModelAndView("inicio_sesion");
+		ModelAndView model = new ModelAndView();
+
+		String error1 = "";
+		String error2 = "";
 
 		User user = userRepo.findByUsername(resetPwdObj.getUsername());
 
@@ -705,15 +1034,29 @@ public class ControllerMVC {
 				user.setPassword(encoder.encode(resetPwdObj.getPwd()));
 				userRepo.save(user);
 
+				model.setViewName("inicio_sesion");
+
 			}
+		} else {
+			model.setViewName("restablecer_contraseña");
+			error2 = "Error de usuario inexistente";
+			model.setViewName("restablecer_contraseña");
 		}
+
+		if (!resetPwdObj.getPwd().equals(resetPwdObj.getResetPwd())) {
+			error1 = "Error de contraseñas no coincidentes";
+			model.setViewName("restablecer_contraseña");
+		}
+
+		model.addObject("error1", error1);
+		model.addObject("error2", error2);
 
 		return model;
 	}
 
 	List<Food> listFoodDish = new ArrayList<Food>();
 
-	@RequestMapping(value = "/admin/crear_nuevo_plato", method = RequestMethod.GET)
+	@RequestMapping(value = "/editor/crear_nuevo_plato", method = RequestMethod.GET)
 	public ModelAndView crearNuevoPlato() {
 
 		ModelAndView model = new ModelAndView("crear_nuevo_plato");
@@ -724,25 +1067,119 @@ public class ControllerMVC {
 		model.addObject("listTypeDishes", listTypeDishes);
 		model.addObject("dishObj", dishObj);
 
+		Integer id = obtenerUsuario().getIdEmpresa();
+		if (id != null) {
+			String company = companyRepo.findById(id).get().getNombre();
+			model.addObject("company", company);
+		}
+
 		return model;
 	}
 
-	@PostMapping("/admin/crear_nuevo_plato/ingredientes")
-	public ModelAndView escogerIngredientes(DishObj dishObj) {
+	@PostMapping("/editor/crear_nuevo_plato/ingredientes")
+	public String escogerIngredientes(DishObj dishObj, RedirectAttributes redirectAttributes) {
+
+//		ModelAndView model = new ModelAndView("ingredientes");
+
+		Dish dish = new Dish();
+		dish.setNombre_plato(dishObj.getNombre_plato());
+		dish.setDescripcion(dishObj.getDescripcion());
+		dish.setId_tipo_platos(dishObj.getTypeDish());
+		dish.setId_empresa(obtenerUsuario().getIdEmpresa());
+
+		SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Timestamp dateTime = Timestamp.valueOf(sdf3.format(Timestamp.valueOf(LocalDateTime.now())));
+		dish.setFecha_creacion(dateTime);
+
+		Dish dish2 = dishRepo.save(dish);
+
+		redirectAttributes.addAttribute("id_plato", dish2.getId_plato());
+
+		return "redirect:/editor/crear_nuevo_plato/ingredientes{id_plato}";
+//		model.addObject("id_plato", dish2.getId_plato());
+//		List<FoodView> listFood = foodViewRepo.findAll();
+//		model.addObject("listFood", listFood);
+//
+//		Integer id = obtenerUsuario().getIdEmpresa();
+//		if (id != null) {
+//			String company = companyRepo.findById(id).get().getNombre();
+//			model.addObject("company", company);
+//		}
+
+//		return model;
+	}
+
+	@RequestMapping("/editor/crear_nuevo_plato/ingredientes{id_plato}")
+	public ModelAndView escogerIngredientes2(@PathVariable("id_plato") int id_plato, FoodAmountObj foodAmountObj) {
 
 		ModelAndView model = new ModelAndView("ingredientes");
 
-		this.dishObj = dishObj;
+		if (foodAmountObj.getId_alimento() != null) {
+			try {
+				Statement st = Application.con.createStatement();
 
+				st.execute("insert into platos_alimentos (idPlato, idAlimento, cantidad) values( " + id_plato + ", "
+						+ foodAmountObj.getId_alimento() + "," + foodAmountObj.getAmount() + ");");
+				st.close();
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+
+		}
+
+		model.addObject("id_plato", id_plato);
 		List<FoodView> listFood = foodViewRepo.findAll();
-
 		model.addObject("listFood", listFood);
+
+		Integer id = obtenerUsuario().getIdEmpresa();
+		if (id != null) {
+			String company = companyRepo.findById(id).get().getNombre();
+			model.addObject("company", company);
+		}
 
 		return model;
 	}
 
-	@RequestMapping("/admin/crear_nuevo_plato/ingredientes/{id_alimento}")
-	public ModelAndView añadirIngrediente(@PathVariable("id_alimento") int id_alimento) {
+//	/admin/ver_ingredientes_plato/' + ${id_plato}
+
+	@RequestMapping("/editor/ver_ingredientes_plato/{id_plato}")
+	public ModelAndView ver_ingredientes_plato(@PathVariable("id_plato") int id_plato) {
+
+		ModelAndView model = new ModelAndView("terminar_plato");
+
+//		listIngredientes
+		Map<String, BigDecimal> listIngredientes = new HashMap<String, BigDecimal>();
+		ResultSet rs;
+		try {
+			Statement st = Application.con.createStatement();
+			rs = st.executeQuery("select a.nombre, pa.idAlimento , pa.cantidad \r\n"
+					+ "from alimentos as a left join platos_alimentos as pa on a.id_alimento = pa.idAlimento \r\n"
+					+ "where pa.idPlato = " + id_plato + ";");
+
+			while (rs.next()) {
+				String nombre_alimento = rs.getString(1);
+				BigDecimal cantidad = rs.getBigDecimal(3);
+				listIngredientes.put(nombre_alimento, cantidad);
+
+			}
+			model.addObject("listIngredientes", listIngredientes);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		Integer id = obtenerUsuario().getIdEmpresa();
+		if (id != null) {
+			String company = companyRepo.findById(id).get().getNombre();
+			model.addObject("company", company);
+		}
+
+		return model;
+	}
+
+	@RequestMapping("/editor/crear_nuevo_plato/ingredientes/{id_alimento}/{id_plato}")
+	public ModelAndView añadirIngrediente(@PathVariable("id_alimento") int id_alimento,
+			@PathVariable("id_plato") int id_plato) {
 
 		ModelAndView model = new ModelAndView("opciones_ingrediente");
 
@@ -757,13 +1194,21 @@ public class ControllerMVC {
 
 		model.addObject("listFood", listFood);
 		model.addObject("foodAmountObj", foodAmountObj);
+		model.addObject("id_plato", id_plato);
+		model.addObject("id_alimento", id_alimento);
+		model.addObject("name_food", foodRepo.findById(id_alimento).get().getNombre());
+		Integer id = obtenerUsuario().getIdEmpresa();
+		if (id != null) {
+			String company = companyRepo.findById(id).get().getNombre();
+			model.addObject("company", company);
+		}
 
 		return model;
 	}
 
 	public Map<String, BigDecimal> ingredientes = new HashMap<String, BigDecimal>();
 
-	@PostMapping("/admin/crear_nuevo_plato/ingrediente")
+	@PostMapping("/editor/crear_nuevo_plato/ingrediente")
 	public ModelAndView guardarIngrediente(FoodAmountObj foodAmountObj) {
 
 		ModelAndView model = new ModelAndView("ingredientes");
@@ -775,7 +1220,7 @@ public class ControllerMVC {
 		return model;
 	}
 
-	@RequestMapping("/admin/crear_nuevo_plato/ingrediente/terminarPlato")
+	@RequestMapping("/editor/crear_nuevo_plato/ingrediente/terminarPlato")
 	public ModelAndView terminarPlato() {
 
 		ModelAndView model = new ModelAndView("terminar_plato");
@@ -783,21 +1228,29 @@ public class ControllerMVC {
 		model.addObject("listIngredientes", ingredientes);
 		ingredientes = new HashMap<String, BigDecimal>();
 
+		Integer id = obtenerUsuario().getIdEmpresa();
+		if (id != null) {
+			String company = companyRepo.findById(id).get().getNombre();
+			model.addObject("company", company);
+		}
+
 		return model;
 	}
 
-	@RequestMapping("/admin/crear_nuevo_plato/terminarPlatoExito")
+	@RequestMapping("/editor/crear_nuevo_plato/terminarPlatoExito")
 	public String terminarPlatoExito() {
 
 		Dish dish = new Dish();
 		dish.setNombre_plato(dishObj.getNombre_plato());
 		dish.setDescripcion(dishObj.getDescripcion());
-
 		dish.setId_empresa(obtenerUsuario().getIdEmpresa());
-
-		dish.setId_tipo_platos(Integer.parseInt(dishObj.getTypeDish()));
+		dish.setId_tipo_platos(dishObj.getTypeDish());
+//		dish.setFecha_creacion(Timestamp.valueOf(LocalDateTime.now()));
 
 		dishRepo.save(dish);
+
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+		LocalDateTime now = LocalDateTime.now();
 
 		for (Entry<String, BigDecimal> ingrediente : dishObj.getMapFood().entrySet()) {
 
@@ -805,24 +1258,24 @@ public class ControllerMVC {
 				Statement st = Application.con.createStatement();
 				st.executeUpdate("insert into platos_alimentos (idPlato, idAlimento, cantidad) values ("
 						+ dish.getId_plato() + ", " + foodRepo.findByNameAlimento(ingrediente.getKey()).getIdAlimento()
-						+ "," + ingrediente.getValue() + ");");
+						+ "," + ingrediente.getValue() + ", " + dtf.format(now) + ");");
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 		}
 
-		return "redirect:/admin";
+		return "redirect:/editor";
 	}
 
-	@RequestMapping("/admin/deleteDish/{id_plato}")
+	@RequestMapping("/editor/deleteDish/{id_plato}")
 	public String eliminarPlato(@PathVariable("id_plato") int id_plato) {
 
 		dishRepo.deleteById(id_plato);
 
-		return "redirect:/admin";
+		return "redirect:/editor";
 	}
 
-	@RequestMapping("/admin/editDish/{id_plato}")
+	@RequestMapping("/editor/editDish/{id_plato}")
 	public ModelAndView editarPlato(@PathVariable("id_plato") int id_plato) {
 
 		ModelAndView model = new ModelAndView("editar_plato");
@@ -833,89 +1286,619 @@ public class ControllerMVC {
 		model.addObject("dish", dish);
 		model.addObject("listTypeDish", listTypeDish);
 
+		Integer id = obtenerUsuario().getIdEmpresa();
+		if (id != null) {
+			String company = companyRepo.findById(id).get().getNombre();
+			model.addObject("company", company);
+		}
+
+		List<DishIngredients> listDishIngredients = new ArrayList<DishIngredients>();
+
+		ResultSet rs;
+		try {
+			Statement st = Application.con.createStatement();
+			rs = st.executeQuery("select a.nombre, pa.idAlimento , pa.cantidad \r\n"
+					+ "from alimentos as a left join platos_alimentos as pa on a.id_alimento = pa.idAlimento \r\n"
+					+ "where pa.idPlato = " + id_plato + ";");
+
+			while (rs.next()) {
+				String nombre_alimento = rs.getString(1);
+				Integer id_alimento = rs.getInt(2);
+				BigDecimal cantidad = rs.getBigDecimal(3);
+
+				DishIngredients dishIngredients = new DishIngredients(nombre_alimento, id_alimento, cantidad);
+				listDishIngredients.add(dishIngredients);
+
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		model.addObject("listDishIngredients", listDishIngredients);
+
 		return model;
 	}
 
-	@RequestMapping({ "/admin/editMenu/{id_menu}" })
+	@RequestMapping({ "/editor/editMenu/{id_menu}" })
 	public ModelAndView editarMenu(@PathVariable("id_menu") int id_menu) {
 
-		ModelAndView model = new ModelAndView("editar_menu");
+		ModelAndView model = new ModelAndView("");
 
-		Menu menu = menuRepo.findById(id_menu).get();
+		if (menuRepo.findById(id_menu).get().getDescripcion().equals("Menú individual")) {
 
-		model.addObject("menu", menu);
+			model.setViewName("editar_menu");
+			model.addObject("menuName", menuRepo.findById(id_menu).get().getNombre_menu());
+			Menu menu = menuRepo.findById(id_menu).get();
+			MenuObj menuObj = new MenuObj();
+
+			menuObj.setDate_publish(menu.getFecha_publicacion());
+			menuObj.setName_menu(menu.getNombre_menu());
+			try {
+				Statement st1 = Application.con.createStatement();
+				ResultSet rs1;
+
+				rs1 = st1.executeQuery("select mp.idPlato, p.nombre_plato, tp.id_tipos_platos \r\n"
+						+ "from menus_platos as mp join platos as p on mp.idPlato=p.id_plato\r\n"
+						+ "left join tiposplatos as tp on  p.id_tipo_platos= tp.id_tipos_platos \r\n"
+						+ "where idMenu = " + id_menu + ";");
+
+				while (rs1.next()) {
+					Integer id_plato = rs1.getInt(1);
+					Integer id_tipo_plato = rs1.getInt(3);
+
+					if (id_tipo_plato == 1) {
+						menuObj.setFirst_dish(id_plato);
+					} else if (id_tipo_plato == 2) {
+						menuObj.setSecond_dish(id_plato);
+					} else if (id_tipo_plato == 3) {
+						menuObj.setThird_dish(id_plato);
+					}
+
+				}
+				rs1.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+
+			List<Local> listLocals = localRepo.findByIdEmpresa(obtenerUsuario().getIdEmpresa());
+			List<LocalEnable> listLocalsEnable = new ArrayList<LocalEnable>();
+			boolean enable = true;
+			for (Local local : listLocals) {
+
+				try {
+					Statement st2 = Application.con.createStatement();
+					ResultSet rs2;
+
+//					Ver que locales estan asociados a ese menu
+					rs2 = st2.executeQuery("select * from locales_menus where idLocal=" + local.getIdLocal()
+							+ " and idMenu=" + id_menu + ";");
+					while (rs2.next()) {
+						Integer id_local = rs2.getInt(1);
+
+//						Cuando existe local asociado a menu lo guardo como enable
+						if (id_local == null) {
+							enable = false;
+						} else {
+							enable = true;
+						}
+						LocalEnable localEnable = new LocalEnable(local.getNombre(), local.getDireccion(),
+								local.getIdLocal(), local.getIdEmpresa(), enable);
+
+						listLocalsEnable.add(localEnable);
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+
+			}
+
+			model.addObject("listLocals", listLocalsEnable);
+			model.addObject("menuObj", menuObj);
+			model.addObject("name_menu", menu.getNombre_menu());
+
+			Integer id = obtenerUsuario().getIdEmpresa();
+			if (id != null) {
+				String company = companyRepo.findById(id).get().getNombre();
+				model.addObject("company", company);
+			}
+
+			try {
+				Statement st1 = Application.con.createStatement();
+				ResultSet rs1;
+
+				rs1 = st1.executeQuery("select tp.plato, p.id_plato, p.nombre_plato \r\n"
+						+ "from tiposplatos as tp left join platos as p on tp.id_tipos_platos = p.id_tipo_platos\r\n"
+						+ "left join menus_platos as mp \r\n" + "on p.id_plato = mp.idPlato \r\n" + "where mp.idMenu="
+						+ id_menu + ";");
+
+				List<Dish> listDish2 = new ArrayList<Dish>();
+				while (rs1.next()) {
+					String tipo_plato = rs1.getString(1);
+					Integer id_plato = rs1.getInt(2);
+					String nombre_plato = rs1.getString(3);
+					Dish dish = new Dish(tipo_plato, id_plato, nombre_plato);
+					listDish2.add(dish);
+				}
+				model.addObject("listDish2", listDish2);
+				rs1.close();
+
+				Statement st = Application.con.createStatement();
+				ResultSet rs = st.executeQuery(
+						"select * from platos where id_empresa = " + obtenerUsuario().getIdEmpresa() + ";");
+
+				List<Dish> listDish = new ArrayList<Dish>();
+				while (rs.next()) {
+					Integer id_plato = rs.getInt(1);
+					String nombre_plato = rs.getString(3);
+					Dish dish = new Dish(id_plato, nombre_plato);
+					listDish.add(dish);
+				}
+				model.addObject("listDish", listDish);
+				rs.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+
+			List<Dish> listDish = dishRepo.findAll();
+			int id_company = obtenerUsuario().getIdEmpresa();
+
+			List<Dish> listDishCompany1 = new ArrayList<Dish>();
+			List<Dish> listDishCompany2 = new ArrayList<Dish>();
+			List<Dish> listDishCompany3 = new ArrayList<Dish>();
+
+			for (int i = 0; i < listDish.size(); i++) {
+				Integer id_empresa = listDish.get(i).getId_empresa();
+				if (id_empresa != null && id_empresa == id_company) {
+
+					if (listDish.get(i).getId_tipo_platos() == 1) {
+						listDishCompany1.add(listDish.get(i));
+					} else if (listDish.get(i).getId_tipo_platos() == 2) {
+						listDishCompany2.add(listDish.get(i));
+					} else if (listDish.get(i).getId_tipo_platos() == 3) {
+						listDishCompany3.add(listDish.get(i));
+					}
+
+				}
+			}
+
+			model.addObject("listDishCompany1", listDishCompany1);
+			model.addObject("listDishCompany2", listDishCompany2);
+			model.addObject("listDishCompany3", listDishCompany3);
+		} else {
+			model.setViewName("editar_menu_grupal_admin");
+
+			Menu menu = menuRepo.findById(id_menu).get();
+			MenuObj menuObj = new MenuObj();
+
+//			menuObj.setDate_publish(menu.getFecha_publicacion());
+			menuObj.setName_menu(menu.getNombre_menu());
+			model.addObject("menuObj", menuObj);
+			try {
+				Statement st1 = Application.con.createStatement();
+				ResultSet rs1 = st1.executeQuery("select tp.plato, p.id_plato, p.nombre_plato \r\n"
+						+ "from tiposplatos as tp left join platos as p on tp.id_tipos_platos = p.id_tipo_platos\r\n"
+						+ "left join menus_platos as mp \r\n" + "on p.id_plato = mp.idPlato \r\n" + "where mp.idMenu="
+						+ id_menu + ";");
+
+				List<Dish> listDish2 = new ArrayList<Dish>();
+				while (rs1.next()) {
+					String tipo_plato = rs1.getString(1);
+					Integer id_plato = rs1.getInt(2);
+					String nombre_plato = rs1.getString(3);
+					Dish dish = new Dish(tipo_plato, id_plato, nombre_plato);
+					listDish2.add(dish);
+				}
+				model.addObject("listDish2", listDish2);
+				rs1.close();
+
+				Statement st = Application.con.createStatement();
+				ResultSet rs = st.executeQuery(
+						"select * from platos where id_empresa = " + obtenerUsuario().getIdEmpresa() + ";");
+
+				List<Dish> listDish = new ArrayList<Dish>();
+				while (rs.next()) {
+					Integer id_plato = rs.getInt(1);
+					String nombre_plato = rs.getString(3);
+					Dish dish = new Dish(id_plato, nombre_plato);
+					listDish.add(dish);
+				}
+				model.addObject("listDish", listDish);
+				rs.close();
+
+				GroupalDish groupalDish = new GroupalDish();
+
+				groupalDish.setDate_publish(menu.getFecha_publicacion());
+				groupalDish.setName_menu(menu.getNombre_menu());
+//				groupalDish.setId_menu(menu.getId_menu());
+
+				int select = 0;
+				model.addObject("id_menu", id_menu);
+				model.addObject("select", select);
+				model.addObject("groupalDish", groupalDish);
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+
+		}
 
 		return model;
 	}
 
-	@RequestMapping({"/user/editMenu/{id_menu}"})
+	@RequestMapping({ "/user/editMenu/{id_menu}" })
 	public ModelAndView editarMenu_user(@PathVariable("id_menu") int id_menu) {
+		ModelAndView model = new ModelAndView();
+		model.addObject("menuName", menuRepo.findById(id_menu).get().getNombre_menu());
 
-		ModelAndView model = new ModelAndView("editar_menu_user");
-		
-		Menu menu = menuRepo.findById(id_menu).get();
+		if (menuRepo.findById(id_menu).get().getDescripcion().equals("Menú individual")) {
 
-		model.addObject("menu", menu);
+			model.setViewName("editar_menu_user");
+			Menu menu = menuRepo.findById(id_menu).get();
+			MenuObj menuObj = new MenuObj();
+			menuObj.setDate_publish(menu.getFecha_publicacion());
+			menuObj.setName_menu(menu.getNombre_menu());
+			try {
+				Statement st1 = Application.con.createStatement();
+				ResultSet rs1;
 
+				rs1 = st1.executeQuery("select mp.idPlato, p.nombre_plato, tp.id_tipos_platos \r\n"
+						+ "from menus_platos as mp join platos as p on mp.idPlato=p.id_plato\r\n"
+						+ "left join tiposplatos as tp on  p.id_tipo_platos= tp.id_tipos_platos \r\n"
+						+ "where idMenu = " + id_menu + ";");
+
+				while (rs1.next()) {
+					Integer id_plato = rs1.getInt(1);
+					Integer id_tipo_plato = rs1.getInt(3);
+
+					if (id_tipo_plato == 1) {
+						menuObj.setFirst_dish(id_plato);
+					} else if (id_tipo_plato == 2) {
+						menuObj.setSecond_dish(id_plato);
+					} else if (id_tipo_plato == 3) {
+						menuObj.setThird_dish(id_plato);
+					}
+
+				}
+				rs1.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+
+			List<Local> listLocals = localRepo.findByIdEmpresa(obtenerUsuario().getIdEmpresa());
+			List<LocalEnable> listLocalsEnable = new ArrayList<LocalEnable>();
+			boolean enable = true;
+			for (Local local : listLocals) {
+
+				try {
+					Statement st2 = Application.con.createStatement();
+					ResultSet rs2;
+
+//					Ver que locales estan asociados a ese menu
+					rs2 = st2.executeQuery("select * from locales_menus where idLocal=" + local.getIdLocal()
+							+ " and idMenu=" + id_menu + ";");
+					while (rs2.next()) {
+						Integer id_local = rs2.getInt(1);
+
+//						Cuando existe local asociado a menu lo guardo como enable
+						if (id_local == null) {
+							enable = false;
+						} else {
+							enable = true;
+						}
+						LocalEnable localEnable = new LocalEnable(local.getNombre(), local.getDireccion(),
+								local.getIdLocal(), local.getIdEmpresa(), enable);
+
+						listLocalsEnable.add(localEnable);
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+
+			}
+
+			model.addObject("listLocals", listLocalsEnable);
+			model.addObject("menuObj", menuObj);
+			model.addObject("name_menu", menu.getNombre_menu());
+
+			Integer id = obtenerUsuario().getIdEmpresa();
+			if (id != null) {
+				String company = companyRepo.findById(id).get().getNombre();
+				model.addObject("company", company);
+			}
+
+			try {
+				Statement st1 = Application.con.createStatement();
+				ResultSet rs1;
+
+				rs1 = st1.executeQuery("select tp.plato, p.id_plato, p.nombre_plato \r\n"
+						+ "from tiposplatos as tp left join platos as p on tp.id_tipos_platos = p.id_tipo_platos\r\n"
+						+ "left join menus_platos as mp \r\n" + "on p.id_plato = mp.idPlato \r\n" + "where mp.idMenu="
+						+ id_menu + ";");
+
+				List<Dish> listDish2 = new ArrayList<Dish>();
+				while (rs1.next()) {
+					String tipo_plato = rs1.getString(1);
+					Integer id_plato = rs1.getInt(2);
+					String nombre_plato = rs1.getString(3);
+					Dish dish = new Dish(tipo_plato, id_plato, nombre_plato);
+					listDish2.add(dish);
+				}
+				model.addObject("listDish2", listDish2);
+				rs1.close();
+
+				Statement st = Application.con.createStatement();
+				ResultSet rs = st.executeQuery(
+						"select * from platos where id_empresa = " + obtenerUsuario().getIdEmpresa() + ";");
+
+				List<Dish> listDish = new ArrayList<Dish>();
+				while (rs.next()) {
+					Integer id_plato = rs.getInt(1);
+					String nombre_plato = rs.getString(3);
+					Dish dish = new Dish(id_plato, nombre_plato);
+					listDish.add(dish);
+				}
+				model.addObject("listDish", listDish);
+				rs.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+
+			List<Dish> listDish = dishRepo.findAll();
+			int id_company = obtenerUsuario().getIdEmpresa();
+
+			List<Dish> listDishCompany1 = new ArrayList<Dish>();
+			List<Dish> listDishCompany2 = new ArrayList<Dish>();
+			List<Dish> listDishCompany3 = new ArrayList<Dish>();
+
+			for (int i = 0; i < listDish.size(); i++) {
+				Integer id_empresa = listDish.get(i).getId_empresa();
+				if (id_empresa != null && id_empresa == id_company) {
+
+					if (listDish.get(i).getId_tipo_platos() == 1) {
+						listDishCompany1.add(listDish.get(i));
+					} else if (listDish.get(i).getId_tipo_platos() == 2) {
+						listDishCompany2.add(listDish.get(i));
+					} else if (listDish.get(i).getId_tipo_platos() == 3) {
+						listDishCompany3.add(listDish.get(i));
+					}
+
+				}
+			}
+
+			model.addObject("listDishCompany1", listDishCompany1);
+			model.addObject("listDishCompany2", listDishCompany2);
+			model.addObject("listDishCompany3", listDishCompany3);
+		} else {
+			model.setViewName("editar_menu_grupal_user");
+
+			Menu menu = menuRepo.findById(id_menu).get();
+			MenuObj menuObj = new MenuObj();
+			menuObj.setName_menu(menu.getNombre_menu());
+			model.addObject("menuObj", menuObj);
+			try {
+				Statement st1 = Application.con.createStatement();
+				ResultSet rs1 = st1.executeQuery("select tp.plato, p.id_plato, p.nombre_plato \r\n"
+						+ "from tiposplatos as tp left join platos as p on tp.id_tipos_platos = p.id_tipo_platos\r\n"
+						+ "left join menus_platos as mp \r\n" + "on p.id_plato = mp.idPlato \r\n" + "where mp.idMenu="
+						+ id_menu + ";");
+
+				List<Dish> listDish2 = new ArrayList<Dish>();
+				while (rs1.next()) {
+					String tipo_plato = rs1.getString(1);
+					Integer id_plato = rs1.getInt(2);
+					String nombre_plato = rs1.getString(3);
+					Dish dish = new Dish(tipo_plato, id_plato, nombre_plato);
+					listDish2.add(dish);
+				}
+				model.addObject("listDish2", listDish2);
+				rs1.close();
+
+				Statement st = Application.con.createStatement();
+				ResultSet rs = st.executeQuery(
+						"select * from platos where id_empresa = " + obtenerUsuario().getIdEmpresa() + ";");
+
+				List<Dish> listDish = new ArrayList<Dish>();
+				while (rs.next()) {
+					Integer id_plato = rs.getInt(1);
+					String nombre_plato = rs.getString(3);
+					Dish dish = new Dish(id_plato, nombre_plato);
+					listDish.add(dish);
+				}
+				model.addObject("listDish", listDish);
+				rs.close();
+
+				GroupalDish groupalDish = new GroupalDish();
+				groupalDish.setName_menu(menu.getNombre_menu());
+				groupalDish.setDate_publish(menu.getFecha_publicacion());
+
+				int select = 0;
+				model.addObject("id_menu", id_menu);
+				model.addObject("select", select);
+				model.addObject("groupalDish", groupalDish);
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		mostrarEmpresa(model);
 		return model;
 	}
 
-	@PostMapping({ "/admin/saveMenu/{id_menu}" })
-	public String guardarMenu(Menu menu) {
+	@PostMapping({ "/editor/saveMenu/{id_menu}" })
+	public String guardarMenu(MenuObj menuObj, @PathVariable("id_menu") int id_menu) {
 
-		Menu menuObj = menuRepo.findById(menu.getId_menu()).get();
-		menuObj.setNombre_menu(menu.getNombre_menu());
+//		Menu menuObj = menuRepo.findById(menu.getId_menu()).get();
+//		menuObj.setNombre_menu(menu.getNombre_menu());
+//
+//		menuRepo.save(menuObj);
 
-		menuRepo.save(menuObj);
+		Statement st;
+		try {
+			List<Integer> listPlatos = new ArrayList<Integer>();
 
-		return "redirect:/admin";
+			st = Application.con.createStatement();
+
+//			Obtener platos viejos
+			ResultSet rs = st.executeQuery("select idPlato from menus_platos\r\n" + "where idMenu = " + id_menu + ";");
+
+			while (rs.next()) {
+				Integer id_plato = rs.getInt(1);
+				listPlatos.add(id_plato);
+			}
+			rs.close();
+
+			String query = "delete from menus_platos where idMenu=" + id_menu + ";";
+			st.execute(query);
+
+			query = "insert into menus_platos (idMenu, idPlato) values(" + id_menu + "," + menuObj.getFirst_dish()
+					+ ");";
+			st.execute(query);
+
+			query = "insert into menus_platos (idMenu, idPlato) values(" + id_menu + "," + menuObj.getSecond_dish()
+					+ ");";
+			st.execute(query);
+
+			if (menuObj.getThird_dish() != null) {
+				query = "insert into menus_platos (idMenu, idPlato) values(" + id_menu + "," + menuObj.getThird_dish()
+						+ ");";
+				st.execute(query);
+			}
+
+//			query = "delete from locales_menus\r\n" + "where idMenu = " + id_menu + ";";
+//			st.execute(query);
+//
+//			for (int i = 0; i < menuObj.getList_id_local().size(); i++) {
+//				String query2 = "insert into locales_menus values(" + menuObj.getList_id_local().get(i) + ", " + id_menu
+//						+ ");";
+//				st.execute(query2);
+//			}
+
+			st.close();
+
+			Menu menu = menuRepo.findById(id_menu).get();
+			menu.setNombre_menu(menuObj.getName_menu());
+			menu.setFecha_publicacion(menuObj.getDate_publish());
+			menuRepo.save(menu);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return "redirect:/editor";
 	}
 
-	@PostMapping({"/user/saveMenu/{id_menu}"})
-	public String guardarMenu_user(Menu menu) {
-		
-		Menu menuObj = menuRepo.findById(menu.getId_menu()).get();
-		menuObj.setNombre_menu(menu.getNombre_menu());
-		
-		menuRepo.save(menuObj);
+	@PostMapping({ "/user/saveMenu/{id_menu}" })
+	public String guardarMenu_user(MenuObj menuObj, @PathVariable("id_menu") int id_menu) {
+
+		Statement st;
+		try {
+			List<Integer> listPlatos = new ArrayList<Integer>();
+
+			st = Application.con.createStatement();
+
+//			Obtener platos viejos
+			ResultSet rs = st.executeQuery("select idPlato from menus_platos\r\n" + "where idMenu = " + id_menu + ";");
+
+			while (rs.next()) {
+				Integer id_plato = rs.getInt(1);
+				listPlatos.add(id_plato);
+			}
+			rs.close();
+
+			String query = "delete from menus_platos where idMenu=" + id_menu + ";";
+			st.execute(query);
+
+			query = "insert into menus_platos (idMenu, idPlato) values(" + id_menu + "," + menuObj.getFirst_dish()
+					+ ");";
+			st.execute(query);
+
+			query = "insert into menus_platos (idMenu, idPlato) values(" + id_menu + "," + menuObj.getSecond_dish()
+					+ ");";
+			st.execute(query);
+
+			if (menuObj.getThird_dish() != null) {
+				query = "insert into menus_platos (idMenu, idPlato) values(" + id_menu + "," + menuObj.getThird_dish()
+						+ ");";
+				st.execute(query);
+			}
+
+//			query = "delete from locales_menus\r\n" + "where idMenu = " + id_menu + ";";
+//			st.execute(query);
+//
+//			for (int i = 0; i < menuObj.getList_id_local().size(); i++) {
+//				String query2 = "insert into locales_menus values(" + menuObj.getList_id_local().get(i) + ", " + id_menu
+//						+ ");";
+//				st.execute(query2);
+//			}
+
+			st.close();
+
+			Menu menu = menuRepo.findById(id_menu).get();
+			menu.setFecha_publicacion(menuObj.getDate_publish());
+			menu.setNombre_menu(menuObj.getName_menu());
+			menuRepo.save(menu);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 
 		return "redirect:/user";
 	}
-	
-	@PostMapping("/admin/saveDish/{id_plato}")
-	public String guardarPlato(Dish dish) {
 
-		dish.setId_empresa(obtenerUsuario().getIdEmpresa());
-		dishRepo.save(dish);
+	@PostMapping("/editor/saveDish/{id_plato}")
+	public ModelAndView  guardarPlato(Dish dish) {
 
-		return "redirect:/admin";
+		ModelAndView model = new ModelAndView("editar_plato");
+		Dish dishDB = dishRepo.findById(dish.getId_plato()).get();
+		String error = "";
+		
+		if(dish.getDescripcion().length() > 300) {
+			error = "Descripción demasiado larga. No debe contener más de 300 caracteres.";
+			
+			model.addObject("error", error);
+			model.addObject("dish", dish);
+			return model;
+		}else {
+			dishDB.setDescripcion(dish.getDescripcion());
+			dishDB.setNombre_plato(dish.getNombre_plato());
+		}
+		
+		//dishDB.setNombre_plato(dish.getNombre_plato());
+		dishDB.setId_tipo_platos(dish.getId_tipo_platos());
+
+		dishRepo.save(dishDB);
+		
+		return new ModelAndView(new RedirectView("/editor/editDish/{id_plato}"));
+
 	}
 
-	@RequestMapping("/admin/ComponentesDish/{id_plato}")
-	public ModelAndView mostrarComponentesPlato(@PathVariable("id_plato") int id_plato) {
+//	@RequestMapping("/admin/ComponentesDish/{id_plato}")
+//	public ModelAndView mostrarComponentesPlato(@PathVariable("id_plato") int id_plato) {
+//
+//		ModelAndView model = new ModelAndView("componentes_plato_admin");
+//
+//		List<ComponentsDishTable> listComponentsDish = obtenerBDcomponentesPlato(id_plato);
+//
+//		model.addObject("listComponentsDish", listComponentsDish);
+//
+//		Integer id = obtenerUsuario().getIdEmpresa();
+//		if (id != null) {
+//			String company = companyRepo.findById(id).get().getNombre();
+//			model.addObject("company", company);
+//		}
+//
+//		return model;
+//	}
 
-		ModelAndView model = new ModelAndView("componentes_plato");
-
-		List<ComponentsDishTable> listComponentsDish = obtenerBDcomponentesPlato(id_plato);
-
-		model.addObject("listComponentsDish", listComponentsDish);
-
-		return model;
-	}
-
-	public List<ComponentsDishTable> obtenerBDcomponentesPlato(int id_plato) {
-
-		List<ComponentsDishTable> listComponentDishTable = new ArrayList<ComponentsDishTable>();
+	public Map<Integer, BigDecimal> obtenerIngredientesPlato(int id_plato) {
+		Map<Integer, BigDecimal> mapIngredientAmount = new HashMap<Integer, BigDecimal>();
 
 		try {
-
-			// 1º Buscar todos los ingredientes del plato y sus cantidades
-
-			Map<Integer, BigDecimal> mapIngredientAmount = new HashMap<Integer, BigDecimal>();
-
 			Statement st = Application.con.createStatement();
-			ResultSet rs = st.executeQuery("select idAlimento, cantidad\r\n" + "from platos_alimentos\r\n"
-					+ "where idPlato = " + id_plato + ";");
+
+			ResultSet rs = st.executeQuery(
+					"select idAlimento, cantidad from platos_alimentos " + "where idPlato = " + id_plato + ";");
 
 			while (rs.next()) {
 				mapIngredientAmount.put(rs.getInt(1), rs.getBigDecimal(2));
@@ -923,27 +1906,35 @@ public class ControllerMVC {
 			}
 			rs.close();
 			st.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 
-			// 2º Encontrar los componentes quimicos de cada alimento
+		return mapIngredientAmount;
+	}
 
-			// Mapa que contiene los ingredientes del plato
-			Map<Integer, List<ComponentsFood>> mapComponentsDish = new HashMap<Integer, List<ComponentsFood>>();
+	public Map<String, GroupUnitObj> mapComponentsIngredient;
 
+	public Map<Integer, List<ComponentsFood>> obtenerComponentesPlato(Map<Integer, BigDecimal> mapIngredientAmount) {
+
+		Map<Integer, List<ComponentsFood>> allComponentsDish = new HashMap<Integer, List<ComponentsFood>>();
+
+		// Lista que almacena los componentes de todos los alimentos del plato
+		List<ComponentsFood> listaComponentes = new ArrayList<ComponentsFood>();
+
+		// Almacenar el grupo y unidad de los componentess
+		mapComponentsIngredient = new HashMap<String, GroupUnitObj>();
+		try {
 			Statement st2 = Application.con.createStatement();
+			for (Entry<Integer, BigDecimal> ingrediente : mapIngredientAmount.entrySet()) {
+				ResultSet rs2;
 
-			// Lista que almacena los componentes de todos los alimentos del plato
-			List<ComponentsFood> listaComponentes = new ArrayList<ComponentsFood>();
-
-			// Almacenar el grupo y unidad de los componentess
-			Map<String, GroupUnitObj> mapComponentUnit = new HashMap<String, GroupUnitObj>();
-
-			for (Entry<Integer, BigDecimal>  ingrediente : mapIngredientAmount.entrySet()) {
-				ResultSet rs2 = st2.executeQuery(
+				rs2 = st2.executeQuery(
 						"SELECT g.nombre, ac.c_ori_name, ac.best_location, ac.v_unit, ac.mu_descripcion  \r\n"
 								+ "FROM nutri_db.alimentos_componentesquimicos as ac left join componentesquimicos as c on ac.c_ori_name = c.c_ori_name \r\n"
 								+ "left join gruposcomponentes as g on c.componentgroup_id = g.idGruposComponentes\r\n"
 								+ "where idAlimento = " + ingrediente.getKey() + "\r\n" + "and ac.best_location > 0\r\n"
-								+ "order by best_location desc;");
+								+ "order by g.idGruposComponentes, v_unit asc;");
 
 				while (rs2.next()) {
 					String nombreComponente = rs2.getString(1);
@@ -958,10 +1949,10 @@ public class ControllerMVC {
 					listaComponentes.add(componente);
 
 					GroupUnitObj groupUnitObj = new GroupUnitObj(nombreComponente, unidad);
-					mapComponentUnit.put(descripcionComponente, groupUnitObj);
+					mapComponentsIngredient.put(descripcionComponente, groupUnitObj);
 
 				}
-				mapComponentsDish.put(ingrediente.getKey(), listaComponentes);
+				allComponentsDish.put(ingrediente.getKey(), listaComponentes);
 
 				// Reinicio lista de componentes para que los componentes de cada alimento los
 				// almacene en una entrada distinta del mapa
@@ -972,102 +1963,113 @@ public class ControllerMVC {
 
 			}
 			st2.close();
-
-			Map<String, Float> mapComponentsDish2 = new HashMap<String, Float>();
-
-			for (Entry<Integer, List<ComponentsFood>>  ingrediente : mapComponentsDish.entrySet()) {
-
-				ingrediente.getKey();
-				List<ComponentsFood> listaCompon = ingrediente.getValue();
-
-				for (int i = 0; i < listaCompon.size(); i++) {
-					if (mapComponentsDish2.get(listaCompon.get(i).getC_ori_name()) == null) {
-
-						Float amount = listaCompon.get(i).getBest_location();
-
-						String proportion = listaCompon.get(i).getDescripcion();
-						Float propor = null;
-						switch (proportion) {
-						case "por 100 g de porción comestible":
-							propor = amount / 100;
-							break;
-						case "por Kg de parte comestible":
-							propor = amount / 1000;
-							break;
-						case "por 100 g de peso en seco":
-							propor = amount / 100;
-							break;
-						case "por ml de volumen del alimento":
-							propor = amount;
-							break;
-
-						}
-						BigDecimal quantity = mapIngredientAmount.get(ingrediente.getKey());
-						mapComponentsDish2.put(listaCompon.get(i).getC_ori_name(), propor * quantity.floatValue());
-
-					} else {
-						Float value = mapComponentsDish2.get(listaCompon.get(i).getC_ori_name());
-						Float amount = listaCompon.get(i).getBest_location();
-
-						String proportion = listaCompon.get(i).getDescripcion();
-						Float propor = null;
-						switch (proportion) {
-						case "por 100 g de porción comestible":
-							propor = amount / 100;
-							break;
-						case "por Kg de parte comestible":
-							propor = amount / 1000;
-							break;
-						case "por 100 g de peso en seco":
-							propor = amount / 100;
-							break;
-						case "por ml de volumen del alimento":
-							propor = amount;
-							break;
-
-						}
-						BigDecimal quantity = mapIngredientAmount.get(ingrediente.getKey());
-						Float sum = value + propor * quantity.floatValue();
-						mapComponentsDish2.replace(listaCompon.get(i).getC_ori_name(), sum);
-
-					}
-				}
-
-			}
-
-			for (Entry<String, Float> componente : mapComponentsDish2.entrySet()) {
-
-				ComponentsDishTable componentDishTable = new ComponentsDishTable();
-
-				componentDishTable.setNameComponent(componente.getKey());
-				componentDishTable.setAmount(componente.getValue());
-
-				GroupUnitObj groupUnitObj = mapComponentUnit.get(componente.getKey());
-
-				componentDishTable.setGroupComponent(groupUnitObj.getGroup());
-				componentDishTable.setUnit(groupUnitObj.getUnit());
-
-				listComponentDishTable.add(componentDishTable);
-
-			}
-
 		} catch (SQLException e) {
 			e.printStackTrace();
+		}
+		return allComponentsDish;
+
+	}
+
+	public Float calcularProporcion(Float amount, String proportion) {
+		Float propor = null;
+		switch (proportion) {
+		case "por 100 g de porción comestible":
+			propor = amount / 100;
+			break;
+		case "por Kg de parte comestible":
+			propor = amount / 1000;
+			break;
+		case "por 100 g de peso en seco":
+			propor = amount / 100;
+			break;
+		case "por ml de volumen del alimento":
+			propor = amount;
+			break;
+
+		}
+		return propor;
+	}
+
+	public Map<String, Double> obtenerComponentesUnicos(Map<Integer, BigDecimal> mapIngredientAmount,
+			Map<Integer, List<ComponentsFood>> allComponentsDish) {
+		Map<String, Double> uniqueComponents = new HashMap<String, Double>();
+
+		for (Entry<Integer, List<ComponentsFood>> ingrediente : allComponentsDish.entrySet()) {
+
+			ingrediente.getKey();
+			List<ComponentsFood> listaCompon = ingrediente.getValue();
+
+			for (int i = 0; i < listaCompon.size(); i++) {
+				String nameComponent = listaCompon.get(i).getC_ori_name();
+				Float amount = listaCompon.get(i).getBest_location();
+				String description = listaCompon.get(i).getDescripcion();
+
+				if (uniqueComponents.get(listaCompon.get(i).getC_ori_name()) == null) {
+
+//					if(uniqueComponents.get(listaCompon.get(i).getC_ori_name()).equals("sodio")) {
+//						int a =0;
+//					}
+
+					Float propor = calcularProporcion(amount, description);
+					BigDecimal quantity = mapIngredientAmount.get(ingrediente.getKey());
+
+					double roundValue = round(propor * quantity.floatValue(), 2);
+					uniqueComponents.put(nameComponent, roundValue);
+
+				} else {
+					Double value = uniqueComponents.get(nameComponent);
+					Float propor = calcularProporcion(amount, description);
+
+					BigDecimal quantity = mapIngredientAmount.get(ingrediente.getKey());
+					double sum = round(value + propor * quantity.floatValue(), 2);
+					uniqueComponents.replace(listaCompon.get(i).getC_ori_name(), sum);
+
+				}
+			}
+
+		}
+		return uniqueComponents;
+	}
+
+	public List<ComponentsDishTable> obtenerBDcomponentesPlato(int id_plato) {
+
+		List<ComponentsDishTable> listComponentDishTable = new ArrayList<ComponentsDishTable>();
+
+		Map<Integer, BigDecimal> mapIngredientAmount = obtenerIngredientesPlato(id_plato);
+
+		Map<Integer, List<ComponentsFood>> allComponentsDish = obtenerComponentesPlato(mapIngredientAmount);
+
+		Map<String, Double> uniqueComponents = obtenerComponentesUnicos(mapIngredientAmount, allComponentsDish);
+
+		for (Entry<String, Double> componente : uniqueComponents.entrySet()) {
+
+			ComponentsDishTable componentDishTable = new ComponentsDishTable();
+
+			componentDishTable.setNameComponent(componente.getKey());
+			componentDishTable.setAmount(componente.getValue().toString());
+
+			GroupUnitObj groupUnitObj = mapComponentsIngredient.get(componente.getKey());
+
+			componentDishTable.setGroupComponent(groupUnitObj.getGroup());
+			componentDishTable.setUnit(groupUnitObj.getUnit());
+
+			listComponentDishTable.add(componentDishTable);
+
 		}
 
 		return listComponentDishTable;
 	}
 
-	@RequestMapping("/admin/AlergenosDish/{id_plato}")
+	@RequestMapping("/editor/AlergenosDish/{id_plato}")
 	public ModelAndView mostrarAlergenosPlato(@PathVariable("id_plato") int id_plato) {
 
-		ModelAndView model = new ModelAndView("alergenos_plato");
+		ModelAndView model = new ModelAndView("alergenos_plato2");
 
 		Map<String, String> mapAlergensDish = obtenerAlergenosPlato(id_plato);
 
-//		4º Enviar alérgenos a la página			
+		model.addObject("dishName", dishRepo.findById(id_plato).get().getNombre_plato());
 		model.addObject("mapAlergensDish", mapAlergensDish);
-
+		mostrarEmpresa(model);
 		return model;
 	}
 
@@ -1109,7 +2111,7 @@ public class ControllerMVC {
 		return mapAlergensDish;
 	}
 
-	@RequestMapping({ "/admin/crear_menu_individual" })
+	@RequestMapping({ "/editor/crear_menu_individual" })
 	public ModelAndView crearMenuIndividual() {
 
 		ModelAndView model = new ModelAndView("crear_menu_individual");
@@ -1143,15 +2145,16 @@ public class ControllerMVC {
 		model.addObject("listDishCompany1", listDishCompany1);
 		model.addObject("listDishCompany2", listDishCompany2);
 		model.addObject("listDishCompany3", listDishCompany3);
-		
+
 		model.addObject("menuObj", menuObj);
 		model.addObject("select", select);
 		model.addObject("listLocals", listLocals);
 
+		mostrarEmpresa(model);
 		return model;
 	}
 
-	@RequestMapping({"/user/crear_menu_individual"})
+	@RequestMapping({ "/user/crear_menu_individual" })
 	public ModelAndView crearMenuIndividual_user() {
 
 		ModelAndView model = new ModelAndView("crear_menu_individual_user");
@@ -1185,22 +2188,32 @@ public class ControllerMVC {
 		model.addObject("listDishCompany1", listDishCompany1);
 		model.addObject("listDishCompany2", listDishCompany2);
 		model.addObject("listDishCompany3", listDishCompany3);
-		
+
 		model.addObject("menuObj", menuObj);
 		model.addObject("select", select);
 		model.addObject("listLocals", listLocals);
+		model.addObject("selectedLocals", new ArrayList<Local>());
+		model.addObject("first_select", "Escoge primer plato");
+
+		Integer id = obtenerUsuario().getIdEmpresa();
+		if (id != null) {
+			String company = companyRepo.findById(id).get().getNombre();
+			model.addObject("company", company);
+		}
 
 		return model;
 	}
 
-	@RequestMapping("/admin/crear_menu_individual/guardar")
+	@RequestMapping("/editor/crear_menu_individual/guardar")
 	public String guardarMenuIndividual(MenuObj menuObj) {
 
 		List<Integer> listDishes = new ArrayList<Integer>();
 
 		listDishes.add(menuObj.getFirst_dish());
 		listDishes.add(menuObj.getSecond_dish());
-		listDishes.add(menuObj.getThird_dish());
+		if (menuObj.getThird_dish() != null) {
+			listDishes.add(menuObj.getThird_dish());
+		}
 
 		Menu menu = new Menu();
 		String description = "Menú individual";
@@ -1211,12 +2224,9 @@ public class ControllerMVC {
 		menu.setId_empresa(id_company);
 
 		menu.setFecha_creacion(new java.sql.Timestamp(Calendar.getInstance().getTime().getTime()));
+		menu.setFecha_publicacion(menuObj.getDate_publish());
 
 		Menu menuDb = menuRepo.save(menu);
-
-		if (menuObj.getThird_dish() == 0) {
-			menuObj.setThird_dish(null);
-		}
 
 		try {
 			Statement st = Application.con.createStatement();
@@ -1231,18 +2241,21 @@ public class ControllerMVC {
 
 			st.close();
 
-			Statement st2 = Application.con.createStatement();
+			for (int i = 0; i < menuObj.getList_id_local().size(); i++) {
+				Statement st2 = Application.con.createStatement();
 
-			String query = "insert into locales_menus values(" + menuObj.getId_local() + "," + menuDb.getId_menu()
-					+ ");";
-			st2.execute(query);
+				String query = "insert into locales_menus values(" + menuObj.getList_id_local().get(i) + ","
+						+ menuDb.getId_menu() + ");";
+				st2.execute(query);
 
-			st2.close();
+				st2.close();
+			}
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
-		return "redirect:/admin";
+		return "redirect:/editor";
 	}
 
 	@RequestMapping("/user/crear_menu_individual/guardar")
@@ -1258,6 +2271,7 @@ public class ControllerMVC {
 		String description = "Menú individual";
 		menu.setDescripcion(description);
 		menu.setNombre_menu(menuObj.getName_menu());
+		menu.setFecha_publicacion(menuObj.getDate_publish());
 
 		int id_company = obtenerUsuario().getIdEmpresa();
 		menu.setId_empresa(id_company);
@@ -1266,15 +2280,11 @@ public class ControllerMVC {
 
 		Menu menuDb = menuRepo.save(menu);
 
-		if (menuObj.getThird_dish() == 0) {
-			menuObj.setThird_dish(null);
-		}
-
 		try {
 			Statement st = Application.con.createStatement();
 
 			for (int i = 0; i < listDishes.size(); i++) {
-				if (listDishes.get(i) != 0) {
+				if (listDishes.get(i) != null) {
 					String query = "insert into menus_platos values(" + menuDb.getId_menu() + "," + listDishes.get(i)
 							+ ",'" + menuObj.getName_menu() + "','" + description + "'," + id_company + ");";
 					st.execute(query);
@@ -1282,6 +2292,16 @@ public class ControllerMVC {
 			}
 
 			st.close();
+
+			for (int i = 0; i < menuObj.getList_id_local().size(); i++) {
+				Statement st2 = Application.con.createStatement();
+
+				String query = "insert into locales_menus values(" + menuObj.getList_id_local().get(i) + ","
+						+ menuDb.getId_menu() + ");";
+				st2.execute(query);
+
+				st2.close();
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -1289,25 +2309,42 @@ public class ControllerMVC {
 		return "redirect:/user";
 	}
 
-	@RequestMapping({ "/admin/crear_menu_grupal" })
+	@RequestMapping({ "/editor/crear_menu_grupal" })
 	public ModelAndView crearMenuGrupal() {
 
 		ModelAndView model = new ModelAndView("crear_menu_grupal");
+
+//		listDishesGroupalMenu = new ArrayList<Integer>();
+//
+//		MenuLocalObj menuLocal = new MenuLocalObj();
+//		List<Local> listLocals = localRepo.findByIdEmpresa(obtenerUsuario().getIdEmpresa());
+//		int select = 0;
+//
+//		model.addObject("menuLocal", menuLocal);
+//		model.addObject("listLocals", listLocals);
+//		model.addObject("select", select);
+//
+//		Integer id = obtenerUsuario().getIdEmpresa();
+//		if (id != null) {
+//			String company = companyRepo.findById(id).get().getNombre();
+//			model.addObject("company", company);
+//		}
 
 		listDishesGroupalMenu = new ArrayList<Integer>();
 
 		MenuLocalObj menuLocal = new MenuLocalObj();
 		List<Local> listLocals = localRepo.findByIdEmpresa(obtenerUsuario().getIdEmpresa());
 		int select = 0;
-		
+
 		model.addObject("menuLocal", menuLocal);
 		model.addObject("listLocals", listLocals);
 		model.addObject("select", select);
-		
+		mostrarEmpresa(model);
 		return model;
 	}
 
-	@RequestMapping({"/user/crear_menu_grupal"})
+	// 1º PASO: menu grupal usuario
+	@RequestMapping({ "/user/crear_menu_grupal" })
 	public ModelAndView crearMenuGrupal_user() {
 
 		ModelAndView model = new ModelAndView("crear_menu_grupal_user");
@@ -1317,71 +2354,189 @@ public class ControllerMVC {
 		MenuLocalObj menuLocal = new MenuLocalObj();
 		List<Local> listLocals = localRepo.findByIdEmpresa(obtenerUsuario().getIdEmpresa());
 		int select = 0;
-		
+
 		model.addObject("menuLocal", menuLocal);
 		model.addObject("listLocals", listLocals);
 		model.addObject("select", select);
-		
+		mostrarEmpresa(model);
 		return model;
 	}
 
 	private Menu menu_grupal;
 
-	@PostMapping("/admin/crear_menu_grupal/guardar")
-	public String crearMenuGrupalGuardar(MenuLocalObj menuLocalObj) {
-		
-		Menu menu = new Menu();
-		
-		menu.setNombre_menu(menuLocalObj.getNombre_menu());
-		menu.setDescripcion("Menú grupal");
-		menu.setFecha_creacion(new java.sql.Timestamp(Calendar.getInstance().getTime().getTime()));
-		menu.setId_empresa(obtenerUsuario().getIdEmpresa());
-
-		menu_grupal = menuRepo.save(menu);
-		
-		try {
-			Statement st2 = Application.con.createStatement();
-
-			String query = "insert into locales_menus values(" + menuLocalObj.getId_local() + "," + menu_grupal.getId_menu()
-					+ ");";
-			st2.execute(query);
-
-			st2.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		return "redirect:/admin/crear_menu_grupal/platos";
-	}
+//	@PostMapping("/admin/crear_menu_grupal/guardar")
+//	public String crearMenuGrupalGuardar(MenuLocalObj menuLocalObj) {
+//
+//		Menu menu = new Menu();
+//
+//		menu.setNombre_menu(menuLocalObj.getNombre_menu());
+//		menu.setDescripcion("Menú grupal");
+//		menu.setFecha_creacion(new java.sql.Timestamp(Calendar.getInstance().getTime().getTime()));
+//		menu.setId_empresa(obtenerUsuario().getIdEmpresa());
+//
+//		menu_grupal = menuRepo.save(menu);
+//
+//		try {
+//			Statement st2 = Application.con.createStatement();
+//
+//			String query = "insert into locales_menus values(" + menuLocalObj.getList_id_local().get(0) + ","
+//					+ menu_grupal.getId_menu() + ");";
+//			st2.execute(query);
+//
+//			st2.close();
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+//
+//		return "redirect:/admin/crear_menu_grupal/platos";
+//	}
 
 	@PostMapping("/user/crear_menu_grupal/guardar")
-	public String crearMenuGrupalGuardar_user(MenuLocalObj menuLocalObj) {
-		
+	public ModelAndView crearMenuGrupalGuardar_user(MenuLocalObj menuLocalObj) {
+
+		ModelAndView model = new ModelAndView("escoger_platos_menu_grupal_user");
+
 		Menu menu = new Menu();
-		
+
+		menu.setFecha_publicacion(menuLocalObj.getDate_publish());
 		menu.setNombre_menu(menuLocalObj.getNombre_menu());
 		menu.setDescripcion("Menú grupal");
 		menu.setFecha_creacion(new java.sql.Timestamp(Calendar.getInstance().getTime().getTime()));
 		menu.setId_empresa(obtenerUsuario().getIdEmpresa());
 
 		menu_grupal = menuRepo.save(menu);
-		
+
 		try {
-			Statement st2 = Application.con.createStatement();
+			for (int i = 0; i < menuLocalObj.getList_id_local().size(); i++) {
+				Statement st2 = Application.con.createStatement();
 
-			String query = "insert into locales_menus values(" + menuLocalObj.getId_local() + "," + menu_grupal.getId_menu()
-					+ ");";
-			st2.execute(query);
+				String query = "insert into locales_menus values(" + menuLocalObj.getList_id_local().get(i) + ","
+						+ menu_grupal.getId_menu() + ");";
+				st2.execute(query);
 
-			st2.close();
+				st2.close();
+			}
+			Statement st = Application.con.createStatement();
+			ResultSet rs = st
+					.executeQuery("select * from platos where id_empresa = " + obtenerUsuario().getIdEmpresa() + ";");
+
+			List<Dish> listDish = new ArrayList<Dish>();
+			while (rs.next()) {
+				Integer id_plato = rs.getInt(1);
+				String nombre_plato = rs.getString(3);
+				Dish dish = new Dish(id_plato, nombre_plato);
+				listDish.add(dish);
+			}
+			model.addObject("listDish", listDish);
+			rs.close();
+
+			Statement st1 = Application.con.createStatement();
+			ResultSet rs1 = st1.executeQuery("select tp.plato, p.id_plato, p.nombre_plato \r\n"
+					+ "from tiposplatos as tp left join platos as p on tp.id_tipos_platos = p.id_tipo_platos\r\n"
+					+ "left join menus_platos as mp \r\n" + "on p.id_plato = mp.idPlato \r\n" + "where mp.idMenu="
+					+ menu_grupal.getId_menu() + ";");
+
+			List<Dish> listDish2 = new ArrayList<Dish>();
+			while (rs1.next()) {
+				String tipo_plato = rs.getString(1);
+				Integer id_plato = rs.getInt(2);
+				String nombre_plato = rs.getString(3);
+				Dish dish = new Dish(tipo_plato, id_plato, nombre_plato);
+				listDish2.add(dish);
+			}
+			model.addObject("listDish2", listDish2);
+			rs1.close();
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
-		return "redirect:/user/crear_menu_grupal/platos";
+		GroupalDish groupalDish = new GroupalDish();
+
+		model.addObject("groupalDish", groupalDish);
+		model.addObject("id_menu", menu_grupal.getId_menu());
+		mostrarEmpresa(model);
+
+		return model;
 	}
 
-	@GetMapping("/admin/crear_menu_grupal/platos")
+	@PostMapping("/editor/crear_menu_grupal/guardar")
+	public ModelAndView crearMenuGrupalGuardar_admin(MenuLocalObj menuLocalObj) {
+
+		ModelAndView model = new ModelAndView("escoger_platos_menu_grupal_admin");
+
+		Menu menu = new Menu();
+
+		menu.setFecha_publicacion(menuLocalObj.getDate_publish());
+		menu.setNombre_menu(menuLocalObj.getNombre_menu());
+		menu.setDescripcion("Menú grupal");
+		menu.setFecha_creacion(new java.sql.Timestamp(Calendar.getInstance().getTime().getTime()));
+		menu.setId_empresa(obtenerUsuario().getIdEmpresa());
+
+		menu_grupal = menuRepo.save(menu);
+
+		try {
+			for (int i = 0; i < menuLocalObj.getList_id_local().size(); i++) {
+				Statement st2 = Application.con.createStatement();
+
+				String query = "insert into locales_menus values(" + menuLocalObj.getList_id_local().get(i) + ","
+						+ menu_grupal.getId_menu() + ");";
+				st2.execute(query);
+
+				st2.close();
+			}
+			Statement st = Application.con.createStatement();
+			ResultSet rs = st
+					.executeQuery("select * from platos where id_empresa = " + obtenerUsuario().getIdEmpresa() + ";");
+
+			List<Dish> listDish = new ArrayList<Dish>();
+			while (rs.next()) {
+				Integer id_plato = rs.getInt(1);
+				String nombre_plato = rs.getString(3);
+				Dish dish = new Dish(id_plato, nombre_plato);
+				listDish.add(dish);
+			}
+			model.addObject("listDish", listDish);
+			rs.close();
+
+			Statement st1 = Application.con.createStatement();
+			ResultSet rs1 = st1.executeQuery("select tp.plato, p.id_plato, p.nombre_plato \r\n"
+					+ "from tiposplatos as tp left join platos as p on tp.id_tipos_platos = p.id_tipo_platos\r\n"
+					+ "left join menus_platos as mp \r\n" + "on p.id_plato = mp.idPlato \r\n" + "where mp.idMenu="
+					+ menu_grupal.getId_menu() + ";");
+
+			List<Dish> listDish2 = new ArrayList<Dish>();
+			while (rs1.next()) {
+				String tipo_plato = rs.getString(1);
+				Integer id_plato = rs.getInt(2);
+				String nombre_plato = rs.getString(3);
+				Dish dish = new Dish(tipo_plato, id_plato, nombre_plato);
+				listDish2.add(dish);
+			}
+			model.addObject("listDish2", listDish2);
+			rs1.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		GroupalDish groupalDish = new GroupalDish();
+		int select = 0;
+		model.addObject("groupalDish", groupalDish);
+		model.addObject("select", select);
+
+		Integer id = obtenerUsuario().getIdEmpresa();
+		if (id != null) {
+			String company = companyRepo.findById(id).get().getNombre();
+			model.addObject("company", company);
+		}
+
+		model.addObject("id_menu", menu_grupal.getId_menu());
+
+		return model;
+	}
+
+	@GetMapping("/editor/crear_menu_grupal/platos")
 	public ModelAndView escogerPlatosMenuGrupal() {
 		ModelAndView model = new ModelAndView("escoger_platos_menu_grupal");
 
@@ -1392,26 +2547,39 @@ public class ControllerMVC {
 		model.addObject("select", select);
 		model.addObject("listDish", listDish);
 
-		return model;
-	}
-
-	@GetMapping("/user/crear_menu_grupal/platos")
-	public ModelAndView escogerPlatosMenuGrupal_user() {
-		ModelAndView model = new ModelAndView("escoger_platos_menu_grupal_user");
-
-		GroupalDish groupalDish = new GroupalDish();
-		int select = 0;
-		List<Dish> listDish = dishRepo.findAll();
-		model.addObject("groupalDish", groupalDish);
-		model.addObject("select", select);
-		model.addObject("listDish", listDish);
+		Integer id = obtenerUsuario().getIdEmpresa();
+		if (id != null) {
+			String company = companyRepo.findById(id).get().getNombre();
+			model.addObject("company", company);
+		}
 
 		return model;
 	}
+
+//	@GetMapping("/user/crear_menu_grupal/platos")
+//	public ModelAndView escogerPlatosMenuGrupal_user() {
+//		ModelAndView model = new ModelAndView("escoger_platos_menu_grupal_user");
+//
+//		GroupalDish groupalDish = new GroupalDish();
+//		int select = 0;
+//		List<Dish> listDish = dishRepo.findAll();
+//		model.addObject("groupalDish", groupalDish);
+//		model.addObject("select", select);
+//		model.addObject("listDish", listDish);
+//
+//		Integer id = obtenerUsuario().getIdEmpresa();
+//		if (id != null) {
+//			String company = companyRepo.findById(id).get().getNombre();
+//			model.addObject("company", company);
+//		}
+//		
+//		
+//		return model;
+//	}
 
 	public List<Integer> listDishesGroupalMenu;
 
-	@RequestMapping("/admin/crear_menu_grupal/guardarPlato")
+	@RequestMapping("/editor/crear_menu_grupal/guardarPlato")
 	public String añadirPlatoMenuGrupal(GroupalDish groupalDish) {
 
 		int id_menu = menu_grupal.getId_menu();
@@ -1433,70 +2601,455 @@ public class ControllerMVC {
 			e.printStackTrace();
 		}
 
-		return "redirect:/admin/crear_menu_grupal/platos";
+		return "redirect:/editor/crear_menu_grupal/platos";
 	}
 
-	@RequestMapping("/user/crear_menu_grupal/guardarPlato")
-	public String añadirPlatoMenuGrupal_user(GroupalDish groupalDish) {
+	@RequestMapping("/user/crear_menu_grupal/guardarPlato_editar/{id_menu}")
+	public String añadirPlatoMenuGrupal_userEditar(GroupalDish groupalDish, @PathVariable("id_menu") int id_menu,
+			RedirectAttributes redirectAttributes) {
 
-		int id_menu = menu_grupal.getId_menu();
-		String nombre_menu = menu_grupal.getNombre_menu();
-		String descripcion_menu = menu_grupal.getDescripcion();
-		int empresa_menu = menu_grupal.getId_empresa();
+		Menu menu = menuRepo.findById(id_menu).get();
 
-		listDishesGroupalMenu.add(groupalDish.getId_dish());
+		if (groupalDish.getId_dish() != 0) {
+			try {
+				Statement st = Application.con.createStatement();
+
+				String query = "insert into menus_platos values(" + id_menu + "," + groupalDish.getId_dish() + ",'"
+						+ menu.getNombre_menu() + "','" + menu.getDescripcion() + "'," + menu.getId_empresa() + ");";
+				st.execute(query);
+
+				st.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		redirectAttributes.addAttribute("id_menu", id_menu);
+
+		menu.setFecha_publicacion(groupalDish.getDate_publish());
+		menu.setNombre_menu(groupalDish.getName_menu());
+		menuRepo.save(menu);
+		return "redirect:/user/editMenu/{id_menu}";
+	}
+
+	@RequestMapping("/editor/crear_menu_grupal/guardarPlato_editar/{id_menu}")
+	public String añadirPlatoMenuGrupal_adminEditar(GroupalDish groupalDish, @PathVariable("id_menu") int id_menu,
+			RedirectAttributes redirectAttributes) {
+
+		Menu menu = menuRepo.findById(id_menu).get();
+
+		if (groupalDish.getId_dish() != 0) {
+			try {
+				Statement st = Application.con.createStatement();
+
+				String query = "insert into menus_platos values(" + id_menu + "," + groupalDish.getId_dish() + ",'"
+						+ menu.getNombre_menu() + "','" + menu.getDescripcion() + "'," + menu.getId_empresa() + ");";
+				st.execute(query);
+
+				st.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		redirectAttributes.addAttribute("id_menu", id_menu);
+
+		menu.setNombre_menu(groupalDish.getName_menu());
+		menu.setFecha_publicacion(groupalDish.getDate_publish());
+		menuRepo.save(menu);
+		return "redirect:/editor/editMenu/{id_menu}";
+	}
+
+	@RequestMapping("/user/crear_menu_grupal/guardarPlato/{id_menu}")
+	public ModelAndView añadirPlatoMenuGrupal_user(GroupalDish groupalDish, @PathVariable("id_menu") int id_menu) {
+
+		ModelAndView model = new ModelAndView("escoger_platos_menu_grupal_user");
+
+		Menu menu = menuRepo.findById(id_menu).get();
+//		model.addObject("id_menu", id_menu);
+		if (groupalDish.getId_dish() != 0) {
+			try {
+				Statement st = Application.con.createStatement();
+
+				String query = "insert into menus_platos values(" + id_menu + "," + groupalDish.getId_dish() + ",'"
+						+ menu.getNombre_menu() + "','" + menu.getDescripcion() + "'," + menu.getId_empresa() + ");";
+				st.execute(query);
+
+				st.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		try {
+			Statement st = Application.con.createStatement();
+			ResultSet rs = st
+					.executeQuery("select * from platos where id_empresa = " + obtenerUsuario().getIdEmpresa() + ";");
+
+			List<Dish> listDish = new ArrayList<Dish>();
+			while (rs.next()) {
+				Integer id_plato = rs.getInt(1);
+				String nombre_plato = rs.getString(3);
+				Dish dish = new Dish(id_plato, nombre_plato);
+				listDish.add(dish);
+			}
+			model.addObject("listDish", listDish);
+			rs.close();
+
+			Statement st1 = Application.con.createStatement();
+			ResultSet rs1 = st1.executeQuery("select tp.plato, p.id_plato, p.nombre_plato \r\n"
+					+ "from tiposplatos as tp left join platos as p on tp.id_tipos_platos = p.id_tipo_platos\r\n"
+					+ "left join menus_platos as mp \r\n" + "on p.id_plato = mp.idPlato \r\n" + "where mp.idMenu="
+					+ menu_grupal.getId_menu() + ";");
+
+			List<Dish> listDish2 = new ArrayList<Dish>();
+			while (rs1.next()) {
+				String tipo_plato = rs1.getString(1);
+				Integer id_plato = rs1.getInt(2);
+				String nombre_plato = rs1.getString(3);
+				Dish dish = new Dish(tipo_plato, id_plato, nombre_plato);
+				listDish2.add(dish);
+			}
+			model.addObject("listDish2", listDish2);
+			rs1.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		groupalDish = new GroupalDish();
+		int select = 0;
+		model.addObject("groupalDish", groupalDish);
+		model.addObject("select", select);
+
+		Integer id = obtenerUsuario().getIdEmpresa();
+		if (id != null) {
+			String company = companyRepo.findById(id).get().getNombre();
+			model.addObject("company", company);
+		}
+
+		model.addObject("id_menu", menu_grupal.getId_menu());
+		return model;
+	}
+
+	@RequestMapping("/editor/crear_menu_grupal/guardarPlato/{id_menu}")
+	public ModelAndView añadirPlatoMenuGrupal_admin(GroupalDish groupalDish, @PathVariable("id_menu") int id_menu) {
+
+		ModelAndView model = new ModelAndView("escoger_platos_menu_grupal_admin");
+
+		Menu menu = menuRepo.findById(id_menu).get();
+		model.addObject("menu_name", menu.getNombre_menu());
+		if (groupalDish.getId_dish() != 0) {
+			try {
+				Statement st = Application.con.createStatement();
+
+				String query = "insert into menus_platos values(" + id_menu + "," + groupalDish.getId_dish() + ",'"
+						+ menu.getNombre_menu() + "','" + menu.getDescripcion() + "'," + menu.getId_empresa() + ");";
+				st.execute(query);
+
+				st.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		try {
+			Statement st = Application.con.createStatement();
+			ResultSet rs = st
+					.executeQuery("select * from platos where id_empresa = " + obtenerUsuario().getIdEmpresa() + ";");
+
+			List<Dish> listDish = new ArrayList<Dish>();
+			while (rs.next()) {
+				Integer id_plato = rs.getInt(1);
+				String nombre_plato = rs.getString(3);
+				Dish dish = new Dish(id_plato, nombre_plato);
+				listDish.add(dish);
+			}
+			model.addObject("listDish", listDish);
+			rs.close();
+
+			Statement st1 = Application.con.createStatement();
+			ResultSet rs1 = st1.executeQuery("select tp.plato, p.id_plato, p.nombre_plato \r\n"
+					+ "from tiposplatos as tp left join platos as p on tp.id_tipos_platos = p.id_tipo_platos\r\n"
+					+ "left join menus_platos as mp \r\n" + "on p.id_plato = mp.idPlato \r\n" + "where mp.idMenu="
+					+ menu_grupal.getId_menu() + ";");
+
+			List<Dish> listDish2 = new ArrayList<Dish>();
+			while (rs1.next()) {
+				String tipo_plato = rs1.getString(1);
+				Integer id_plato = rs1.getInt(2);
+				String nombre_plato = rs1.getString(3);
+				Dish dish = new Dish(tipo_plato, id_plato, nombre_plato);
+				listDish2.add(dish);
+			}
+			model.addObject("listDish2", listDish2);
+			rs1.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		groupalDish = new GroupalDish();
+		int select = 0;
+		model.addObject("groupalDish", groupalDish);
+		model.addObject("select", select);
+
+		Integer id = obtenerUsuario().getIdEmpresa();
+		if (id != null) {
+			String company = companyRepo.findById(id).get().getNombre();
+			model.addObject("company", company);
+		}
+
+		model.addObject("id_menu", menu_grupal.getId_menu());
+		return model;
+	}
+
+	@RequestMapping(value = { "/user/eliminarPlato_menu_grupal/{id_menu}/{id_plato}" })
+//	/user/eliminarPlato_menu_grupal/' + ${id_menu} + '/' + ${dish.id_plato}
+	public String eliminarPlatoMenuGrupal(@PathVariable("id_menu") int id_menu, @PathVariable("id_plato") int id_plato,
+			RedirectAttributes redirectAttributes) {
 
 		try {
 			Statement st = Application.con.createStatement();
 
-			String query = "insert into menus_platos values(" + id_menu + "," + groupalDish.getId_dish() + ",'"
-					+ nombre_menu + "','" + descripcion_menu + "'," + empresa_menu + ");";
+			String query = "delete from menus_platos where idMenu=" + id_menu + " and idPlato=" + id_plato + " ;";
 			st.execute(query);
 
 			st.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		redirectAttributes.addAttribute("id_menu", id_menu);
 
-		return "redirect:/user/crear_menu_grupal/platos";
+		return "redirect:/user/crear_menu_grupal/guardarPlato/{id_menu}";
 	}
 
-	@RequestMapping("/admin/crear_nuevo_plato/terminarMenu")
-	public ModelAndView terminarMenuGrupal() {
+	@RequestMapping(value = { "/editor/eliminarPlato_menu_grupal/{id_menu}/{id_plato}" })
+//	/user/eliminarPlato_menu_grupal/' + ${id_menu} + '/' + ${dish.id_plato}
+	public String eliminarPlatoMenuGrupalAdmin(@PathVariable("id_menu") int id_menu,
+			@PathVariable("id_plato") int id_plato, RedirectAttributes redirectAttributes) {
 
-		ModelAndView model = new ModelAndView("mostrar_platos_menu");
-		Map<Integer, String> mapDishesMenu = new HashMap<Integer, String>();
+		try {
+			Statement st = Application.con.createStatement();
 
-		for (int i = 0; i < listDishesGroupalMenu.size(); i++) {
-			int id_dish = listDishesGroupalMenu.get(i);
-			mapDishesMenu.put(id_dish, dishRepo.findById(id_dish).get().getNombre_plato());
+			String query = "delete from menus_platos where idMenu=" + id_menu + " and idPlato=" + id_plato + " ;";
+			st.execute(query);
+
+			st.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
+		redirectAttributes.addAttribute("id_menu", id_menu);
 
-		model.addObject("mapDishesMenu", mapDishesMenu);
+		return "redirect:/editor/crear_menu_grupal/guardarPlato/{id_menu}";
+	}
+
+	@RequestMapping(value = { "/user/eliminarPlato_menu_grupal_edicion/{id_menu}/{id_plato}" })
+//	/user/eliminarPlato_menu_grupal/' + ${id_menu} + '/' + ${dish.id_plato}
+	public String eliminarPlatoMenuGrupalEdicion(@PathVariable("id_menu") int id_menu,
+			@PathVariable("id_plato") int id_plato, RedirectAttributes redirectAttributes) {
+
+		try {
+			Statement st = Application.con.createStatement();
+
+			String query = "delete from menus_platos where idMenu=" + id_menu + " and idPlato=" + id_plato + " ;";
+			st.execute(query);
+
+			st.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		redirectAttributes.addAttribute("id_menu", id_menu);
+
+		return "redirect:/user/editMenu/{id_menu}";
+	}
+
+	@RequestMapping(value = { "/editor/eliminarPlato_menu_grupal_edicion/{id_menu}/{id_plato}" })
+	public String eliminarPlatoMenuGrupalEdicionAdmin(@PathVariable("id_menu") int id_menu,
+			@PathVariable("id_plato") int id_plato, RedirectAttributes redirectAttributes) {
+
+		try {
+			Statement st = Application.con.createStatement();
+
+			String query = "delete from menus_platos where idMenu=" + id_menu + " and idPlato=" + id_plato + " ;";
+			st.execute(query);
+
+			st.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		redirectAttributes.addAttribute("id_menu", id_menu);
+
+		return "redirect:/editor/editMenu/{id_menu}";
+	}
+
+	@RequestMapping("/user/crear_menu_grupal/guardarPlato_edicion/{id_menu}")
+	public ModelAndView añadirPlatoMenuGrupal_userEdicion(GroupalDish groupalDish,
+			@PathVariable("id_menu") int id_menu) {
+
+		ModelAndView model = new ModelAndView("editar_menu_grupal_user");
+
+//		Menu menu = menuRepo.findById(id_menu).get();
+//
+//		if (groupalDish.getId_dish() != 0) {
+//			try {
+//				Statement st = Application.con.createStatement();
+//
+//				String query = "insert into menus_platos values(" + id_menu + "," + groupalDish.getId_dish() + ",'"
+//						+ menu.getNombre_menu() + "','" + menu.getDescripcion() + "'," + menu.getId_empresa() + ");";
+//				st.execute(query);
+//
+//				st.close();
+//			} catch (SQLException e) {
+//				e.printStackTrace();
+//			}
+//		}
+//
+//		try {
+//			Statement st = Application.con.createStatement();
+//			ResultSet rs = st
+//					.executeQuery("select * from platos where id_empresa = " + obtenerUsuario().getIdEmpresa() + ";");
+//
+//			List<Dish> listDish = new ArrayList<Dish>();
+//			while (rs.next()) {
+//				Integer id_plato = rs.getInt(1);
+//				String nombre_plato = rs.getString(3);
+//				Dish dish = new Dish(id_plato, nombre_plato);
+//				listDish.add(dish);
+//			}
+//			model.addObject("listDish", listDish);
+//			rs.close();
+//
+//			Statement st1 = Application.con.createStatement();
+//			ResultSet rs1 = st1.executeQuery("select tp.plato, p.id_plato, p.nombre_plato \r\n"
+//					+ "from tiposplatos as tp left join platos as p on tp.id_tipos_platos = p.id_tipo_platos\r\n"
+//					+ "left join menus_platos as mp \r\n" + "on p.id_plato = mp.idPlato \r\n" + "where mp.idMenu="
+//					+ menu_grupal.getId_menu() + ";");
+//
+//			List<Dish> listDish2 = new ArrayList<Dish>();
+//			while (rs1.next()) {
+//				String tipo_plato = rs1.getString(1);
+//				Integer id_plato = rs1.getInt(2);
+//				String nombre_plato = rs1.getString(3);
+//				Dish dish = new Dish(tipo_plato, id_plato, nombre_plato);
+//				listDish2.add(dish);
+//			}
+//			model.addObject("listDish2", listDish2);
+//			rs1.close();
+//
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+//
+//		groupalDish = new GroupalDish();
+//		int select = 0;
+//		model.addObject("groupalDish", groupalDish);
+//		model.addObject("select", select);
+//
+//		Integer id = obtenerUsuario().getIdEmpresa();
+//		if (id != null) {
+//			String company = companyRepo.findById(id).get().getNombre();
+//			model.addObject("company", company);
+//		}
+//
+//		model.addObject("id_menu", menu_grupal.getId_menu());
+		return model;
+	}
+
+	@RequestMapping("/user/PlatosMenu/{id_menu}")
+	public ModelAndView mostrarPlatosMenu(@PathVariable("id_menu") int id_menu) {
+
+		ModelAndView model = new ModelAndView("mostrar_platos_menu_user");
+
+		try {
+			Statement st1 = Application.con.createStatement();
+			ResultSet rs1;
+			rs1 = st1.executeQuery("select tp.plato, p.id_plato, p.nombre_plato \r\n"
+					+ "from tiposplatos as tp left join platos as p on tp.id_tipos_platos = p.id_tipo_platos\r\n"
+					+ "left join menus_platos as mp \r\n" + "on p.id_plato = mp.idPlato \r\n" + "where mp.idMenu="
+					+ id_menu + ";");
+
+			List<Dish> listDish2 = new ArrayList<Dish>();
+			while (rs1.next()) {
+				String tipo_plato = rs1.getString(1);
+				Integer id_plato = rs1.getInt(2);
+				String nombre_plato = rs1.getString(3);
+				Dish dish = new Dish(tipo_plato, id_plato, nombre_plato);
+				listDish2.add(dish);
+			}
+			model.addObject("listDish2", listDish2);
+			rs1.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		model.addObject("nombreMenu", menuRepo.findById(id_menu).get().getNombre_menu());
 
 		return model;
+
+	}
+
+	@RequestMapping("/editor/PlatosMenu/{id_menu}")
+	public ModelAndView mostrarPlatosMenuAdmin(@PathVariable("id_menu") int id_menu) {
+
+		ModelAndView model = new ModelAndView("mostrar_platos_menu");
+
+		try {
+			Statement st1 = Application.con.createStatement();
+			ResultSet rs1;
+			rs1 = st1.executeQuery("select tp.plato, p.id_plato, p.nombre_plato \r\n"
+					+ "from tiposplatos as tp left join platos as p on tp.id_tipos_platos = p.id_tipo_platos\r\n"
+					+ "left join menus_platos as mp \r\n" + "on p.id_plato = mp.idPlato \r\n" + "where mp.idMenu="
+					+ id_menu + ";");
+
+			List<Dish> listDish2 = new ArrayList<Dish>();
+			while (rs1.next()) {
+				String tipo_plato = rs1.getString(1);
+				Integer id_plato = rs1.getInt(2);
+				String nombre_plato = rs1.getString(3);
+				Dish dish = new Dish(tipo_plato, id_plato, nombre_plato);
+				listDish2.add(dish);
+			}
+			model.addObject("listDish2", listDish2);
+			rs1.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		model.addObject("nombreMenu", menuRepo.findById(id_menu).get().getNombre_menu());
+
+		return model;
+
 	}
 
 	@RequestMapping("/user/crear_nuevo_plato/terminarMenu")
-	public ModelAndView terminarMenuGrupal_user() {
+	public String terminarMenuGrupal_user() {
 
-		ModelAndView model = new ModelAndView("mostrar_platos_menu_user");
-		Map<Integer, String> mapDishesMenu = new HashMap<Integer, String>();
-
-		for (int i = 0; i < listDishesGroupalMenu.size(); i++) {
-			int id_dish = listDishesGroupalMenu.get(i);
-			mapDishesMenu.put(id_dish, dishRepo.findById(id_dish).get().getNombre_plato());
-		}
-
-		model.addObject("mapDishesMenu", mapDishesMenu);
-
-		return model;
+		return "redirect:/user";
 	}
 
-	@RequestMapping("/admin/crear_menu_grupal/terminar")
+	@RequestMapping("/editor/crear_nuevo_plato/terminarMenu")
+	public String terminarMenuGrupal_admin() {
+
+		return "redirect:/editor";
+	}
+
+	@RequestMapping("/editor/crear_menu_grupal/terminar")
 	public String terminarMenuGrupalExito() {
 
-		return "redirect:/admin";
+		return "redirect:/editor";
+	}
+
+	@RequestMapping("/user/crear_nuevo_plato/cancelarMenu{id_menu}")
+	public String cancelarMenuGrupal(@PathVariable("id_menu") int id_menu) {
+
+		menuRepo.delete(menuRepo.findById(id_menu).get());
+
+		return "redirect:/user";
+	}
+
+	@RequestMapping("/editor/crear_nuevo_plato/cancelarMenu{id_menu}")
+	public String cancelarMenuGrupalAdmin(@PathVariable("id_menu") int id_menu) {
+
+		menuRepo.delete(menuRepo.findById(id_menu).get());
+
+		return "redirect:/editor";
 	}
 
 	@RequestMapping("/user/crear_menu_grupal/terminar")
@@ -1505,15 +3058,15 @@ public class ControllerMVC {
 		return "redirect:/user";
 	}
 
-	@RequestMapping({ "/admin/deleteMenu/{id_menu}" })
+	@RequestMapping({ "/editor/deleteMenu/{id_menu}" })
 	public String eliminarMenu(@PathVariable("id_menu") int id_menu) {
 
 		menuRepo.delete(menuRepo.findById(id_menu).get());
 
-		return "redirect:/admin";
+		return "redirect:/editor";
 	}
 
-	@RequestMapping({"/user/deleteMenu/{id_menu}"})
+	@RequestMapping({ "/user/deleteMenu/{id_menu}" })
 	public String eliminarMenu_user(@PathVariable("id_menu") int id_menu) {
 
 		menuRepo.delete(menuRepo.findById(id_menu).get());
@@ -1521,21 +3074,21 @@ public class ControllerMVC {
 		return "redirect:/user";
 	}
 
-	@GetMapping({ "/admin/AlergenosMenu/{id_menu}" })
+	@GetMapping({ "/editor/AlergenosMenu/{id_menu}" })
 	public String obtenerAlergenosMenuIndividual(@PathVariable("id_menu") int id_menu) {
 
 		String type_menu = menuRepo.findById(id_menu).get().getDescripcion();
 
 		if (type_menu.equals("Menú individual")) {
-			return "redirect:/admin/alergenos_menu_individual/{id_menu}";
+			return "redirect:/editor/alergenos_menu_individual/{id_menu}";
 
 		} else if (type_menu.equals("Menú grupal")) {
-			return "redirect:/admin/escoger_platos_menu_grupal_alergenos/{id_menu}";
+			return "redirect:/editor/escoger_platos_menu_grupal_alergenos/{id_menu}";
 		}
 		return null;
 
 	}
-	
+
 	@GetMapping({ "/user/AlergenosMenu/{id_menu}" })
 	public String obtenerAlergenosMenuIndividual_user(@PathVariable("id_menu") int id_menu) {
 
@@ -1551,41 +3104,100 @@ public class ControllerMVC {
 
 	}
 
-	@GetMapping({"/admin/alergenos_menu_individual/{id_menu}", "/user/alergenos_menu_individual/{id_menu}"})
-	public ModelAndView alergenosMenusIndividuales(@PathVariable("id_menu") int id_menu) {
-		ModelAndView model = new ModelAndView("alergenos_menu");
+	@GetMapping({ "/editor/alergenos_menu_individual/{id_menu}" })
+	public ModelAndView alergenosMenusIndividualesAdmin(@PathVariable("id_menu") int id_menu) {
+		ModelAndView model = new ModelAndView("alergenos_menu_admin_ind");
+
+		model.addObject("menuName", menuRepo.findById(id_menu).get().getNombre_menu());
 		Map<String, String> mapAlergensMenu = obtenerAlergenosMenu(id_menu);
+		model.addObject("mapAlergensMenu", mapAlergensMenu);
+		model.addObject("id_menu", id_menu);
+		mostrarEmpresa(model);
+		return model;
+	}
+
+	@GetMapping({ "/user/alergenos_menu_individual/{id_menu}" })
+	public ModelAndView alergenosMenusIndividuales(@PathVariable("id_menu") int id_menu) {
+
+		ModelAndView model = new ModelAndView("alergenos_menu_individual");
+
+		Map<String, String> mapAlergensMenu = obtenerAlergenosMenu(id_menu);
+		model.addObject("mapAlergensMenu", mapAlergensMenu);
+		model.addObject("id_menu", id_menu);
+		model.addObject("menuName", menuRepo.findById(id_menu).get().getNombre_menu());
+		mostrarEmpresa(model);
+
+		return model;
+	}
+
+	@RequestMapping({ "/user/alergenos_menu_colectivo/{id_menu}" })
+	public ModelAndView alergenosMenusColectivos(MenuObj menuObj, @PathVariable("id_menu") int id_menu) {
+
+		ModelAndView model = new ModelAndView("alergenos_menu");
+		model.addObject("id_menu", id_menu);
+		model.addObject("menuName", menuRepo.findById(id_menu).get().getNombre_menu());
+		mostrarEmpresa(model);
+
+		Map<String, String> mapAlergensMenu = new HashMap<String, String>();
+
+		if (menuObj.getFirst_dish() != null) {
+			Map<String, String> mapFirstDish = obtenerAlergenosPlato(menuObj.getFirst_dish());
+
+			for (Entry<String, String> alergen : mapFirstDish.entrySet()) {
+				mapAlergensMenu.put(alergen.getKey(), alergen.getValue());
+			}
+
+		}
+		if (menuObj.getSecond_dish() != null) {
+			Map<String, String> mapSecondDish = obtenerAlergenosPlato(menuObj.getSecond_dish());
+
+			for (Entry<String, String> alergen : mapSecondDish.entrySet()) {
+				mapAlergensMenu.put(alergen.getKey(), alergen.getValue());
+			}
+
+		}
+		if (menuObj.getThird_dish() != null) {
+			Map<String, String> mapThirdDish = obtenerAlergenosPlato(menuObj.getThird_dish());
+
+			for (Entry<String, String> alergen : mapThirdDish.entrySet()) {
+				mapAlergensMenu.put(alergen.getKey(), alergen.getValue());
+			}
+
+		}
+
 		model.addObject("mapAlergensMenu", mapAlergensMenu);
 
 		return model;
 	}
 
-	@RequestMapping({"/admin/alergenos_menu_colectivo", "/user/alergenos_menu_colectivo"})
-	public ModelAndView alergenosMenusColectivos(MenuObj menuObj) {
-		ModelAndView model = new ModelAndView("alergenos_menu");
+	@RequestMapping({ "/editor/alergenos_menu_colectivo/{id_menu}" })
+	public ModelAndView alergenosMenusColectivosAdmin(MenuObj menuObj, @PathVariable("id_menu") int id_menu) {
+		ModelAndView model = new ModelAndView("alergenos_menu_admin");
+
+		model.addObject("menuName", menuRepo.findById(id_menu).get().getNombre_menu());
 
 		Map<String, String> mapAlergensMenu = new HashMap<String, String>();
 
-		if (menuObj.getFirst_dish() != 0) {
+		if (menuObj.getFirst_dish() != null) {
 			Map<String, String> mapFirstDish = obtenerAlergenosPlato(menuObj.getFirst_dish());
 
-			for (Entry<String, String>  alergen : mapFirstDish.entrySet()) {
+			for (Entry<String, String> alergen : mapFirstDish.entrySet()) {
 				mapAlergensMenu.put(alergen.getKey(), alergen.getValue());
 			}
 
 		}
-		if (menuObj.getSecond_dish() != 0) {
+		if (menuObj.getSecond_dish() != null) {
 			Map<String, String> mapSecondDish = obtenerAlergenosPlato(menuObj.getSecond_dish());
 
-			for (Entry<String, String>  alergen : mapSecondDish.entrySet()) {
+			for (Entry<String, String> alergen : mapSecondDish.entrySet()) {
 				mapAlergensMenu.put(alergen.getKey(), alergen.getValue());
 			}
 
 		}
-		if (menuObj.getThird_dish() != 0) {
+		if (menuObj.getThird_dish() != null) {
 			Map<String, String> mapThirdDish = obtenerAlergenosPlato(menuObj.getThird_dish());
 
-			for (Entry<String, String>  alergen : mapThirdDish.entrySet()) {
+			for (Entry<String, String> alergen : mapThirdDish.entrySet()) {
 				mapAlergensMenu.put(alergen.getKey(), alergen.getValue());
 			}
 
@@ -1597,10 +3209,12 @@ public class ControllerMVC {
 	}
 
 //	Permite escoger los platos del menú que se van a consumir para proceder a calcular los alérgeno del mismo
-	@GetMapping("/admin/escoger_platos_menu_grupal_alergenos/{id_menu}")
+	@GetMapping("/editor/escoger_platos_menu_grupal_alergenos/{id_menu}")
 	public ModelAndView escogerPlatosMenuGrupalAlergenos(@PathVariable("id_menu") int id_menu) {
 
 		ModelAndView model = new ModelAndView("escoger_platos_menu_grupal_alergenos");
+
+		model.addObject("menuName", menuRepo.findById(id_menu).get().getNombre_menu());
 
 		List<Map<Integer, String>> listMapsTypeDishes = getListMapsTypeDishes(id_menu);
 
@@ -1621,22 +3235,24 @@ public class ControllerMVC {
 		model.addObject("mapaPlatosTipo1Menu", mapaPlatosTipo1Menu);
 		model.addObject("mapaPlatosTipo2Menu", mapaPlatosTipo2Menu);
 		model.addObject("mapaPlatosTipo3Menu", mapaPlatosTipo3Menu);
-
+		model.addObject("id_menu", id_menu);
 		MenuObj menuObj = new MenuObj();
 		model.addObject("menuObj", menuObj);
 
 		int select = 0;
 		model.addObject("select", select);
-
+		mostrarEmpresa(model);
 		return model;
 	}
-	
+
 //	Permite escoger los platos del menú que se van a consumir para proceder a calcular los alérgeno del mismo
 	@GetMapping("/user/escoger_platos_menu_grupal_alergenos/{id_menu}")
 	public ModelAndView escogerPlatosMenuGrupalAlergenos_user(@PathVariable("id_menu") int id_menu) {
 
 		ModelAndView model = new ModelAndView("escoger_platos_menu_grupal_alergenos_user");
 
+		model.addObject("id_menu", id_menu);
+		model.addObject("menuName", menuRepo.findById(id_menu).get().getNombre_menu());
 		List<Map<Integer, String>> listMapsTypeDishes = getListMapsTypeDishes(id_menu);
 
 		Map<Integer, String> mapaPlatosTipo1Menu = new HashMap<Integer, String>();
@@ -1662,7 +3278,7 @@ public class ControllerMVC {
 
 		int select = 0;
 		model.addObject("select", select);
-
+		mostrarEmpresa(model);
 		return model;
 	}
 
@@ -1753,27 +3369,29 @@ public class ControllerMVC {
 
 	}
 
-	@RequestMapping({ "/admin/ComponentesMenu/{id_menu}" })
+	@RequestMapping({ "/editor/ComponentesMenu/{id_menu}" })
 	public String mostrarComponentesMenu(@PathVariable("id_menu") int id_menu) {
 
 		String type_menu = menuRepo.findById(id_menu).get().getDescripcion();
 
 		if (type_menu.equals("Menú individual")) {
-			return "redirect:/admin/componentes_menu_individual/{id_menu}";
+			return "redirect:/editor/componentes_menu_individual/{id_menu}";
 
 		} else if (type_menu.equals("Menú grupal")) {
-			return "redirect:/admin/escoger_platos_menu_grupal_componentes/{id_menu}";
+			return "redirect:/editor/escoger_platos_menu_grupal_componentes/{id_menu}";
 		}
 
 		return null;
 	}
-	
+
 	@RequestMapping({ "/user/ComponentesMenu/{id_menu}" })
-	public String mostrarComponentesMenu_user(@PathVariable("id_menu") int id_menu) {
+	public String mostrarComponentesMenu_user(@PathVariable("id_menu") int id_menu,
+			RedirectAttributes redirectAttributes) {
 
 		String type_menu = menuRepo.findById(id_menu).get().getDescripcion();
-
+		redirectAttributes.addAttribute("id_menu", id_menu);
 		if (type_menu.equals("Menú individual")) {
+
 			return "redirect:/user/componentes_menu_individual/{id_menu}";
 
 		} else if (type_menu.equals("Menú grupal")) {
@@ -1782,14 +3400,14 @@ public class ControllerMVC {
 
 		return null;
 	}
-	
 
 //	Permite escoger los platos del menú que se van a consumir para proceder a calcular los alérgeno del mismo
-	@GetMapping("/admin/escoger_platos_menu_grupal_componentes/{id_menu}")
+	@GetMapping("/editor/escoger_platos_menu_grupal_componentes/{id_menu}")
 	public ModelAndView escogerPlatosMenuGrupalComponentes(@PathVariable("id_menu") int id_menu) {
 
 		ModelAndView model = new ModelAndView("escoger_platos_menu_grupal_componentes");
 
+		model.addObject("menuName", menuRepo.findById(id_menu).get().getNombre_menu());
 		List<Map<Integer, String>> listMapsTypeDishes = getListMapsTypeDishes(id_menu);
 
 		Map<Integer, String> mapaPlatosTipo1Menu = new HashMap<Integer, String>();
@@ -1815,7 +3433,7 @@ public class ControllerMVC {
 
 		int select = 0;
 		model.addObject("select", select);
-
+		mostrarEmpresa(model);
 		return model;
 	}
 
@@ -1826,6 +3444,7 @@ public class ControllerMVC {
 		ModelAndView model = new ModelAndView("escoger_platos_menu_grupal_componentes_user");
 
 		List<Map<Integer, String>> listMapsTypeDishes = getListMapsTypeDishes(id_menu);
+		Menu menu = menuRepo.findById(id_menu).get();
 
 		Map<Integer, String> mapaPlatosTipo1Menu = new HashMap<Integer, String>();
 		Map<Integer, String> mapaPlatosTipo2Menu = new HashMap<Integer, String>();
@@ -1850,218 +3469,1052 @@ public class ControllerMVC {
 
 		int select = 0;
 		model.addObject("select", select);
+		model.addObject("menuName", menu.getNombre_menu());
+		model.addObject("id_menu", id_menu);
+		mostrarEmpresa(model);
 
 		return model;
 	}
 
+	public Map<String, List<ComponentsDishTable>> clasificarComponentes(List<ComponentsDishTable> listComponentsDish) {
 
-	@RequestMapping("/admin/componentes_menu_colectivo")
-	public ModelAndView componentesMenuColectivo(MenuObj menuObj) {
+		Map<String, List<ComponentsDishTable>> listOrderedComponents = new HashMap<String, List<ComponentsDishTable>>();
 
-		ModelAndView model = new ModelAndView("componentes_plato");
+		List<ComponentsDishTable> componentsDishTableProximal = new ArrayList<ComponentsDishTable>();
+		List<ComponentsDishTable> componentsDishTableHcarbono = new ArrayList<ComponentsDishTable>();
+		List<ComponentsDishTable> componentsDishTableGrasa = new ArrayList<ComponentsDishTable>();
 
-		List<Integer> listDishes = new ArrayList<Integer>();
-		listDishes.add(menuObj.getFirst_dish());
-		listDishes.add(menuObj.getSecond_dish());
-		listDishes.add(menuObj.getThird_dish());
+		List<ComponentsDishTable> componentsDishTableVitaminas = new ArrayList<ComponentsDishTable>();
+		List<ComponentsDishTable> componentsDishTableMinerales = new ArrayList<ComponentsDishTable>();
 
-		List<ComponentsDishTable> listListComponentsDish = new ArrayList<ComponentsDishTable>();
-		List<ComponentsDishTable> listComponentsDish;
-		Map<String, Float> mapComponentsMenu = new HashMap<String, Float>();
+		for (int i = 0; i < listComponentsDish.size(); i++) {
+			ComponentsDishTable componentsDishTable = listComponentsDish.get(i);
 
-		for (int i = 0; i < listDishes.size(); i++) {
-			if (listDishes.get(i) != 0) {
-				// He obtenido los componentes que tiene un plato
-				listComponentsDish = obtenerBDcomponentesPlato(listDishes.get(i));
+			if (componentsDishTable.getGroupComponent().equals("Proximales")) {
 
-				for (int j = 0; j < listComponentsDish.size(); j++) {
-					// Cuando no existe entrada en mapa para ese componente
-					if (mapComponentsMenu.get(listComponentsDish.get(j).getNameComponent()) == null) {
-						mapComponentsMenu.put(listComponentsDish.get(j).getNameComponent(),
-								listComponentsDish.get(j).getAmount());
+				if (componentsDishTable.getNameComponent().equals("energía, total")) {
+					Float f = 0.0f;
+					f = Float.parseFloat(componentsDishTable.getAmount());
 
-					} else {
-						float oldAmount = mapComponentsMenu.get(listComponentsDish.get(j).getNameComponent());
-						float newAmount = listComponentsDish.get(j).getAmount();
-						mapComponentsMenu.replace(listComponentsDish.get(j).getNameComponent(), oldAmount + newAmount);
-					}
+					Integer quantityInt = f.intValue();
+					Integer quantityIntJul = (Integer) ((int) (quantityInt * 4.184));
+
+					componentsDishTable
+							.setAmount(quantityIntJul.toString() + " kJ / " + quantityInt.toString() + " kcal");
+//					componentsDishTable.setUnit("kcal / kJ");
+
 				}
-				listListComponentsDish.addAll(listComponentsDish);
+				componentsDishTableProximal.add(componentsDishTable);
 
-				// Mantengo lista con componentes sin repetir
-				// Recorro las listas de listas
-				for (int j = 0; j < listListComponentsDish.size(); j++) {
+			} else if (componentsDishTable.getGroupComponent().equals("Hidratos de Carbono")) {
+				componentsDishTableHcarbono.add(componentsDishTable);
 
-					String component = listListComponentsDish.get(j).getNameComponent();
+			} else if (componentsDishTable.getGroupComponent().equals("Grasas")) {
+				componentsDishTableGrasa.add(componentsDishTable);
 
-					for (int k = 0; k < listListComponentsDish.size(); k++) {
-						if (j != k) {
-							String component2 = listListComponentsDish.get(k).getNameComponent();
-							if (component.equals(component2)) {
-								listListComponentsDish.remove(k);
+			} else if (componentsDishTable.getGroupComponent().equals("Vitaminas")) {
+				componentsDishTableVitaminas.add(componentsDishTable);
 
+			} else if (componentsDishTable.getGroupComponent().equals("Minerales")) {
+				componentsDishTableMinerales.add(componentsDishTable);
+
+			}
+		}
+		listOrderedComponents.put("minerales", componentsDishTableMinerales);
+		listOrderedComponents.put("vitaminas", componentsDishTableVitaminas);
+		listOrderedComponents.put("grasas", componentsDishTableGrasa);
+		listOrderedComponents.put("hc", componentsDishTableHcarbono);
+		listOrderedComponents.put("proximales", componentsDishTableProximal);
+
+		return listOrderedComponents;
+	}
+
+	public List<ComponentsDishTable> ordenarPorUnidad(Map<String, List<ComponentsDishTable>> mapComponents) {
+		List<ComponentsDishTable> listComponentsDishOrdered = new ArrayList<ComponentsDishTable>();
+
+		listComponentsDishOrdered.addAll(ordenarComponentesPorUnidadCantidad(mapComponents.get("proximales")));
+		listComponentsDishOrdered.addAll(ordenarComponentesPorUnidadCantidad(mapComponents.get("hc")));
+		listComponentsDishOrdered.addAll(ordenarComponentesPorUnidadCantidad(mapComponents.get("grasas")));
+		listComponentsDishOrdered.addAll(ordenarComponentesPorUnidadCantidad(mapComponents.get("vitaminas")));
+		listComponentsDishOrdered.addAll(ordenarComponentesPorUnidadCantidad(mapComponents.get("minerales")));
+
+		return listComponentsDishOrdered;
+	}
+
+	public Map<String, String> calculoProximales(Map<String, List<ComponentsDishTable>> mapComponents) {
+
+		Map<String, String> valoresProximales = new HashMap<String, String>();
+
+		Double valorProteína = Double.valueOf(0);
+//		Double valorEnergético = Double.valueOf(0);
+		Double valorGrasa = Double.valueOf(0);
+
+		for (ComponentsDishTable componentsDishTable : mapComponents.get("proximales")) {
+
+			if (componentsDishTable.getNameComponent().equals("proteina, total")) {
+				valorProteína += Double.parseDouble(componentsDishTable.getAmount());
+
+			} else if (componentsDishTable.getNameComponent().equals("energía, total")) {
+
+//				Float fl = 0.00f;
+//				fl = Float.parseFloat(componentsDishTable.getAmount());
+//
+//				Integer quantityInt = fl.intValue();
+//				Integer quantityIntJul = (Integer) ((int) (quantityInt * 4.184));
+
+				valoresProximales.put("Valor energético", componentsDishTable.getAmount());
+
+//				Float integ = Float.parseFloat(componentsDishTable.getAmount());
+//				Integer quantityInt = integ.intValue();
+//				Integer quantityIntJul = (Integer) ((int) (quantityInt * 4.184));
+//				valoresProximales.put("Valor energético", quantityInt.toString() + " kCal " + " / "
+//						+ quantityIntJul.toString() + " kJul");
+
+//				Float f = 0.0f;
+//				f = Float.parseFloat(componentsDishTable.getAmount());
+//
+//				Integer quantityInt = f.intValue();
+//				Integer quantityIntJul = (Integer) ((int) (quantityInt * 4.184));
+
+//				componentsDishTable
+//						.setAmount(quantityInt.toString() + "kCal / " + quantityIntJul.toString() + "kJul");
+
+//				valoresProximales.put("Valor energético",
+//						quantityInt.toString() + "kCal / " + quantityIntJul.toString() + "kJul");
+
+//				Float integ = 0.0f;
+//				integ = Float.parseFloat(componentsDishTable.getAmount());
+//				Integer quantityInt = integ.intValue();
+//				Integer quantityIntJul = (Integer) ((int) (quantityInt * 4.184));
+//
+//				componentsDishTable.setAmount(quantityInt + "kCal / " + quantityIntJul + " kJul");
+
+//				valoresProximales.put("proteina", valorProteína.toString());
+//				valoresProximales.put("Valor energético",
+//						quantityInt.toString() + " kCal " + " / " + quantityIntJul.toString() + " kJul");
+
+//				Double integ = Double.parseDouble(componentsDishTable.getAmount());
+//				Integer quantityInt = integ.intValue();
+//				Integer quantityIntJul = (Integer) ((int) (quantityInt * 4.184));
+//				
+//				valoresProximales.put("Valor energético", quantityInt + " kCal /" + quantityIntJul + " kJul");
+
+//				etiquetaNutricional.put("Valor energético", quantityInt.toString() + " kCal " + " / "
+//						+ quantityIntJul.toString() + " kJul");
+
+//				float valorEnergético =  Integer.(componentsDishTable.getAmount());
+				int a = 0;
+//				Integer value = Integer.valorEnergético;
+//				Integer valueKJul = (int)(valorEnergético * 4.184);
+
+//				valoresProximales.put("energiaKcal", value.toString());
+//				valoresProximales.put("energiaKjul", valueKJul.toString());
+
+			} else if (componentsDishTable.getNameComponent().equals("grasa, total (lipidos totales)")) {
+				valorGrasa += Double.parseDouble(componentsDishTable.getAmount());
+			}
+		}
+
+		valoresProximales.put("proteina", valorProteína.toString());
+		valoresProximales.put("grasa", valorGrasa.toString());
+
+		return valoresProximales;
+	}
+
+	public Map<String, Double> calculoHC(Map<String, List<ComponentsDishTable>> mapComponents) {
+		Map<String, Double> valoresHC = new HashMap<String, Double>();
+
+		Double valorOtrosHC = Double.valueOf(0);
+		Double valorFibra = Double.valueOf(0);
+		Double valorAzúcar = Double.valueOf(0);
+
+		for (ComponentsDishTable componentsDishTable : mapComponents.get("hc")) {
+
+			if (componentsDishTable.getNameComponent().equals("fibra, dietetica total")) {
+				valorFibra += Double.parseDouble(componentsDishTable.getAmount());
+
+			} else if (componentsDishTable.getNameComponent().equals("azucares, totales")) {
+				valorAzúcar += Double.parseDouble(componentsDishTable.getAmount());
+			} else {
+				valorOtrosHC += Double.parseDouble(componentsDishTable.getAmount());
+			}
+		}
+
+		valoresHC.put("fibra", valorFibra);
+		valoresHC.put("azucar", valorAzúcar);
+		valoresHC.put("otrosHC", valorOtrosHC);
+
+		return valoresHC;
+	}
+
+	public Double calcularAcGrasos(Map<String, List<ComponentsDishTable>> mapComponents) {
+		Double acGrasos = Double.valueOf(0);
+		for (ComponentsDishTable componentsDishTable : mapComponents.get("grasas")) {
+
+			if (componentsDishTable.getNameComponent().contains("ácidos grasos")) {
+				acGrasos += Double.parseDouble(componentsDishTable.getAmount());
+
+			}
+		}
+		return acGrasos;
+	}
+
+	public Map<String, String> calculoEtiquetaNutricional(Map<String, List<ComponentsDishTable>> mapComponents) {
+
+		Map<String, String> etiquetaNutricional = new HashMap<String, String>();
+		Float cantidadHC = 0.00f;
+
+		for (Entry<String, List<ComponentsDishTable>> listGroupComponents : mapComponents.entrySet()) {
+
+			if (!listGroupComponents.getKey().equals("vitaminas")) {
+				if (listGroupComponents.getKey().equals("grasas")) {
+
+					List<ComponentsDishTable> listFat = listGroupComponents.getValue();
+
+					for (int i = 0; i < listFat.size(); i++) {
+						ComponentsDishTable component = listFat.get(i);
+						if (component.getNameComponent().equals("ácidos grasos saturados totales")) {
+
+							etiquetaNutricional.put("de las cuales saturadas",
+									String.valueOf(Math.round(Double.valueOf(component.getAmount()) * 100.0) / 100.0)
+											+ " " + component.getUnit());
+
+						}
+					}
+
+				} else if (listGroupComponents.getKey().equals("hc")) {
+
+					for (int i = 0; i < listGroupComponents.getValue().size(); i++) {
+						ComponentsDishTable component = listGroupComponents.getValue().get(i);
+						if (component.getNameComponent().equals("fibra, dietetica total")) {
+							etiquetaNutricional.put("Fibra",
+									String.valueOf(Math.round(Double.valueOf(component.getAmount()) * 100.0) / 100.0)
+											+ " " + component.getUnit());
+						} else if (component.getNameComponent().equals("azucares, totales")) {
+							etiquetaNutricional.put("Azúcares",
+									String.valueOf(Math.round(Double.valueOf(component.getAmount()) * 100.0) / 100.0)
+											+ " " + component.getUnit());
+						}
+						cantidadHC += Float.parseFloat(component.getAmount());
+					}
+					etiquetaNutricional.put("Hidratos de Carbono",
+							String.valueOf(Math.round(Double.valueOf(cantidadHC.toString()) * 100.0) / 100.0) + " g");
+
+				} else if (listGroupComponents.getKey().equals("proximales")) {
+					for (int i = 0; i < listGroupComponents.getValue().size(); i++) {
+
+						ComponentsDishTable component = listGroupComponents.getValue().get(i);
+
+						if (component.getNameComponent().equals("grasa, total (lipidos totales)")) {
+							etiquetaNutricional.put("Grasas",
+									String.valueOf(Math.round(Double.valueOf(component.getAmount()) * 100.0) / 100.0)
+											+ " " + component.getUnit());
+
+						} else if (component.getNameComponent().equals("proteina, total")) {
+							etiquetaNutricional.put("Proteínas",
+									String.valueOf(Math.round(Double.valueOf(component.getAmount()) * 100.0) / 100.0)
+											+ " " + component.getUnit());
+						} else if (component.getNameComponent().equals("energía, total")) {
+
+							try {
+								etiquetaNutricional.put("Valor energético", component.getAmount());
+							} catch (NumberFormatException ex) {
+								ex.printStackTrace();
 							}
+
 						}
 
 					}
+				} else if (listGroupComponents.getKey().equals("minerales")) {
+					for (int i = 0; i < listGroupComponents.getValue().size(); i++) {
+
+						ComponentsDishTable component = listGroupComponents.getValue().get(i);
+
+						if (component.getNameComponent().equals("sodio")) {
+
+							// Calculo de cantidad de sal en mg
+							double saltMg = (Double.valueOf(component.getAmount())) * 2.5;
+
+							double saltG = saltMg / 1000;
+
+							double round2decimals = Math.round(saltG * 100.0) / 100.0;
+
+							int a = 0;
+							etiquetaNutricional.put("Sal", String.valueOf(round2decimals) + " g");
+						}
+					}
 				}
-				for (int j = 0; j < listListComponentsDish.size(); j++) {
-					listListComponentsDish.get(j)
-							.setAmount(mapComponentsMenu.get(listListComponentsDish.get(j).getNameComponent()));
+			}
+		}
+
+		return etiquetaNutricional;
+	}
+
+	public List<LabelObj> ordenarComponentesNutri(Map<String, String> etiquetaNutri) {
+
+		List<LabelObj> etiquetaFinal = new ArrayList<LabelObj>();
+
+		etiquetaFinal.add(new LabelObj("Valor energético", valorEtiqueta(etiquetaNutri, "Valor energético"),
+				"8 400 kJ / 2 000 kcal"));
+		etiquetaFinal.add(new LabelObj("Grasas", valorEtiqueta(etiquetaNutri, "Grasas"), "70 g"));
+		etiquetaFinal.add(new LabelObj("de las cuales saturadas",
+				valorEtiqueta(etiquetaNutri, "de las cuales saturadas"), "20 g"));
+		etiquetaFinal
+				.add(new LabelObj("Hidratos de Carbono", valorEtiqueta(etiquetaNutri, "Hidratos de Carbono"), "260 g"));
+		etiquetaFinal.add(new LabelObj("de los cuales azúcares", valorEtiqueta(etiquetaNutri, "Azúcares"), "90 g"));
+		etiquetaFinal.add(new LabelObj("Fibra", valorEtiqueta(etiquetaNutri, "Fibra"), "25 g **"));
+		etiquetaFinal.add(new LabelObj("Proteínas", valorEtiqueta(etiquetaNutri, "Proteínas"), "50 g"));
+		etiquetaFinal.add(new LabelObj("Sal", valorEtiqueta(etiquetaNutri, "Sal"), "6 g"));
+
+		return etiquetaFinal;
+	}
+
+	public String valorEtiqueta(Map<String, String> etiquetaFinal, String valorEtiqueta) {
+		String valorEtiq = "";
+
+		if (!etiquetaFinal.containsKey(valorEtiqueta)) {
+			valorEtiq = "0,0 g";
+		} else {
+			valorEtiq = etiquetaFinal.get(valorEtiqueta);
+		}
+		return valorEtiq;
+	}
+
+	public List<ComponentsDishTable> renameVitaminas(List<ComponentsDishTable> vitaminas) {
+
+		for (int i = 0; i < vitaminas.size(); i++) {
+
+			switch (vitaminas.get(i).getNameComponent()) {
+			case "ácido pantoténico (vitamina B5)":
+				vitaminas.get(i).setNameComponent("Ácido pantoténico (B5)");
+				vitaminas.get(i).setRecomendedAmount("6");
+				break;
+			case "biotina":
+				vitaminas.get(i).setNameComponent("Biotina");
+				vitaminas.get(i).setRecomendedAmount("50");
+				break;
+			case "equivalentes de niacina, totales":
+				vitaminas.get(i).setNameComponent("Niacina");
+				vitaminas.get(i).setRecomendedAmount("16");
+				break;
+			case "folato, total":
+				vitaminas.get(i).setNameComponent("Ácido fólico");
+				vitaminas.get(i).setRecomendedAmount("200");
+				break;
+			case "riboflavina":
+				vitaminas.get(i).setNameComponent("Riboflavina");
+				vitaminas.get(i).setRecomendedAmount("1,4");
+				break;
+			case "tiamina":
+				vitaminas.get(i).setNameComponent("Tiamna");
+				vitaminas.get(i).setRecomendedAmount("1,1");
+				break;
+			case "Viamina E equivalentes de alfa tocoferol de actividades de vitámeros E":
+				vitaminas.get(i).setNameComponent("Vitamina E");
+				vitaminas.get(i).setRecomendedAmount("12");
+				break;
+			case "Vitamina A equivalentes de retinol de actividades de retinos y carotenoides":
+				vitaminas.get(i).setNameComponent("Vitamina A");
+				vitaminas.get(i).setRecomendedAmount("800");
+				break;
+			case "Vitamina B-12":
+				vitaminas.get(i).setNameComponent("Vitamina B12");
+				vitaminas.get(i).setRecomendedAmount("2,5");
+				break;
+			case "Vitamina B-6, Total":
+				vitaminas.get(i).setNameComponent("Vitamina B6");
+				vitaminas.get(i).setRecomendedAmount("1,4");
+				break;
+			case "Vitamina C (ácido ascórbico)":
+				vitaminas.get(i).setNameComponent("Vitamina C");
+				vitaminas.get(i).setRecomendedAmount("80");
+				break;
+			case "Vitamina D":
+				vitaminas.get(i).setRecomendedAmount("5");
+				break;
+			case "Vitamina E equivalentes de alfa tocoferol de actividades de vitámeros E":
+				vitaminas.get(i).setRecomendedAmount("12");
+				vitaminas.get(i).setNameComponent("Vitamina E");
+				break;
+			}
+		}
+
+		return vitaminas;
+	}
+
+	public List<ComponentsDishTable> orderVitaminas(List<ComponentsDishTable> vitaminas) {
+
+		Map<Integer, ComponentsDishTable> mapaOrdenar = new LinkedHashMap<Integer, ComponentsDishTable>();
+		List<ComponentsDishTable> vitaminasOrdenadas = new ArrayList<ComponentsDishTable>();
+
+		for (int i = 0; i < vitaminas.size(); i++) {
+			switch (vitaminas.get(i).getNameComponent()) {
+			case "Vitamina A equivalentes de retinol de actividades de retinos y carotenoides":
+				mapaOrdenar.put(1, vitaminas.get(i));
+				break;
+			case "Vitamina D":
+				mapaOrdenar.put(2, vitaminas.get(i));
+				break;
+			case "Viamina E equivalentes de alfa tocoferol de actividades de vitámeros E":
+				mapaOrdenar.put(3, vitaminas.get(i));
+				break;
+			case "Vitamina C (ácido ascórbico)":
+				mapaOrdenar.put(4, vitaminas.get(i));
+				break;
+			case "tiamina":
+				mapaOrdenar.put(5, vitaminas.get(i));
+				break;
+			case "riboflavina":
+				mapaOrdenar.put(6, vitaminas.get(i));
+				break;
+			case "equivalentes de niacina, totales":
+				mapaOrdenar.put(7, vitaminas.get(i));
+				break;
+			case "Vitamina B-6, Total":
+				mapaOrdenar.put(8, vitaminas.get(i));
+				break;
+			case "folato, total":
+				mapaOrdenar.put(9, vitaminas.get(i));
+				break;
+			case "Vitamina B-12":
+				mapaOrdenar.put(10, vitaminas.get(i));
+				break;
+			case "biotina":
+				mapaOrdenar.put(11, vitaminas.get(i));
+				break;
+
+			case "ácido pantoténico (vitamina B5)":
+				mapaOrdenar.put(12, vitaminas.get(i));
+				break;
+
+			}
+		}
+//		Integer comp = 1;
+//		while(true) {
+//			for (Entry<Integer,ComponentsDishTable> vitamina:mapaOrdenar.entrySet()) {
+//				
+//				if(comp == vitamina.getKey()) {
+//					vitaminasOrdenadas.add(mapaOrdenar.get(vitamina));
+//					
+//				}
+//				comp++;
+//				break;
+//			}		
+//		}
+
+		return vitaminasOrdenadas;
+
+	}
+
+	public List<ComponentsDishTable> renameMinerales(List<ComponentsDishTable> minerales) {
+
+		for (int i = 0; i < minerales.size(); i++) {
+
+			switch (minerales.get(i).getNameComponent()) {
+
+			case "zinc (cinc)":
+				minerales.get(i).setNameComponent("Zinc");
+				minerales.get(i).setRecomendedAmount("10");
+				break;
+			case "selenio, total":
+				minerales.get(i).setNameComponent("Selenio");
+				minerales.get(i).setRecomendedAmount("55");
+				break;
+			case "ioduro":
+				minerales.get(i).setNameComponent("Yodo");
+				minerales.get(i).setRecomendedAmount("150");
+				break;
+			case "hierro, total":
+				minerales.get(i).setNameComponent("Hierro");
+				minerales.get(i).setRecomendedAmount("14");
+				break;
+
+			case "potasio":
+				minerales.get(i).setRecomendedAmount("2000");
+				minerales.get(i).setNameComponent(minerales.get(i).getNameComponent().substring(0, 1).toUpperCase()
+						+ minerales.get(i).getNameComponent().substring(1));
+				break;
+			case "magnesio":
+				minerales.get(i).setRecomendedAmount("375");
+				minerales.get(i).setNameComponent(minerales.get(i).getNameComponent().substring(0, 1).toUpperCase()
+						+ minerales.get(i).getNameComponent().substring(1));
+				break;
+			case "fósforo":
+				minerales.get(i).setRecomendedAmount("700");
+				minerales.get(i).setNameComponent(minerales.get(i).getNameComponent().substring(0, 1).toUpperCase()
+						+ minerales.get(i).getNameComponent().substring(1));
+				break;
+			case "cobre":
+				minerales.get(i).setRecomendedAmount("1");
+				minerales.get(i).setNameComponent(minerales.get(i).getNameComponent().substring(0, 1).toUpperCase()
+						+ minerales.get(i).getNameComponent().substring(1));
+				break;
+			case "calcio":
+				minerales.get(i).setRecomendedAmount("800");
+				minerales.get(i).setNameComponent(minerales.get(i).getNameComponent().substring(0, 1).toUpperCase()
+						+ minerales.get(i).getNameComponent().substring(1));
+				break;
+			default:
+				minerales.get(i).setNameComponent(minerales.get(i).getNameComponent().substring(0, 1).toUpperCase()
+						+ minerales.get(i).getNameComponent().substring(1));
+				break;
+			}
+		}
+
+		return minerales;
+	}
+
+	@RequestMapping("/editor/ComponentesDish/{id_plato}")
+	public ModelAndView componentesPlato(@PathVariable("id_plato") int id_plato) {
+
+		ModelAndView model = new ModelAndView("componentes_plato_admin");
+
+		model.addObject("dishName", dishRepo.findById(id_plato).get().getNombre_plato());
+
+		List<ComponentsDishTable> listComponentsDish = obtenerBDcomponentesPlato(id_plato);
+
+		Map<String, List<ComponentsDishTable>> mapComponents = clasificarComponentes(listComponentsDish);
+
+//		List<ComponentsDishTable> list = orderVitaminas(mapComponents.get("vitaminas"));
+
+		Map<String, String> valoresProximales = calculoProximales(mapComponents);
+//		Map<String, String> mapaComponentes = calculoEtiquetaNutricional(mapComponents);
+		Map<String, Double> valoresHC = calculoHC(mapComponents);
+
+		Double hcTotales = valoresHC.get("fibra") + valoresHC.get("azucar") + valoresHC.get("otrosHC");
+		Double acGrasos = calcularAcGrasos(mapComponents);
+
+//		calculoEtiquetaNutricional(valoresProximales);
+
+		double proporcionGrasas = Double.valueOf(valoresProximales.get("grasa")) * 9;
+		double proporcionProteinas = Double.valueOf(valoresProximales.get("proteina")) * 4;
+		double proporcionHC = hcTotales * 4;
+		double proporcionValorFibra = valoresHC.get("fibra") * 2;
+		List<ComponentsDishTable> listaMinerales = mapComponents.get("minerales");
+
+		double amountSodio = 0.0f;
+		for (int i = 0; i < listaMinerales.size(); i++) {
+			if (listaMinerales.get(i).getNameComponent().equals("sodio")) {
+				amountSodio = Double.valueOf(listaMinerales.get(i).getAmount());
+			}
+		}
+		double proporcionSal = amountSodio * 2.5 / 1000;
+
+		double total = proporcionGrasas + proporcionProteinas + proporcionHC + proporcionValorFibra + proporcionSal;
+
+//		List<ComponentsDishTable> listComponentsDishOrdered = ordenarPorUnidad(mapComponents);
+
+		Map<String, String> etiquetaNutri = calculoEtiquetaNutricional(mapComponents);
+
+		List<LabelObj> map = ordenarComponentesNutri(etiquetaNutri);
+
+//		Cargo datos de tabla completa
+		model.addObject("listComponentsDish", map);
+
+//		Cargo datos de tablas 
+
+		model.addObject("componentsDishTableVitaminas", renameVitaminas(mapComponents.get("vitaminas")));
+		model.addObject("componentsDishTableMinerales", renameMinerales(mapComponents.get("minerales")));
+
+//		Cargo datos del grafico
+
+		model.addObject("porcentajeGrasas", calcularPorcentaje(proporcionGrasas, total));
+		model.addObject("porcentajeProteinas", calcularPorcentaje(proporcionProteinas, total));
+		model.addObject("porcentajeHC", calcularPorcentaje(proporcionHC, total));
+		model.addObject("porcentajeFibra", calcularPorcentaje(proporcionValorFibra, total));
+		model.addObject("porcentajeSal", calcularPorcentaje(proporcionSal, total));
+
+		mostrarEmpresa(model);
+
+		return model;
+	}
+
+	public double round(double value, int places) {
+		if (places < 0)
+			throw new IllegalArgumentException();
+
+		long factor = (long) Math.pow(10, places);
+		value = value * factor;
+		long tmp = Math.round(value);
+		return (double) tmp / factor;
+	}
+
+	public double calcularPorcentaje(double proporcionGrasas, Double total) {
+		double porcentajeGrasa2 = proporcionGrasas / total;
+		return Math.round(porcentajeGrasa2 * 100 * 100) / 100.0;
+	}
+
+	public void mostrarEmpresa(ModelAndView model) {
+		Integer id = obtenerUsuario().getIdEmpresa();
+		if (id != null) {
+			String company = companyRepo.findById(id).get().getNombre();
+			model.addObject("company", company);
+		}
+	}
+
+	public List<ComponentsDishTable> obtenerComponentesMenuGrupal(List<Integer> listDishes) {
+		List<ComponentsDishTable> listComponentsDishAux = new ArrayList<ComponentsDishTable>();
+
+		for (int i = 0; i < listDishes.size(); i++) {
+			if (listDishes.get(i) != 0) {
+
+				List<ComponentsDishTable> listComponentsDish = obtenerBDcomponentesPlato(listDishes.get(i));
+				for (int j = 0; j < listComponentsDish.size(); j++) {
+
+					boolean flag = false;
+					for (int k = 0; k < listComponentsDishAux.size(); k++) {
+						if (listComponentsDishAux.get(k).getNameComponent()
+								.equals(listComponentsDish.get(j).getNameComponent())) {
+							flag = true;
+							Double db = round(Double.parseDouble(listComponentsDishAux.get(k).getAmount())
+									+ Double.parseDouble(listComponentsDish.get(j).getAmount()), 2);
+
+							listComponentsDishAux.get(k).setAmount(db.toString());
+						}
+					}
+
+					if (!flag) {
+						listComponentsDishAux.add(listComponentsDish.get(j));
+
+					}
+					flag = false;
+
 				}
 			}
 
 		}
-		listComponentsDish = listListComponentsDish;
-		model.addObject("listComponentsDish", listComponentsDish);
-
-		return model;
+		return listComponentsDishAux;
 	}
-	
-	@RequestMapping("/user/componentes_menu_colectivo")
-	public ModelAndView componentesMenuColectivo_user(MenuObj menuObj) {
 
-		ModelAndView model = new ModelAndView("componentes_plato");
-
+	public void obtenerComponentesMenucolectivo(MenuObj menuObj, ModelAndView model) {
 		List<Integer> listDishes = new ArrayList<Integer>();
-		listDishes.add(menuObj.getFirst_dish());
-		listDishes.add(menuObj.getSecond_dish());
-		listDishes.add(menuObj.getThird_dish());
 
-		List<ComponentsDishTable> listListComponentsDish = new ArrayList<ComponentsDishTable>();
-		List<ComponentsDishTable> listComponentsDish;
-		Map<String, Float> mapComponentsMenu = new HashMap<String, Float>();
-
-		for (int i = 0; i < listDishes.size(); i++) {
-			if (listDishes.get(i) != 0) {
-				// He obtenido los componentes que tiene un plato
-				listComponentsDish = obtenerBDcomponentesPlato(listDishes.get(i));
-
-				for (int j = 0; j < listComponentsDish.size(); j++) {
-					// Cuando no existe entrada en mapa para ese componente
-					if (mapComponentsMenu.get(listComponentsDish.get(j).getNameComponent()) == null) {
-						mapComponentsMenu.put(listComponentsDish.get(j).getNameComponent(),
-								listComponentsDish.get(j).getAmount());
-
-					} else {
-						float oldAmount = mapComponentsMenu.get(listComponentsDish.get(j).getNameComponent());
-						float newAmount = listComponentsDish.get(j).getAmount();
-						mapComponentsMenu.replace(listComponentsDish.get(j).getNameComponent(), oldAmount + newAmount);
-					}
-				}
-				listListComponentsDish.addAll(listComponentsDish);
-
-				// Mantengo lista con componentes sin repetir
-				// Recorro las listas de listas
-				for (int j = 0; j < listListComponentsDish.size(); j++) {
-
-					String component = listListComponentsDish.get(j).getNameComponent();
-
-					for (int k = 0; k < listListComponentsDish.size(); k++) {
-						if (j != k) {
-							String component2 = listListComponentsDish.get(k).getNameComponent();
-							if (component.equals(component2)) {
-								listListComponentsDish.remove(k);
-
-							}
-						}
-
-					}
-				}
-				for (int j = 0; j < listListComponentsDish.size(); j++) {
-					listListComponentsDish.get(j)
-							.setAmount(mapComponentsMenu.get(listListComponentsDish.get(j).getNameComponent()));
-				}
-			}
+		if (menuObj.getFirst_dish() != null) {
+			listDishes.add(menuObj.getFirst_dish());
 
 		}
-		listComponentsDish = listListComponentsDish;
-		model.addObject("listComponentsDish", listComponentsDish);
+		if (menuObj.getSecond_dish() != null) {
+			listDishes.add(menuObj.getSecond_dish());
+
+		}
+		if (menuObj.getThird_dish() != null) {
+			listDishes.add(menuObj.getThird_dish());
+		}
+
+		Map<String, List<ComponentsDishTable>> mapComponents = clasificarComponentes(
+				obtenerComponentesMenuGrupal(listDishes));
+		Map<String, String> valoresProximales = calculoProximales(mapComponents);
+		Map<String, Double> valoresHC = calculoHC(mapComponents);
+//
+		Double hcTotales = valoresHC.get("fibra") + valoresHC.get("azucar") + valoresHC.get("otrosHC");
+//		Double acGrasos = calcularAcGrasos(mapComponents);
+
+		Double proporcionGrasas = Double.valueOf(valoresProximales.get("grasa")) * 9;
+		Double proporcionProteinas = Double.valueOf(valoresProximales.get("proteina")) * 4;
+		Double proporcionHC = hcTotales * 4;
+
+//		Double proporcionValorOtrosHC = valoresHC.get("otrosHC") * 4;
+//
+		Double proporcionValorFibra = valoresHC.get("fibra") * 2;
+		Double proporcionValorAzúcar = valoresHC.get("azucar") * 4;
+//		Double proporcionAcGrasos = acGrasos * 9;
+
+		List<ComponentsDishTable> listaMinerales = mapComponents.get("minerales");
+
+		double amountSodio = 0.0f;
+		for (int i = 0; i < listaMinerales.size(); i++) {
+			if (listaMinerales.get(i).getNameComponent().equals("sodio")) {
+				amountSodio = Double.valueOf(listaMinerales.get(i).getAmount());
+			}
+		}
+		double proporcionSal = amountSodio * 2.5 / 1000;
+
+		double total = proporcionGrasas + proporcionProteinas + proporcionHC + proporcionValorFibra + proporcionSal;
+
+//		List<ComponentsDishTable> listComponentsDishOrdered = ordenarPorUnidad(mapComponents);
+
+//		Cargo datos de tabla completa
+//		model.addObject("listComponentsDish", listComponentsDishOrdered);
+
+		Map<String, String> etiquetaNutri = calculoEtiquetaNutricional(mapComponents);
+
+		List<LabelObj> map = ordenarComponentesNutri(etiquetaNutri);
+
+//		Cargo datos de tabla completa
+		model.addObject("listComponentsDish", map);
+
+//		Cargo datos de tablas 
+		model.addObject("componentsDishTableVitaminas", renameVitaminas(mapComponents.get("vitaminas")));
+		model.addObject("componentsDishTableMinerales", renameMinerales(mapComponents.get("minerales")));
+
+////	Cargo datos del grafico
+		model.addObject("porcentajeGrasas", calcularPorcentaje(proporcionGrasas, total));
+		model.addObject("porcentajeProteinas", calcularPorcentaje(proporcionProteinas, total));
+		model.addObject("porcentajeHC", calcularPorcentaje(proporcionHC, total));
+		model.addObject("porcentajeFibra", calcularPorcentaje(proporcionValorFibra, total));
+		model.addObject("porcentajeSal", calcularPorcentaje(proporcionSal, total));
+
+//
+//		model.addObject("porcentajeOtrasGrasas",
+//				round(calcularPorcentaje(proporcionGrasas, total) - calcularPorcentaje(proporcionAcGrasos, total), 2));
+
+		mostrarEmpresa(model);
+
+	}
+
+	@RequestMapping("/editor/componentes_menu_colectivo{id_menu}")
+	public ModelAndView componentesMenuColectivo_admin(MenuObj menuObj, @PathVariable("id_menu") int id_menu) {
+
+		ModelAndView model = new ModelAndView("componentes_menu_admin");
+		model.addObject("menuName", menuObj.name_menu);
+		model.addObject("id_menu", id_menu);
+		obtenerComponentesMenucolectivo(menuObj, model);
 
 		return model;
 	}
 
-	@GetMapping({"/admin/componentes_menu_individual/{id_menu}", "/user/componentes_menu_individual/{id_menu}"})
+	@RequestMapping("/user/componentes_menu_colectivo{id_menu}")
+	public ModelAndView componentesMenuColectivo_user(MenuObj menuObj, @PathVariable("id_menu") int id_menu) {
+
+		ModelAndView model = new ModelAndView("componentes_plato");
+		model.addObject("menuName", menuRepo.findById(id_menu).get().getNombre_menu());
+		model.addObject("id_menu", id_menu);
+		obtenerComponentesMenucolectivo(menuObj, model);
+		return model;
+	}
+
+	@GetMapping(value = { "/user/componentes_menu_individual/{id_menu}" })
 	public ModelAndView componentesMenuIndividual(@PathVariable("id_menu") int id_menu) {
 
-		ModelAndView model = new ModelAndView("componentes_plato");
-
-		List<ComponentsDishTable> listComponentsDish = obtenerComponentesMenu(id_menu);
-		model.addObject("listComponentsDish", listComponentsDish);
+		ModelAndView model = new ModelAndView("componentes_plato_ind");
+		model.addObject("menuName", menuRepo.findById(id_menu).get().getNombre_menu());
+		obtenerComponentesMenuIndividual(id_menu, model);
 
 		return model;
 	}
-	
-	
 
-	public List<ComponentsDishTable> obtenerComponentesMenu(int id_menu) {
-		List<ComponentsDishTable> listListComponentsDish = new ArrayList<ComponentsDishTable>();
-		List<ComponentsDishTable> listComponentsDish;
-		Map<String, Float> mapComponentsMenu = new HashMap<String, Float>();
-
+	public List<Integer> obtenerPlatosMenu(int id_menu) {
+		List<Integer> listDishes = new ArrayList<Integer>();
+		ResultSet rs;
 		try {
-
 			Statement st = Application.con.createStatement();
-
-			ResultSet rs = st.executeQuery("select idPlato from menus_platos where idMenu = " + id_menu + ";");
+			rs = st.executeQuery("select idPlato from menus_platos where idMenu = " + id_menu + ";");
 
 			while (rs.next()) {
-
-				int idPlato = rs.getInt(1);
-				if (idPlato != 0) {
-					// He obtenido los componentes que tiene un plato
-					listComponentsDish = obtenerBDcomponentesPlato(idPlato);
-
-					for (int i = 0; i < listComponentsDish.size(); i++) {
-						// Cuando no existe entrada en mapa para ese componente
-						if (mapComponentsMenu.get(listComponentsDish.get(i).getNameComponent()) == null) {
-							mapComponentsMenu.put(listComponentsDish.get(i).getNameComponent(),
-									listComponentsDish.get(i).getAmount());
-
-						} else {
-							float oldAmount = mapComponentsMenu.get(listComponentsDish.get(i).getNameComponent());
-							float newAmount = listComponentsDish.get(i).getAmount();
-							mapComponentsMenu.replace(listComponentsDish.get(i).getNameComponent(),
-									oldAmount + newAmount);
-						}
-					}
-					listListComponentsDish.addAll(listComponentsDish);
-				}
-
+				listDishes.add(rs.getInt(1));
 			}
 
-			rs.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return listDishes;
+	}
+
+	public void obtenerComponentesMenuIndividual(int id_menu, ModelAndView model) {
+		List<Integer> listDishes = obtenerPlatosMenu(id_menu);
+
+		Map<String, List<ComponentsDishTable>> mapComponents = clasificarComponentes(
+				obtenerComponentesMenuGrupal(listDishes));
+		Map<String, String> valoresProximales = calculoProximales(mapComponents);
+		Map<String, Double> valoresHC = calculoHC(mapComponents);
+//
+		Double hcTotales = valoresHC.get("fibra") + valoresHC.get("azucar") + valoresHC.get("otrosHC");
+//		Double acGrasos = calcularAcGrasos(mapComponents);
+//
+		Double proporcionGrasas = Double.valueOf(valoresProximales.get("grasa")) * 9;
+		Double proporcionProteinas = Double.valueOf(valoresProximales.get("proteina")) * 4;
+		Double proporcionHC = hcTotales * 4;
+		double proporcionValorFibra = valoresHC.get("fibra") * 2;
+//		Double proporcionValorOtrosHC = valoresHC.get("otrosHC") * 4;
+//
+//		Double proporcionValorFibra = valoresHC.get("fibra") * 4;
+//		Double proporcionValorAzúcar = valoresHC.get("azucar") * 4;
+//		Double proporcionAcGrasos = acGrasos * 9;
+
+		List<ComponentsDishTable> listaMinerales = mapComponents.get("minerales");
+
+		double amountSodio = 0.0f;
+		for (int i = 0; i < listaMinerales.size(); i++) {
+			if (listaMinerales.get(i).getNameComponent().equals("sodio")) {
+				amountSodio = Double.valueOf(listaMinerales.get(i).getAmount());
+			}
+		}
+		double proporcionSal = amountSodio * 2.5 / 1000;
+
+		double total = proporcionGrasas + proporcionProteinas + proporcionHC + proporcionValorFibra + proporcionSal;
+
+//
+//		Double total = /* valoresProximales.get("energia") + */ proporcionGrasas + proporcionProteinas + proporcionHC;
+
+//		List<ComponentsDishTable> listComponentsDishOrdered = ordenarPorUnidad(mapComponents);
+
+		Map<String, String> etiquetaNutri = calculoEtiquetaNutricional(mapComponents);
+
+		List<LabelObj> map = ordenarComponentesNutri(etiquetaNutri);
+
+//		Cargo datos de tabla completa
+		model.addObject("listComponentsDish", map);
+
+//		Cargo datos de tabla completa
+//		model.addObject("listComponentsDish", listComponentsDishOrdered);
+
+//		Cargo datos de tablas 
+
+		model.addObject("componentsDishTableVitaminas", renameVitaminas(mapComponents.get("vitaminas")));
+		model.addObject("componentsDishTableMinerales", renameMinerales(mapComponents.get("minerales")));
+
+////	Cargo datos del grafico
+//		model.addObject("porcentajeGrasa", calcularPorcentaje(proporcionGrasas, total));
+//		model.addObject("porcentajeProteinas", calcularPorcentaje(proporcionProteinas, total));
+//		model.addObject("porcentajeHC", calcularPorcentaje(proporcionHC, total));
+////		model.addObject("porcentajeEnergia", calcularPorcentaje(valoresProximales.get("energia"), total));
+//		model.addObject("porcentajeOtrosHC", calcularPorcentaje(proporcionValorOtrosHC, total));
+//		model.addObject("porcentajeFibra", calcularPorcentaje(proporcionValorFibra, total));
+//		model.addObject("porcentajeAzucar", calcularPorcentaje(proporcionValorAzúcar, total));
+//		model.addObject("porcentajeAcGrasos", calcularPorcentaje(proporcionAcGrasos, total));
+//
+
+		model.addObject("porcentajeGrasas", calcularPorcentaje(proporcionGrasas, total));
+		model.addObject("porcentajeProteinas", calcularPorcentaje(proporcionProteinas, total));
+		model.addObject("porcentajeHC", calcularPorcentaje(proporcionHC, total));
+		model.addObject("porcentajeFibra", calcularPorcentaje(proporcionValorFibra, total));
+		model.addObject("porcentajeSal", calcularPorcentaje(proporcionSal, total));
+
+//		model.addObject("porcentajeOtrasGrasas",
+//				round(calcularPorcentaje(proporcionGrasas, total) - calcularPorcentaje(proporcionAcGrasos, total), 2));
+
+		mostrarEmpresa(model);
+
+	}
+
+	@GetMapping({ "/editor/componentes_menu_individual/{id_menu}" })
+	public ModelAndView componentesMenuIndividualAdmin(@PathVariable("id_menu") int id_menu) {
+
+		ModelAndView model = new ModelAndView("componentes_plato_admin");
+
+		model.addObject("menuName", menuRepo.findById(id_menu).get().getNombre_menu());
+		obtenerComponentesMenuIndividual(id_menu, model);
+		return model;
+	}
+
+	public List<ComponentsDishTable> ordenarComponentesPorUnidadCantidad(
+			List<ComponentsDishTable> componentsDishTableVitaminas) {
+
+		List<ComponentsDishTable> listComponentsDishTable = new ArrayList<ComponentsDishTable>();
+
+		List<ComponentsDishTable> componentsDishTableKcal = new ArrayList<ComponentsDishTable>();
+		List<ComponentsDishTable> componentsDishTableG = new ArrayList<ComponentsDishTable>();
+		List<ComponentsDishTable> componentsDishTableMG = new ArrayList<ComponentsDishTable>();
+		List<ComponentsDishTable> componentsDishTableUG = new ArrayList<ComponentsDishTable>();
+
+		for (ComponentsDishTable componentsDishTable : componentsDishTableVitaminas) {
+			if (componentsDishTable.getUnit().equals("kcal") || componentsDishTable.getUnit().equals("kj(kcal)")) {
+
+				ComponentsDishTable componentsDishTable_1 = new ComponentsDishTable();
+
+//				Double toKJul = 4.184;
+//				Double res = Double.parseDouble(componentsDishTable.getAmount()) * toKJul;
+//				Double res_1 = Double.parseDouble(componentsDishTable.getAmount());
+//
+//				Integer intkJul = res.intValue();
+//				Integer intkCal = res_1.intValue();
+
+				componentsDishTable_1.setAmount(componentsDishTable.getAmount());
+//				componentsDishTable_1.setUnit("kCal / kJul");
+				componentsDishTable_1.setGroupComponent(componentsDishTable.getGroupComponent());
+				componentsDishTable_1.setNameComponent(componentsDishTable.getNameComponent());
+
+				componentsDishTableKcal.add(componentsDishTable_1);
+
+			} else if (componentsDishTable.getUnit().equals("g")) {
+				componentsDishTableG.add(componentsDishTable);
+
+			} else if (componentsDishTable.getUnit().equals("mg")) {
+				componentsDishTableMG.add(componentsDishTable);
+
+			} else if (componentsDishTable.getUnit().equals("ug")) {
+				componentsDishTableUG.add(componentsDishTable);
+
+			}
+		}
+		listComponentsDishTable.addAll(componentsDishTableKcal);
+		listComponentsDishTable.addAll(componentsDishTableG);
+		listComponentsDishTable.addAll(componentsDishTableMG);
+		listComponentsDishTable.addAll(componentsDishTableUG);
+
+		return listComponentsDishTable;
+
+	}
+
+	@GetMapping({ "/editor/deleteIngredientDish/{id_plato}/{id_ingrediente}" })
+	public String eliminarIngredientePlato(@PathVariable("id_plato") Integer id_plato,
+			@PathVariable("id_ingrediente") Integer id_ingrediente) {
+
+		try {
+			Statement st = Application.con.createStatement();
+
+			st.execute("delete from platos_alimentos where idPlato=" + id_plato.toString() + " and idAlimento = "
+					+ id_ingrediente.toString() + ";");
 			st.close();
 
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
-		// Mantengo lista con componentes sin repetir
-//		List<ComponentsDishTable> listFinalComponents = new ArrayList<>();
-		// Recorro las listas de listas
-		for (int i = 0; i < listListComponentsDish.size(); i++) {
-
-			String component = listListComponentsDish.get(i).getNameComponent();
-
-			for (int j = 0; j < listListComponentsDish.size(); j++) {
-				if (i != j) {
-					String component2 = listListComponentsDish.get(j).getNameComponent();
-					if (component.equals(component2)) {
-						listListComponentsDish.remove(j);
-
-					}
-				}
-
-			}
-		}
-		for (int i = 0; i < listListComponentsDish.size(); i++) {
-			listListComponentsDish.get(i)
-					.setAmount(mapComponentsMenu.get(listListComponentsDish.get(i).getNameComponent()));
-		}
-
-		return listListComponentsDish;
-
+		return "redirect:/editor/editDish/{id_plato}";
 	}
 
+	@GetMapping({ "/editor/editIngredientDish/{id_plato}/{id_ingrediente}/{cantidad}" })
+	public ModelAndView editarIngredientePlato(@PathVariable("id_plato") Integer id_plato,
+			@PathVariable("id_ingrediente") Integer id_ingrediente, @PathVariable("cantidad") BigDecimal cantidad) {
+
+		ModelAndView model = new ModelAndView("editar_ingrediente_plato");
+
+		DishIngredient dishIngredient = new DishIngredient(id_plato, id_ingrediente,
+				foodRepo.findByIdAlimento(id_ingrediente).getNombre(), cantidad);
+
+		model.addObject("dishIngredient", dishIngredient);
+
+		return model;
+	}
+
+	@RequestMapping(value = {
+			"/editor/saveEditIngredientDish/{id_plato}/{id_ingrediente}" }, method = RequestMethod.POST)
+	public String editarCantidadIngredientePlato(@PathVariable("id_plato") Integer id_plato,
+			@PathVariable("id_ingrediente") Integer id_ingrediente, DishIngredient dishIngredient) {
+
+		try {
+			Statement st = Application.con.createStatement();
+
+			st.execute("update platos_alimentos set cantidad = " + dishIngredient.getCantidad() + " where idPlato =  "
+					+ id_plato + " and idAlimento = " + id_ingrediente + ";");
+			st.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return "redirect:/editor/editDish/{id_plato}";
+	}
+
+	@RequestMapping(value = { "/editor/addDish/{id_plato}" })
+	public ModelAndView añadirIngredientePlato(@PathVariable("id_plato") Integer id_plato) {
+
+		ModelAndView model = new ModelAndView("añadir_ingrediente_plato");
+
+		List<FoodView> listFood = foodViewRepo.findAll();
+
+		model.addObject("id_plato", id_plato);
+		model.addObject("listFood", listFood);
+
+		return model;
+	}
+
+	@RequestMapping(value = { "/editor/addIngredient/{id_plato}/{id_alimento}" })
+	public ModelAndView añadirCantidadIngredientePlato(@PathVariable("id_plato") Integer id_plato,
+			@PathVariable("id_alimento") Integer id_ingredient) {
+
+		ModelAndView model = new ModelAndView("opciones_ingrediente_plato");
+
+		List<FoodView> listFood = foodViewRepo.findAll();
+
+		model.addObject("id_plato", id_plato);
+		model.addObject("listFood", listFood);
+
+		Food food = foodRepo.findByIdAlimento(id_ingredient);
+
+		FoodAmountObj foodAmountObj = new FoodAmountObj();
+		foodAmountObj.setFood(food.getNombre());
+
+		model.addObject("foodAmountObj", foodAmountObj);
+		mostrarEmpresa(model);
+
+		return model;
+	}
+
+	@RequestMapping(value = { "/editor/addIngredient/{id_plato}" })
+	public String guardarIngredientePlato(@PathVariable("id_plato") Integer id_plato, FoodAmountObj foodAmountObj,
+			RedirectAttributes redirectAttributes) {
+
+		try {
+			Statement st = Application.con.createStatement();
+
+			st.execute("insert into platos_alimentos (idPlato, idAlimento, cantidad) values( " + id_plato + ", "
+					+ foodRepo.findByNameAlimento(foodAmountObj.getFood()).getIdAlimento() + ","
+					+ foodAmountObj.getAmount() + ");");
+			st.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		Integer id = obtenerUsuario().getIdEmpresa();
+
+		redirectAttributes.addAttribute("id_plato", id_plato);
+		return "redirect:/editor/editDish/{id_plato}";
+	}
+
+	@RequestMapping(value = { "/editor/IngredientesDish/{id_plato}" })
+	public ModelAndView verIngredientePlato(@PathVariable("id_plato") Integer id_plato) {
+
+		ModelAndView model = new ModelAndView("ver_ingredientes_plato");
+
+		List<DishIngredients> listDishIngredients = new ArrayList<DishIngredients>();
+		ResultSet rs;
+		try {
+			Statement st = Application.con.createStatement();
+			rs = st.executeQuery("select a.nombre, pa.idAlimento , pa.cantidad \r\n"
+					+ "from alimentos as a left join platos_alimentos as pa on a.id_alimento = pa.idAlimento \r\n"
+					+ "where pa.idPlato = " + id_plato + ";");
+
+			while (rs.next()) {
+				String nombre_alimento = rs.getString(1);
+				Integer id_alimento = rs.getInt(2);
+				BigDecimal cantidad = rs.getBigDecimal(3);
+
+				DishIngredients dishIngredients = new DishIngredients(nombre_alimento, id_alimento, cantidad);
+				listDishIngredients.add(dishIngredients);
+
+			}
+
+			model.addObject("listDishIngredients", listDishIngredients);
+			model.addObject("nameDish", dishRepo.findById(id_plato).get().getNombre_plato());
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		mostrarEmpresa(model);
+
+		return model;
+	}
+
+	@RequestMapping(value = { "/editor/seguir_anadiendo_ingredientes/{id_plato}" })
+	public String seguir_anadiendo_ingredientes(@PathVariable("id_plato") Integer id_plato,
+			RedirectAttributes redirectAttributes) {
+
+		redirectAttributes.addAttribute("id_plato", id_plato);
+		return "redirect:/editor/crear_nuevo_plato/ingredientes{id_plato}";
+	}
+
+	@RequestMapping(value = { "/editor/terminarPlato" })
+	public String terminarPlato2() {
+
+		return "redirect:/editor";
+	}
+
+	@RequestMapping(value = { "/editor/cancelar_nuevo_plato/{id_plato}" })
+	public String cancelarPlato(@PathVariable("id_plato") Integer id_plato) {
+		try {
+
+			Statement st = Application.con.createStatement();
+			st.execute("delete from platos where id_plato=" + id_plato + ";");
+
+			st.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return "redirect:/editor";
+	}
 }

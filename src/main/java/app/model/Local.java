@@ -15,12 +15,14 @@ public class Local {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	public int id_local;
 
-	public int id_empresa;
+	public Integer id_empresa;
 
 	public String nombre;
 	public String direccion;
+	
 
-	public Local(String nombre, String direccion, int id_local, int id_empresa) {
+
+	public Local(String nombre, String direccion, int id_local, Integer id_empresa) {
 
 		this.nombre = nombre;
 		this.direccion = direccion;
@@ -40,11 +42,11 @@ public class Local {
 		this.id_local = idLocal;
 	}
 
-	public int getIdEmpresa() {
+	public Integer getIdEmpresa() {
 		return id_empresa;
 	}
 
-	public void setIdEmpresa(int id_empresa) {
+	public void setIdEmpresa(Integer id_empresa) {
 		this.id_empresa = id_empresa;
 	}
 

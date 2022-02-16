@@ -56,78 +56,71 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 </head>
 
 <body>
-	<!-- banner -->
 	<div class="banner">
+		<p style="float: left;margin-top:10px;font-size:1.5em;margin-left:20px;">
+			Bienvenido <b>[[${#request.userPrincipal.principal.username}]]</b> 
+		</p>
+		<form th:action="@{/logout}" method="post" style="font-size:1.5em;margin-left:93%;">
+			<input type="submit" style="margin-top:10px;float: left;" value="Cerrar sesión" />					
+		</form>		
 		<!-- header -->
 		<div class="header">
 			<div class="container">
 				<div class="logo">
 					<h1>NutriApp</h1>
-
+				</div> 
+				<div class="banner-text w3labout-bnr" > 
+						<h2 >Cuenta de administrador</h2>   
 				</div>
-					<div class="banner-text w3labout-bnr">
-							<h2>Cuenta de editor</h2>
-					</div>
 			</div>
 		</div>
-		<!-- //header -->
-		<!-- banner-text -->
-
-		<!-- //banner-text -->
+		<b th:text="${company}" style="margin-left:20px;color:#000000;font-size:2em;"></b>
 	</div>
-	<!-- //banner -->
-	<!-- gallery -->
 	<div class="about gallery">
 		<div class="container">
 			<nav aria-label="breadcrumb">
-				<ol class="breadcrumb"
-					style="background-color: #FFFFFF; margin-bottom: 30px; font-size: 150%;">
-					<li class="breadcrumb-item active" aria-current="page"><a
-						href="#">Inicio</a></li>
-					<li class="breadcrumb-item"><a href="#">Editar local</a></li>
-				</ol>
+			  <ol class="breadcrumb" style="background-color:#ffffff;font-size:1.5em;margin-bottom:40px;">
+			  	<li class="breadcrumb-item"><a th:href="@{/admin}">Página principal</a></li>
+			  	<li class="breadcrumb-item active">Editar local</li>
+			  </ol>
 			</nav>
+
 			<div role="tabpanel">
-				<ul class="nav nav-tabs" role="tablist">
-					<li role="presentation" class="active"><a href="#seccion1"
-						data-toggle="tab" role="tab">Editar local</a></li>
-				</ul>
+
 				<div class="tab-content" style="margin-left: 40%;">
 					<div role="tabpanel" class="tab-pane active" id="seccion1"
 						style="width:30%; margin: 0 auto;"></div>
-<!-- 						@{'/editor/guardarFood/' + ${foodView.nombre}} -->
-					<form th:action="@{'/editor/editar_local_exito/' + ${id_local}}"
-						th:object="${localView}" method="post" style="margin-left: 0%;">
+					<form th:action="@{'/admin/editar_local_exito/' + ${id_local}}"
+						th:object="${localObj}" method="post" style="margin-left: 0%;">
 
 						<div class="form-group" style="margin-top: 25px;">
-							<label for="exampleInputEmail1">Nombre del local</label> <input
-								type="text" class="form-control" id="id_cif"
-								th:field="*{local}" style="margin-top: 8px; width: 40%;"
+							<label for="exampleInputEmail1">Nombre del local*</label> <input
+								type="text" class="form-control" id="id_cif" required
+								th:field="*{local_name}" style="margin-top: 8px; width: 40%;"
 								aria-describedby="emailHelp"
 								placeholder="Introduce nombre del local">
 						</div>
 
 						<div class="form-group">
-							<label for="exampleInputEmail1">Dirección del local</label> <input
-								type="text" class="form-control" id="id_nombre"
-								th:field="*{direccion}" style="margin-top: 8px; width: 40%;"
+							<label for="exampleInputEmail1">Dirección del local*</label> <input
+								type="text" class="form-control" id="id_nombre" 
+								th:field="*{direction}" style="margin-top: 8px; width: 40%;"
 								aria-describedby="emailHelp"
 								placeholder="Introduce la dirección del local" required>
 						</div>
 
 						<div class="form-group">
 							<label for="exampleInputEmail1">Empresa a la que
-								pertenece</label> <select class="form-select" 
-								th:field="*{empresa}"
-								aria-label="Default select example"
-								style="margin-top: 10px; width: 40%">
-								<option selected th:value="${empresa}"></option>
+								pertenece*</label> 
+							<select class="form-select" th:field="*{company_id}" required aria-label="Default select example" style="margin-top: 10px; width: 40%;height:34px;">
+								<option selected th:text="*{company_name}" th:value="${company_id}"></option>
 								<option th:each="company:${listCompanies}"
-									th:value="${company.nombre}" th:text="${company.nombre}" />
+									th:value="${company.id_empresa}" th:text="${company.nombre}" />
 							</select>
 						</div>
-
-						<button type="submit" class="btn btn-primary">Aceptar</button>
+						<small id="emailHelp" class="form-text text-muted" style="font-size:12px;">(*) Campos obligatorios</small>
+						<br>
+						<button type="submit" class="btn btn-primary" style="margin-top:10px;">Guardar cambios</button>
 					</form>
 				</div>
 			</div>

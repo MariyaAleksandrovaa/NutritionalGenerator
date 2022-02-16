@@ -42,35 +42,41 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 <body> 
 	<!-- banner -->
 	<div class="banner">
+		<p style="float: left;margin-top:10px;font-size:1.5em;margin-left:20px;">
+			Bienvenido <b>[[${#request.userPrincipal.principal.username}]]</b> 
+		</p>
+		<form th:action="@{/logout}" method="post" style="font-size:1.5em;margin-left:93%;">
+			<input type="submit" style="margin-top:10px;float: left;" value="Cerrar sesión" />					
+		</form>		
 		<!-- header -->
 		<div class="header">
 			<div class="container">
 				<div class="logo">
 					<h1>NutriApp</h1>
-
+				</div> 
+				<div class="banner-text w3labout-bnr" > 
+						<h2 >Cuenta de administrador</h2>   
 				</div>
-					<div class="banner-text w3labout-bnr"> 
-							<h2>Cuenta de editor</h2>   
-					</div> 
 			</div>
 		</div>
-		<!-- //header --> 
-		<!-- banner-text -->
-
-		<!-- //banner-text -->
+		<b th:text="${company}" style="margin-left:20px;color:#000000;font-size:2em;"></b>
 	</div>
 	<!-- //banner -->   
 	<!-- gallery -->
 	<div class="about gallery">
 		<div class="container">  
 			<div role="tabpanel">
-				<ul class="nav nav-tabs" role="tablist">
-				  <li role ="presentation" class="active" >
-				    <a href="#seccion1" data-toggle="tab" role="tab">Alérgenos de ...</a>
-				  </li>
-				</ul>
+				<nav aria-label="breadcrumb">
+				  <ol class="breadcrumb" style="background-color:#ffffff;font-size:1.5em;margin-bottom:40px;">
+				  	<li class="breadcrumb-item"><a th:href="@{/admin}">Página principal</a></li>
+				  	<li class="breadcrumb-item active">Alérgenos de alimento</li>
+				  </ol>
+				</nav>
 				<div class="tab-content">
-					<div role="tabpanel" class="tab-pane active" id="seccion1" style="width: 50%;margin: 0 auto;">
+					<div role="tabpanel" class="tab-pane active" id="seccion1" style="margin: 0 auto;">
+<!-- 						<label for="exampleInputEmail1" th:text="${dishName}" style="font-size: 2em;margin-bottom: 40px;"></label> -->
+						<label for="exampleInputEmail1" th:text="${name_food}" style="font-size: 2em;margin-bottom: 40px;"></label>
+						<div th:if="${!listaAlergenos.empty}">
 							<div class ="row">
 								<table class="table" style = "margin-top:30px">
 									
@@ -88,6 +94,9 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 								  </tbody>
 								</table>
 							</div>
+						</div>
+						<div th:if="${listaAlergenos.empty}" style="font-size:15px;display:flex;justify-content:center;">Este alimento no contiene alérgenos
+						</div>
 				</div>
 			</div>
 			</div>	

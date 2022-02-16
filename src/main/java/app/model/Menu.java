@@ -18,18 +18,30 @@ public class Menu {
 	public String descripcion;
 	public java.sql.Timestamp fecha_creacion;
 	public int id_empresa;
+	public String fecha_publicacion;
 
-	public Menu(int id_menu, String nombre_menu, String descripcion, java.sql.Timestamp fecha_creacion, int id_empresa) {
+
+	public Menu(int id_menu, String nombre_menu, String descripcion, java.sql.Timestamp fecha_creacion, int id_empresa, String fecha_publicacion) {
 		this.id_menu = id_menu;
 		this.nombre_menu = nombre_menu;
 		this.descripcion = descripcion;
 		this.fecha_creacion = fecha_creacion;
 		this.id_empresa = id_empresa;
+		this.fecha_publicacion=fecha_publicacion;
 	}
 
 	public Menu() {
 
 	}
+	
+	public String getFecha_publicacion() {
+		return fecha_publicacion;
+	}
+
+	public void setFecha_publicacion(String fecha_publicacion) {
+		this.fecha_publicacion = fecha_publicacion;
+	}
+
 
 	public int getId_menu() {
 		return id_menu;

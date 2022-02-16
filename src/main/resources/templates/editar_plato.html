@@ -25,67 +25,167 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 
 <link href="../../css/style.css" type="text/css" rel="stylesheet" media="all">   
 <link href="../../css/font-awesome.css" rel="stylesheet"> <!-- font-awesome icons --> 
-<link rel="stylesheet" href="../css/smoothbox.css" type='text/css' media="all" /> 
-<!-- //Custom Theme files --> 
+<link rel="stylesheet" href="../../css/smoothbox.css" type='text/css' media="all" /> 
 
 <!-- js -->
 <script src="../../js/jquery-2.2.3.min.js"></script>  
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> -->
 <!-- //js -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+<script src="../../js/SmoothScroll.min.js"></script> 
+<script src="../../js/jarallax.js"></script> 
+<script type="text/javascript" src="../../js/move-top.js"></script>
+<script type="text/javascript" src="../../js/easing.js"></script>	
+<style>
+button {
+    border: 1px #AAA solid;
+    padding: 4px 10px;
+}
+.hide {
+    display: none;
+}
+.close {
+    color: #000000; 
+    font-size: 40px;
+    opacity: 1;
+}
+.modal-body{
+	font-size: 20px;
+    display: flex;
+    justify-content: center;
+    height: 150px;
+    padding: 10% 5%;
+}
+.modal-header{
+	display: flex;
+    justify-content: flex-end;
+    padding-right: 30px;
+    
+}
+.body{
+}
+</style>
 
 <!-- web-fonts -->   
 <link href="//fonts.googleapis.com/css?family=Playfair+Display:400,400i,700,700i,900,900i" rel="stylesheet">
-<!-- //web-fonts -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+
+
 </head>
 
 <body> 
-	<!-- banner -->
 	<div class="banner">
+		<p style="float: left;margin-top:10px;font-size:1.5em;margin-left:20px;">
+			Bienvenido <b>[[${#request.userPrincipal.principal.username}]]</b> 
+		</p>
+		<form th:action="@{/logout}" method="post" style="font-size:1.5em;margin-left:93%;">
+			<input type="submit" style="margin-top:10px;float: left;" value="Cerrar sesión" />					
+		</form>		
 		<!-- header -->
 		<div class="header">
 			<div class="container">
 				<div class="logo">
 					<h1>NutriApp</h1>
-
 				</div> 
-					<div class="banner-text w3labout-bnr"> 
-							<h2>Cuenta de editor</h2>   
-					</div>
+				<div class="banner-text w3labout-bnr" > 
+						<h2 >Cuenta de editor</h2>   
+				</div>
 			</div>
 		</div>
-		<!-- //header --> 
-		<!-- banner-text -->
-
-		<!-- //banner-text -->
+		<b th:text="${company}" style="margin-left:20px;color:#000000;font-size:2em;"></b>
 	</div>
-	<!-- //banner -->   
-	<!-- gallery -->
-	<div class="about gallery">
+	<div class="about gallery" style="font-family:Playfair Display;">
 		<div class="container">
+			<nav aria-label="breadcrumb">
+			  <ol class="breadcrumb" style="background-color:#ffffff;font-size:1.5em;margin-bottom:40px;">
+			  	<li class="breadcrumb-item"><a th:href="@{/editor}">Página principal</a></li>
+			    <li class="breadcrumb-item active">Editar plato</li>
+			  </ol>
+			</nav>
 			<div role="tabpanel">
-				<form th:action="@{'/admin/saveDish/' + ${id_plato}}" th:object="${dish}" method="post" style="width:60%;margin-left:41%;">
-					  <div class="form-group">
-					    <label for="exampleInputEmail1">Nombre del plato</label>
-					    <input type="text" class="form-control"  th:field="*{nombre_plato}" style="margin-top:8px;width:40%;"  aria-describedby="emailHelp" placeholder="Introduce nombre de empresa" required>
-					  </div>
-					  <div class="form-group">
-					    <label for="exampleInputEmail1">Descripción del plato</label>
-					    <input type="text" class="form-control"  th:field="*{descripcion}"  style="margin-top:8px;width:40%;"  aria-describedby="emailHelp" placeholder="Introduce correo electrónico">
-					  </div>					  
-					  <div class="form-group" style="margin-top:25px;">
-					    <label for="exampleInputEmail1" >Tipo de plato</label>
-					    	<select class="form-select" th:field="*{id_tipo_platos}" aria-label="Default select example" style="margin-top:10px;width:40%">
-<!-- 										<option th:selected="*{grupo}"></option> -->
+				<div style="display:flex;justify-content:center;">
+					<form th:action="@{'/editor/saveDish/' + ${id_plato}}" th:object="${dish}" method="post" style="width:50%;">
+						  <div class="form-group">
+						    <label for="exampleInputEmail1">Nombre del plato</label>
+						    <input type="text" class="form-control"  th:field="*{nombre_plato}" style="margin-top:8px;"  aria-describedby="emailHelp" placeholder="Introduce nombre de empresa" required>
+						  </div>
+						  <div class="form-group">
+						    <label for="exampleInputEmail1">Descripción del plato</label>
+						    <input type="text" class="form-control"  th:field="*{descripcion}"  style="margin-top:8px;"  aria-describedby="emailHelp" placeholder="Introduce correo electrónico">
+						  </div>					  
+						  <div class="form-group" style="margin-top:25px;">
+						    <label for="exampleInputEmail1" >Tipo de plato</label>
+						    	<select class="form-select" th:field="*{id_tipo_platos}" aria-label="Default select example" style="margin-top:10px;height:34px;">
+									<option th:each="typeDish:${listTypeDish}"
+										th:value="${typeDish.id_tipos_platos}"
+										th:text="${typeDish.descripcion}"
+									/>
+								</select>
+						  </div>
+						<button type="submit" class="btn btn-primary" style="font-size:1.5em;margin-top:3%;">Guardar cambios</button>
+					</form>				
+				</div>
+				<h4 th:inline="text" th:text="${error}" style="color:red; margin-top:2%;margin-left:35%;"></h4>
+				
+					<a th:href="@{'/editor/addDish/' + ${id_plato}}" class="btn btn-info btn-lg" style="background-color: #6c757d;border-color: #6c757d;color:#ffffff;;font-size:15px;margin-left: 44%;
+    margin-top: 2%;
+    margin-bottom: 1%;">Añadir nuevo ingrediente</a>
 
-								<option th:each="typeDish:${listTypeDish}"
-									th:value="${typeDish.id_tipos_platos}"
-									th:text="${typeDish.descripcion}"
-								/>
-							</select>
-					  </div>
-				  	<button type="submit" class="btn btn-primary">Aceptar</button>
-				</form>
+<!-- 					#6c757d -->
+					
+					  <div class ="row">
+						<table class="table">
+						  <thead>
+						    <tr >
+							  <th scope="col">Ingrediente</th>
+						      <th scope="col">Cantidad (g/ml)</th>
+						      <th scope="col" data-field="action" style="margin-left:30%;width:15%;">Operación</th>
+						    </tr>
+						  </thead>
+						  <tbody>
+						    <tr th:each="ingredient: ${listDishIngredients}">
+				    				<!-- Modal -->
+									<div class="modal" id="myModal" role="dialog" th:attrappend="id=${ingredient.id_ingrediente}">
+									  <div class="modal-dialog modal-dialog-centered">
+									    <div class="modal-content">
+									    
+									      <div class="modal-header" style="justify-content: flex-end;">
+									        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									          <span aria-hidden="true">&times;</span>
+									        </button>
+									      </div>
+									      
+									      <div class="modal-body" style="font-family: 'Playfair Display';padding:10% 10%;">
+									        <label style="font-weight: 400;">¿Está seguro/a de que desea eliminar el ingrediente <span th:text="${ingredient.ingrediente}"></span>?</label>
+									      </div>
+									      
+									      <div class="modal-footer">
+									        <a type="button" class="btn btn-primary" th:href="@{'/editor/deleteIngredientDish/'+ ${id_plato} + '/' + ${ingredient.id_ingrediente}}">Aceptar</a>
+<!-- 									        'editor/deleteIngredientDish/' + ${id_plato} + '/' + ${ingredient.id_ingrediente} -->
+									      </div>
+									      
+									    </div>
+									  </div>
+									</div>
+			                    <td th:text="${ingredient.ingrediente}"></td>
+			                    <td th:text="${ingredient.cantidad}"></td>
+		                    	<td style="width:10%">
+	                    			<div class="botonesEdicion" style="margin-right:-140px;">
+										<a th:href="@{'/editor/editIngredientDish/' + ${id_plato} + '/' + ${ingredient.id_ingrediente} + '/' + ${ingredient.cantidad}}" class="btn btn-info btn-lg" style="background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;;font-size:0.9rem;margin-right:15px;">Editar</a>
+										<button type="button" data-toggle="modal" data-target="#myModal" th:attrappend="data-target=${ingredient.id_ingrediente}" class="btn btn-primary"  style="border-color:#FF3333;background-color:#FF3333;">
+										  Eliminar
+										</button>
+									 </div>  
+			                    </td>
+						    </tr>
+						  </tbody>
+						</table>
+					</div>	
+
 			</div>
 		</div>
 	</div>
@@ -100,138 +200,6 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 		</div>
 	</div>
 	<!-- //footer -->
-  
-	<!-- menu-js -->
-	<script>
-		$('.navicon').on('click', function (e) {
-		  e.preventDefault();
-		  $(this).toggleClass('navicon--active');
-		  $('.toggle').toggleClass('toggle--active');
-		});
-	</script> 
-	<!-- //menu-js -->
-	<!-- jarallax -->  
-	<script src="js/SmoothScroll.min.js"></script> 
-	<script src="js/jarallax.js"></script> 
-	<script type="text/javascript">
-		/* init Jarallax */
-		$('.jarallax').jarallax({
-			speed: 0.5,
-			imgWidth: 1366,
-			imgHeight: 768
-		})
-	</script>  
-	<!-- //jarallax --> 
-	<!-- start-smooth-scrolling --> 
-	<script type="text/javascript" src="js/move-top.js"></script>
-	<script type="text/javascript" src="js/easing.js"></script>	
-	<script type="text/javascript">
-			jQuery(document).ready(function($) {
-				$(".scroll").click(function(event){		
-					event.preventDefault();
-			
-			$('html,body').animate({scrollTop:$(this.hash).offset().top},1000);
-				});
-			});
-	</script>
-	<!-- //end-smooth-scrolling -->	 
-	<!-- smooth-scrolling-of-move-up -->
-	<script type="text/javascript">
-		$(document).ready(function() {
-			/*
-			var defaults = {
-				containerID: 'toTop', // fading element id
-				containerHoverID: 'toTopHover', // fading element hover id
-				scrollSpeed: 1200,
-				easingType: 'linear' 
-			};
-			*/
-			
-			$().UItoTop({ easingType: 'easeOutQuart' });
-			
-		});
-	</script>
-	<script>
-	$(document).ready(function(){
-	  $("#myInput").on("keyup", function() {
-	    var value = $(this).val().toLowerCase();
-	    $("#myTable tr").filter(function() {
-	      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-	    });
-	  });
-	});
-	</script>
-	<script>
-    $(document).ready(function(){
-        // Open modal on page load
-        $("#myModal").modal('show');
-        // Close modal on button click
-        $(".btn").click(function(){
-            $("#modal1").modal('hide');
-        });
-    });
-	</script>
-	<script>
-	$(function(){
-	    $('#orderModal').modal({
-	        keyboard: true,
-	        backdrop: "static",
-	        show:false,
-
-	    }).on('show', function(){ //subscribe to show method
-	          var getIdFromRow = $(event.target).closest('tr').data('id'); //get the id from tr
-	        //make your ajax call populate items or what even you need
-	        $(this).find('#orderDetails').html($('<b> Order Id selected: ' + getIdFromRow  + '</b>'))
-	    });
-	});
-	</script>
-	<script>
-	var globalModal = $('.global-modal');
-    $( ".btn-green-flat-trigger" ).on( "click", function(e) {
-      e.preventDefault();
-      $( globalModal ).toggleClass('global-modal-show');
-    });
-    $( ".overlay" ).on( "click", function() {
-      $( globalModal ).toggleClass('global-modal-show');
-    });
-    $( ".global-modal_close" ).on( "click", function() {
-      $( globalModal ).toggleClass('global-modal-show');
-    });
-    $(".mobile-close").on("click", function(){
-      $( globalModal ).toggleClass('global-modal-show');
-    });
-	</script>
-	<script>
-	$('#myTable').bootstrapTable({
-	    onClickRow: function (row, $element) {
-	        // row: the record corresponding to the clicked row, 
-	        // $element: the tr element.
-	        
-	        var address = [];
-	        $(this).closest('tr').find('td').not(':last').each(function() {
-	            var textval = $(this).text(); // this will be the text of each <td>
-	           address.push(textval);
-	       });
-	        alert(address.join('\n'));
-	    }
-	});
-	</script>
-	
-	<script>
-	// jQuery version
-	$("input[type='number']").each(function(i, el) {
-	    el.type = "text";
-	    el.onfocus = function(){this.type="number";};
-	    el.onblur = function(){this.type="text";};
-	});
-	</script>
-
-	
-
-	<!-- //smooth-scrolling-of-move-up -->  		
-	<!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="js/bootstrap.js"></script>
+	<script src="../../js/bootstrap.js"></script>
 </body>
 </html>

@@ -82,16 +82,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
 		.antMatchers("/fonts/**",
                 "/css/**",
                 "/images/**",
-                "/js/**").permitAll()
+                "/js/**",
+                "/src/**").permitAll()
 		// .anyRequest().authenticated()
 		.and()
 		.formLogin()
 		.loginPage("/prueba")
 		.usernameParameter("username")
-		.successHandler(successHandler).failureUrl("/login?error=true")
+		.successHandler(successHandler).failureUrl("/loginError")
 		.permitAll()
 		.and()
-		.logout().permitAll();
+		.logout().logoutSuccessUrl("/").permitAll();
 
 	}
 

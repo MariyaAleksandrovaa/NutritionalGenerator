@@ -39,60 +39,69 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 </head>
 
 <body> 
-	<!-- banner -->
 	<div class="banner">
+		<p style="float: left;margin-top:10px;font-size:1.5em;margin-left:20px;">
+			Bienvenido <b>[[${#request.userPrincipal.principal.username}]]</b> 
+		</p>
+		<form th:action="@{/logout}" method="post" style="font-size:1.5em;margin-left:93%;">
+			<input type="submit" style="margin-top:10px;float: left;" value="Cerrar sesión" />					
+		</form>		
 		<!-- header -->
 		<div class="header">
 			<div class="container">
 				<div class="logo">
 					<h1>NutriApp</h1>
 				</div> 
-				
-					<div class="banner-text w3labout-bnr"> 
-							<h2>Cuenta de editor</h2>   
-					</div>
+				<div class="banner-text w3labout-bnr" > 
+						<h2 >Cuenta de administrador</h2>   
+				</div>
 			</div>
 		</div>
-		<!-- //header --> 
-		<!-- banner-text -->
-
-		<!-- //banner-text -->
+		<b th:text="${company}" style="margin-left:20px;color:#000000;font-size:2em;"></b>
 	</div>
-	<!-- //banner -->   
-	<!-- gallery -->
 	<div class="about gallery">
 		<div class="container">  
+			<nav aria-label="breadcrumb">
+			  <ol class="breadcrumb" style="background-color:#ffffff;font-size:1.5em;margin-bottom:40px;">
+			  	<li class="breadcrumb-item"><a th:href="@{/admin}">Página principal</a></li>
+			    <li class="breadcrumb-item active">Registrar nuevo usuario</li>
+			  </ol>
+			</nav>
 			<div role="tabpanel">
-				<ul class="nav nav-tabs" role="tablist">
-				  <li role ="presentation" class="active" >
-				    <a href="#seccion1" data-toggle="tab" role="tab">Registrar nuevo usuario</a>
-				  </li>
-				</ul>
-				<div class="tab-content">
+
 				
 					<div role="tabpanel" class="tab-pane active" id="seccion1" style="width: 50%;margin: 0 auto;">
-						<form th:action="@{/editor/registrar_nuevo_usuario/exito}" th:object="${usuario}" method="post" style="margin-left:35%;">
+						<form th:action="@{/admin/registrar_nuevo_usuario_exito}" th:object="${usuario}" method="post" style="margin-left:35%;">
 						
 							  <div class="form-group" style="margin-top:25px;">
 							    <label for="exampleInputEmail1" >Nombre de usuario*</label>
-							    <input type="text" class="form-control" id="id_cif" th:field="*{username}"  style="margin-top:8px;width:60%;" aria-describedby="emailHelp" placeholder="Introduce nombre de usuario ">
+							    <input type="text" class="form-control" th:field="*{username}" style="margin-top:8px;width:60%;"  placeholder="Introduce nombre de usuario " required>
 							  </div>
 							  <div class="form-group">
 							    <label for="exampleInputEmail1">Contraseña*</label>
-							    <input type="text" class="form-control" id="id_nombre" th:field="*{password}" style="margin-top:8px;width:60%;"  aria-describedby="emailHelp" placeholder="Introduce contraseña" required>
+							    <div style="display:flex;flex-direction:row;">
+							    	<input id="password-field" type="password" required class="form-control" th:field="*{password}" autocomplete="new-password" value="secret" text="" style="width:60%;">
+<!-- 							    <input type="text" class="form-control" th:field="*{password}" style="margin-top:8px;width:60%;" placeholder="Introduce contraseña" required> -->
+							  		<span toggle="#password-field" class="fa fa-fw fa-eye field-icon toggle-password" style="margin-top: 10px;margin-left: 10px;"></span>
+							    </div>
+
 							  </div>
 							  <div class="form-group">
 							    <label for="exampleInputEmail1">Nombre personal</label>
-							    <input type="text" class="form-control" id="id_correo" th:field="*{name}"  style="margin-top:8px;width:60%;"  aria-describedby="emailHelp" placeholder="Introduce nombre">
+							    <input type="text" class="form-control" th:field="*{name}"  style="margin-top:8px;width:60%;"  aria-describedby="emailHelp" placeholder="Introduce nombre">
 							  </div>
 							  <div class="form-group">
 							    <label for="exampleInputEmail1">Apellidos</label>
-							    <input type="tel" class="form-control" id="id_telefono" th:field="*{surname}"  style="margin-top:8px;width:60%;"  aria-describedby="emailHelp" placeholder="Introduce apellidos">
+							    <input type="tel" class="form-control" th:field="*{surname}"  style="margin-top:8px;width:60%;"  aria-describedby="emailHelp" placeholder="Introduce apellidos">
+							  </div>
+							  <div class="form-group">
+							    <label for="exampleInputEmail1">Correo electrónico</label>
+							    <input type="tel" class="form-control" th:field="*{email}"  style="margin-top:8px;width:60%;"  aria-describedby="emailHelp" placeholder="Introduce correo electrónico">
 							  </div>
 							  <div class="form-group">
 								    <label for="exampleInputEmail1">Empresa</label>
-							    		<select class="form-select" th:field="*{idEmpresa}" aria-label="Default select example" style="margin-top:10px;width:60%">
-											<option selected th:value="${select}">Escoge una empresa</option>
+							    		<select class="form-select" th:field="*{idEmpresa}" aria-label="Default select example" style="margin-top:10px;width:60%;height:34px;">
+											<option value="">Escoge una empresa</option>
 											<option th:each="company:${listCompanies}"
 												th:value="${company.id_empresa}"
 												th:text="${company.nombre}"
@@ -101,21 +110,25 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 							  </div>
 							  <div class="form-group">
 							    	<label for="exampleInputEmail1">Rol*</label>
-							    		<select class="form-select" th:field="*{roles}" aria-label="Default select example" style="margin-top:10px;width:60%">
-											<option selected th:value="${select}">Escoge un rol</option>
+							    		<select class="form-select" th:field="*{roles}" aria-label="Default select example" style="margin-top:10px;width:60%;height:34px;" required>
+											<option selected="true" disabled="disabled" value="">Escoge un rol</option>
 											<option th:each="rol:${listRoles}"
 												th:value="${rol.id}"
 												th:text="${rol.name}"
 											/>
 										</select>
 
-							    
-							  	<small id="emailHelp" class="form-text text-muted">(*) Campos obligatorios</small>
-							 
-							  </div>
+							    <div style="width:70%;font-size:12px; padding-top:10px;">
+								    <small id="emailHelp" class="form-text text-muted" style="font-size:12px;">(*) Campos obligatorios</small>
+								  	<br>
+								  	<small id="emailHelp" class="form-text text-muted" style="font-size:12px;padding-top:10px;">Todos los tipos de usuarios, excepto administradores deben pertenecer a una empresa</small>	  
+							    </div>
+								</div>
 							  <button type="submit" class="btn btn-primary">Aceptar</button>
 						</form>
-					</div>
+						<h4 th:inline="text" th:text="${error1}" style="color:red; margin-top:2%;margin-left:35%;"></h4>
+						<h4 th:inline="text" th:text="${error2}" style="color:red; margin-top:2%;margin-left:35%;"></h4>
+						<h4 th:inline="text" th:text="${error3}" style="color:red; margin-top:2%;margin-left:35%;"></h4>
 				</div>
 			</div>
 		</div>
@@ -130,8 +143,21 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 			</div>
 		</div>
 	</div>
-	<!-- //footer -->
-	<!-- menu-js -->
+	<script>
+	document.getElementById('sketchpad-post').value = "";
+	</script>
+	<script>
+	$(".toggle-password").click(function() {
+
+		  $(this).toggleClass("fa-eye fa-eye-slash");
+		  var input = $($(this).attr("toggle"));
+		  if (input.attr("type") == "password") {
+		    input.attr("type", "text");
+		  } else {
+		    input.attr("type", "password");
+		  }
+		});
+	</script>
 	<script>
 		$('.navicon').on('click', function (e) {
 		  e.preventDefault();

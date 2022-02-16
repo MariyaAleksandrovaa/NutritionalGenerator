@@ -1,0 +1,201 @@
+<!--
+Author: W3layouts
+Author URL: http://w3layouts.com
+License: Creative Commons Attribution 3.0 Unported
+License URL: http://creativecommons.org/licenses/by/3.0/
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<title>AdminNutriApp</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	
+<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+<!-- Custom Theme files -->
+<link href="../../css/bootstrap.css" type="text/css" rel="stylesheet" media="all">
+
+<!-- CSS only -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"/>
+<!-- JavaScript Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+<link href="../../css/style.css" type="text/css" rel="stylesheet" media="all">   
+<link href="../../css/font-awesome.css" rel="stylesheet"> <!-- font-awesome icons --> 
+<link rel="stylesheet" href="../../css/smoothbox.css" type='text/css' media="all" /> 
+<!-- //Custom Theme files --> 
+
+<!-- js -->
+<script src="../../js/jquery-2.2.3.min.js"></script>  
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> -->
+<!-- //js -->
+
+<!-- web-fonts -->   
+<link href="//fonts.googleapis.com/css?family=Playfair+Display:400,400i,700,700i,900,900i" rel="stylesheet">
+<!-- //web-fonts -->
+</head>
+
+<body> 
+	<div class="banner">
+		<p style="float: left;margin-top:10px;font-size:1.5em;margin-left:20px;">
+			Bienvenido <b>[[${#request.userPrincipal.principal.username}]]</b> 
+		</p>
+		<form th:action="@{/logout}" method="post" style="font-size:1.5em;margin-left:93%;">
+			<input type="submit" style="margin-top:10px;float: left;" value="Cerrar sesión" />					
+		</form>		
+		<!-- header -->
+		<div class="header">
+			<div class="container">
+				<div class="logo">
+					<h1>NutriApp</h1>
+				</div> 
+				<div class="banner-text w3labout-bnr" > 
+						<h2 >Cuenta de editor</h2>   
+				</div>
+			</div>
+		</div>
+		<b th:text="${company}" style="margin-left:20px;color:#000000;font-size:2em;"></b>
+	</div>
+	<div class="about gallery">
+		<div class="container">  
+			<nav aria-label="breadcrumb">
+			  <ol class="breadcrumb" style="background-color:#ffffff;font-size:1.5em;margin-bottom:40px;">
+			  	<li class="breadcrumb-item"><a th:href="@{/editor}">Página principal</a></li>
+			  	<li class="breadcrumb-item"><a th:href="@{'/editor/editDish/' + ${id_plato}}">Editar plato</a></li>
+			    <li class="breadcrumb-item active">Añadir ingrediente plato</li>
+			  </ol>
+			</nav>
+		
+						<div class="row justify-content-start">
+							<div class="col-12">
+								<input class="form-control" id="myInput" type="text" placeholder="Busca alimento">
+							</div>
+						</div>
+						<div class ="row">
+							<table class="table">
+							  <thead>
+							    <tr >
+								  <th scope="col">Grupo</th>
+							      <th scope="col">Nombre</th>
+							      <th scope="col">Nombre en inglés</th>
+							      <th scope="col" style="width:10%;margin-right:20px;">Operacion</th>
+							      
+							    </tr>
+							  </thead>
+							  <tbody id="myTable">
+							    <tr th:each="food: ${listFood}">
+				                    <td th:text="${food.grupo}">Grupo</td>
+				                    <td th:text="${food.nombre}">Nombre</td>
+				                    <td th:text="${food.ingles}">Nombre en inglés</td>
+				                    <td >
+										 <div class="botonesEdicion" style="margin-right:-140px">
+										 	<a th:href="@{'/editor/addIngredient/' + ${id_plato} + '/' + ${food.id_alimento}}" class="btn btn-info btn-lg" style="background-color: #4CBB17;border-color: #4CBB17;color:#ffffff;;font-size:0.9rem;">Añadir al plato</a>
+										 </div>     	                    	
+					                 </td>
+							    </tr>
+							  </tbody>
+							</table>
+						</div>
+						
+		</div>
+	</div>
+	<!-- //gallery -->  
+	<!-- footer -->
+	<div class="footer">
+		<div class="container">
+			<div class="clearfix"> </div>
+			<div class="w3agile_footer_copy">
+				<p>© 2017 Dine. All rights reserved | Design by <a href="http://w3layouts.com/" target="_blank">W3layouts.</a></p>
+			</div>
+		</div>
+	</div>
+	<!-- //footer -->
+
+	<script>
+		$('.navicon').on('click', function (e) {
+		  e.preventDefault();
+		  $(this).toggleClass('navicon--active');
+		  $('.toggle').toggleClass('toggle--active');
+		});
+	</script> 
+	<!-- //menu-js -->
+	<!-- jarallax -->  
+	<script src="js/SmoothScroll.min.js"></script> 
+	<script src="js/jarallax.js"></script> 
+	<script type="text/javascript">
+		/* init Jarallax */
+		$('.jarallax').jarallax({
+			speed: 0.5,
+			imgWidth: 1366,
+			imgHeight: 768
+		})
+	</script>  
+	<!-- //jarallax --> 
+	<!-- start-smooth-scrolling --> 
+	<script type="text/javascript" src="js/move-top.js"></script>
+	<script type="text/javascript" src="js/easing.js"></script>	
+	<script type="text/javascript">
+			jQuery(document).ready(function($) {
+				$(".scroll").click(function(event){		
+					event.preventDefault();
+			
+			$('html,body').animate({scrollTop:$(this.hash).offset().top},1000);
+				});
+			});
+	</script>
+	<!-- //end-smooth-scrolling -->	 
+	<!-- smooth-scrolling-of-move-up -->
+	<script type="text/javascript">
+		$(document).ready(function() {
+			/*
+			var defaults = {
+				containerID: 'toTop', // fading element id
+				containerHoverID: 'toTopHover', // fading element hover id
+				scrollSpeed: 1200,
+				easingType: 'linear' 
+			};
+			*/
+			
+			$().UItoTop({ easingType: 'easeOutQuart' });
+			
+		});
+	</script>
+	<script>
+	$(document).ready(function(){
+	  $("#myInput").on("keyup", function() {
+	    var value = $(this).val().toLowerCase();
+	    $("#myTable tr").filter(function() {
+	      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+	    });
+	  });
+	});
+	</script>
+	<script>
+    $(document).ready(function(){
+        // Open modal on page load
+        $("#myModal").modal('show');
+        // Close modal on button click
+        $(".btn").click(function(){
+            $("#modal1").modal('hide');
+        });
+    	$("#myTable").on("click","tr",function(e){
+    		console.log(e.currentTarget);
+    	})
+    });
+	</script>
+	<script>
+	$("#myTable").on("click","tr",function(e){
+		console.log(e.currentTarget);
+	})
+	</script>
+
+	<!-- //smooth-scrolling-of-move-up -->  		
+	<!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="js/bootstrap.js"></script>
+</body>
+</html>
