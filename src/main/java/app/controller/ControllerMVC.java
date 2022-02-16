@@ -1861,6 +1861,7 @@ public class ControllerMVC {
 			return model;
 		}else {
 			dishDB.setDescripcion(dish.getDescripcion());
+			dishDB.setNombre_plato(dish.getNombre_plato());
 		}
 		
 		//dishDB.setNombre_plato(dish.getNombre_plato());
