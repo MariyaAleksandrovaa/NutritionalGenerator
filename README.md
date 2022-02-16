@@ -8,7 +8,7 @@ Esta aplicación se ejecuta dentro del navegador en: localhost8080
 
 Comprobar previamente que el servicio de la base de datos está iniciado.
 
-En función de las tareas que se quieran realizar existen diferentes roles: <br />
+En función de las tareas que se quieran realizar existen diferentes roles: <br /> <br />
 &ensp;&ensp; **Administrador:** gestión de empresas, locales, usuarios y alimentos. <br />
 &ensp;&ensp; **Editor:** gestión de platos y menús. <br />
 &ensp;&ensp; **Usuario:** gestión de menús. <br />
