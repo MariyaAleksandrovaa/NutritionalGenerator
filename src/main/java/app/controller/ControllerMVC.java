@@ -857,7 +857,7 @@ public class ControllerMVC {
 					rol = 2;
 					usr.setIdEmpresa(null);
 
-				} else if (userView.getRol().equals("admin")) {
+				} else if (userView.getRol().equals("EDITOR")) {
 					rol = 3;
 
 				}
