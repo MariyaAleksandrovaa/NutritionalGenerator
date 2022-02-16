@@ -791,7 +791,7 @@ public class ControllerMVC {
 			String error3 = "";
 
 //		    	  Cuando es admin
-			if (userView.getRol().equals("ADMIN") && userView.getNombre() != null) {
+			if (userView.getRol().equals("ADMIN") && !userView.getNombre().equals("")) {
 				error1 = "Usuarios de tipo administrador no deben pertenecer a ninguna empresa";
 				model.setViewName("editar_usuario");
 				model.addObject("error1", error1);
@@ -855,6 +855,7 @@ public class ControllerMVC {
 
 				} else if (userView.getRol().equals("ADMIN")) {
 					rol = 2;
+					usr.setIdEmpresa(null);
 
 				} else if (userView.getRol().equals("admin")) {
 					rol = 3;
