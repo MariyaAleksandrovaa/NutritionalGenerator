@@ -8,6 +8,11 @@ Esta aplicación se ejecuta dentro del navegador en: localhost8080
 
 Comprobar previamente que el servicio de la base de datos está iniciado.
 
+En función de las tareas que se quieran realizar existen diferentes roles:
+**Administrador:** gestión de empresas, locales, usuarios y alimentos.
+**Editor:** gestión de platos y menús.
+**Usuario:** gestión de menús.
+
 Credenciales de acceso:
   - **Rol administrador:** <br />
   
