@@ -9,14 +9,14 @@ Esta aplicación se ejecuta dentro del navegador en: localhost8080
 Comprobar previamente que el servicio de la base de datos está iniciado.
 
 Credenciales de acceso:
-  - Rol administrador:
-      Usuario:  admin1
-      Contraseña: admin1
+  - Rol administrador: <br />
+      Usuario:  admin1 <br />
+      Contraseña: admin1 <br />
       
   - Rol editor:
-      Usuario:  editor3
-      Contraseña: editor3
+      Usuario:  editor3 <br />
+      Contraseña: editor3 <br />
       
-  - Rol usuario
-      Usuario: user3
-      Contraseña: user3
+  - Rol usuario <br />
+      Usuario: user3 <br />
+      Contraseña: user3 <br />
