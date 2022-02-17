@@ -20,11 +20,36 @@ Credenciales de acceso:
  &ensp;     Contraseña: admin1 <br />
       
   - **Rol editor:** <br />
- 
-&ensp;      Usuario:  editor3 <br />
-&ensp;      Contraseña: editor3 <br />
+Para empresa Recaditos:  <br />
+
+&ensp;      Usuario:  editorRecaditos <br />
+&ensp;      Contraseña: editorRecaditos <br />
+
+Para empresa Pecaditos:  <br />
+
+&ensp;      Usuario:  editorRecaditos <br />
+&ensp;      Contraseña: editorPecaditos <br />
       
   - **Rol usuario** <br />
   
- &ensp;     Usuario: user3 <br />
- &ensp;    Contraseña: user3 <br />
+Para empresa Recaditos:  <br />
+
+&ensp;      Usuario:  usuarioRecaditos <br />
+&ensp;      Contraseña: usuarioRecaditos <br />
+
+Para empresa Pecaditos:  <br />
+
+&ensp;      Usuario:  usuarioPecaditos <br />
+&ensp;      Contraseña: usuarioPecaditos <br />
+
+Las empresas Pecaditos y Recaditos son de ejemplo. Para poder realizar la gestión del resto de empresas hay que generar usuarios para dicha empresa accediendo a la aplicación con el rol de administrador.
+
+**Claves de acceso a máquina virtual** <br />
+&ensp; Usuario: UserNutri <br />
+&ensp; Contraseña: UserNutri <br />
+
+**Claves de acceso a base de datos** <br />
+&ensp; Usuario: root <br />
+&ensp; Contraseña: mysql <br />
+
+Si se llega a producir algún error de página no encontrada volver a localhost:8080 como URL en el navegador.
