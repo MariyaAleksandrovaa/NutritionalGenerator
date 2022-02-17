@@ -4,7 +4,7 @@
 
 Esto proyecto representa una aplicación web en la que se puede ver el contenido nutricional de los alimentos y menús que ofrecen las empresas que dan servicio a las cafeterías de la Universidad de Burgos.
 
-Esta aplicación se ejecuta dentro del navegador en: localhost8080
+Esta aplicación se ejecuta dentro del navegador en: localhost:8080
 
 Comprobar previamente que el servicio de la base de datos está iniciado.
 
