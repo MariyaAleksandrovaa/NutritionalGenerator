@@ -19,7 +19,7 @@ Credenciales de acceso:
  &ensp;     Usuario:  admin1 <br />
  &ensp;     Contraseña: admin1 <br />
       
-  - **Rol editor:** <br />
+  - **Rol editor:** 
 Para empresa Recaditos:  <br />
 
 &ensp;      Usuario:  editorRecaditos <br />
