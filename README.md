@@ -45,7 +45,7 @@ Para empresa Pecaditos:  <br />
 Las empresas Pecaditos y Recaditos son de ejemplo. Para poder realizar la gestión del resto de empresas hay que generar usuarios para dicha empresa accediendo a la aplicación con el rol de administrador.
 
 **Claves de acceso a máquina virtual** <br />
-&ensp; Usuario: UserNutri <br />
+&ensp; Usuario: UserNutri o bien .\UserNutri<br />
 &ensp; Contraseña: UserNutri <br />
 
 **Claves de acceso a base de datos** <br />
